@@ -13,11 +13,10 @@
                <items>
                   <MenuItem text="Open Project..."/>
                   <SeparatorMenuItem  />
-                  <MenuItem text="Exit"/>
+                  <MenuItem text="Exit" onAction="#handleExitAction" />
                </items>
             </Menu>
         </menus>
     </MenuBar> 
-    <Button layoutX="126" layoutY="126" text="Click Me!" onAction="#handleButtonAction" fx:id="button" />
     <Label layoutX="126" layoutY="120" minHeight="16" minWidth="69" fx:id="label" />
 </VBox>
