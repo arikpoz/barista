@@ -6,18 +6,53 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<VBox id="vbox" prefHeight="400" prefWidth="800" xmlns:fx="http://javafx.com/fxml/1" fx:controller="barista.FXMLDocumentController">
-    <MenuBar AnchorPane.topAnchor="0">
+<VBox xmlns:fx="http://javafx.com/fxml/1" id="vbox" prefHeight="400" prefWidth="800" fx:controller="barista.FXMLDocumentController">
+    <MenuBar fx:id="menuBar" AnchorPane.topAnchor="0">
         <menus>
             <Menu text="File">
                <items>
-                  <MenuItem text="Open Project..."/>
+                  <MenuItem text="Open Project..." onAction="#handleOpenProjectAction" />
                   <SeparatorMenuItem  />
-                  <MenuItem text="Exit"/>
+                  <MenuItem text="Exit" onAction="#handleExitAction" />
                </items>
             </Menu>
         </menus>
     </MenuBar> 
-    <Button layoutX="126" layoutY="126" text="Click Me!" onAction="#handleButtonAction" fx:id="button" />
-    <Label layoutX="126" layoutY="120" minHeight="16" minWidth="69" fx:id="label" />
+    <VBox>
+        <TitledPane text="Project Settings" collapsible="false" animated="false" >
+            <content>
+                <GridPane vgap="4">
+                    <padding>
+                        <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
+                    </padding>
+                    <Label text="Project folder: " GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                    <Label fx:id="projectDirectoryLabel" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                    <Label text="Project description: " GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                    <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                </GridPane>
+            </content>
+        </TitledPane>
+        <SplitPane dividerPositions="0.5,0.5">
+            <TitledPane text="Configurations List" collapsible="false" animated="false" prefWidth="200" >
+                <content>
+                    <GridPane vgap="4">
+                        <padding>
+                            <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
+                        </padding>
+                        <Button text="Click left" />
+                    </GridPane>
+                </content>
+            </TitledPane>
+            <TitledPane text="Selected Configuration List" collapsible="false" animated="false">
+                <content>
+                    <GridPane vgap="4">
+                        <padding>
+                            <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
+                        </padding>
+                        <Button text="Click right" />
+                    </GridPane>
+                </content>
+            </TitledPane>
+        </SplitPane>
+    </VBox>
 </VBox>

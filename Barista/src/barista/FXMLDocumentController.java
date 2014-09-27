@@ -15,6 +15,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.TextField;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 
@@ -24,10 +25,11 @@ import javafx.stage.Window;
  */
 public class FXMLDocumentController implements Initializable {
     
-    @FXML MenuBar menuBar;
+    @FXML 
+    private MenuBar menuBar;
     
     @FXML
-    private Label label;
+    private Label projectDirectoryLabel;
     
     @FXML
     private void handleExitAction(ActionEvent event) {
@@ -44,7 +46,12 @@ public class FXMLDocumentController implements Initializable {
         if (selectedDirectory != null)
         {
             // use selected project directory
-            System.out.println(selectedDirectory.getAbsolutePath());
+            projectDirectoryLabel.setText(selectedDirectory.getAbsolutePath());
+        }
+        else
+        {
+            // empty project firectory
+            projectDirectoryLabel.setText("");
         }
     }
     
