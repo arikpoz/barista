@@ -1,0 +1,5 @@
+
+message ApplicationSettings {
+  // The last project directory which was loaded
+  optional string last_project_directory = 1; 
+}
