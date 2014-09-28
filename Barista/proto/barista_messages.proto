@@ -1,3 +1,4 @@
+package barista;
 
 message ApplicationSettings {
   // The last project directory which was loaded
