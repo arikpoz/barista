@@ -8,6 +8,8 @@ package barista;
 import barista.BaristaMessages.ApplicationSettings;
 import com.google.protobuf.TextFormat;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
@@ -73,26 +75,72 @@ public class FXMLDocumentController implements Initializable {
         applicationSettingsBuilder.setLastProjectDirectory(projectDirectory);
         ApplicationSettings applicationSettings = applicationSettingsBuilder.build();
         
-        // generate application settings file name
-        String applicationDirectory = System.getProperty("user.dir");
-        Path applicationSettingsFilePath = FileSystems.getDefault().getPath(applicationDirectory, "application.settings");
+        String applicationSettingsFileName = getApplicationSettingsFileName();
 
         // write application settings objects to file
-        try (FileWriter fileWriter = new FileWriter(applicationSettingsFilePath.toString())) 
+        try (FileWriter fileWriter = new FileWriter(applicationSettingsFileName)) 
         {
+            // write ApplicationSettings object in protobuf properties format
             TextFormat.print(applicationSettings, fileWriter);
             fileWriter.flush();
         } 
         catch (IOException ex) 
         {
-            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", applicationSettingsFilePath.toString()) , ex);
+            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", applicationSettingsFileName) , ex);
         }
     }
     
     @Override
     public void initialize(URL url, ResourceBundle rb) 
     {
-        // TODO
+        ApplicationSettings applicationSettings = readApplicationSettings();
+        
+        if (applicationSettings != null)
+        {
+            setProjectDirectory(applicationSettings.getLastProjectDirectory());
+        }
     }    
+
+    // get application settings file name
+    private String getApplicationSettingsFileName()
+    {
+        // generate application settings file name
+        String applicationDirectory = System.getProperty("user.dir");
+        Path applicationSettingsFilePath = FileSystems.getDefault().getPath(applicationDirectory, "application.settings");
+        
+        return applicationSettingsFilePath.toString();
+    }
+    
+    private ApplicationSettings readApplicationSettings() 
+    {
+        FileReader fileReader = null;
+        try 
+        {
+            String applicationSettingsFileName = getApplicationSettingsFileName();
+            
+            if (new File(applicationSettingsFileName).isFile())
+            {
+                ApplicationSettings.Builder applicationSettingsBuilder = ApplicationSettings.newBuilder();
+
+                // read from file using protobuf properties format
+                fileReader = new FileReader(applicationSettingsFileName);
+                TextFormat.merge(fileReader, applicationSettingsBuilder);
+                fileReader.close();
+                
+                return applicationSettingsBuilder.build();
+            }
+            
+        } 
+        catch (FileNotFoundException ex) 
+        {
+            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, "", ex);
+        } 
+        catch (IOException ex) 
+        {
+            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+        } 
+        
+        return null;
+    }
     
 }
