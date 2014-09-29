@@ -14,3 +14,5 @@ hs_err_pid*
 /Barista/application.settings
 /Barista/build/built-jar.properties
 Barista/build/built-jar.properties
+/Barista/build
+/Barista/dist
