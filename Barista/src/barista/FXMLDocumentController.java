@@ -150,6 +150,25 @@ public class FXMLDocumentController implements Initializable {
         {
             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", applicationSettingsFileName) , ex);
         }
+        
+        // load configurations list
+        loadConfigurations();
+    }
+    
+    private void loadConfigurations()
+    {
+        // enumerate sub-folders in project folder
+        File folder = new File(getProjectFolder());
+        File[] files = folder.listFiles();
+        
+        // for each file in project folder
+        for (File file : files)
+        {
+            if (file.isDirectory())
+            {
+                
+            }
+        }
     }
     
     @Override
