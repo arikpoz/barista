@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" id="BorderPane" prefHeight="400.0" prefWidth="600.0">
+    <top>
+        <MenuBar fx:id="menuBar" AnchorPane.topAnchor="0">
+            <menus>
+                <Menu text="_File" mnemonicParsing="true" >
+                   <items>
+                      <!-- <MenuItem text="_Open Project..." onAction="#handleOpenProjectAction" mnemonicParsing="true" /> -->
+                      <MenuItem text="_Open Project..." mnemonicParsing="true" />
+                      <SeparatorMenuItem  />
+                      <!-- <MenuItem text="E_xit" onAction="#handleExitAction" mnemonicParsing="true" /> -->
+                      <MenuItem text="E_xit" mnemonicParsing="true" />
+                   </items>
+                </Menu>
+            </menus>
+        </MenuBar> 
+    </top>
+</BorderPane>

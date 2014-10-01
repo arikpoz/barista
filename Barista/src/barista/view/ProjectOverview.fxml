@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane id="rootPane" prefHeight="400" prefWidth="600" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="barista.FXMLDocumentController">
+     <rowConstraints>
+         <RowConstraints />
+         <RowConstraints percentHeight="100" />
+     </rowConstraints>
+     <columnConstraints>
+        <ColumnConstraints fillWidth="true" percentWidth="100"  /> 
+     </columnConstraints>
+    <children>
+       <TitledPane animated="false" collapsible="false" text="Project Settings" GridPane.rowIndex="0">
+           <content>
+               <GridPane vgap="4">
+                   <padding>
+                       <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
+                   </padding>
+                  <children>
+                      <Label text="Project folder: " GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                      <Label text="${controller.projectFolder}" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                      <Label text="Project description: " GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                      <TextField fx:id="projectDescriptionTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" /> 
+                      <Button disable="${controller.projectSettingsAreUnchanged}" onAction="#handleSaveProjectSettingsChangesAction" text="Save changes" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                  </children>
+              <columnConstraints>
+                 <ColumnConstraints />
+                 <ColumnConstraints />
+              </columnConstraints>
+              <rowConstraints>
+                 <RowConstraints />
+                 <RowConstraints />
+                 <RowConstraints />
+              </rowConstraints>
+               </GridPane>
+           </content>
+       </TitledPane>
+       <SplitPane dividerPositions="0.5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+          <items>
+              <TitledPane animated="false" collapsible="false" prefWidth="200" text="Configurations List">
+                  <content>
+                      <GridPane vgap="4">
+                          <padding>
+                              <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
+                          </padding>
+                         <children>
+                             <Button text="Click left" />
+                         </children>
+                    <columnConstraints>
+                       <ColumnConstraints />
+                    </columnConstraints>
+                    <rowConstraints>
+                       <RowConstraints />
+                    </rowConstraints>
+                      </GridPane>
+                  </content>
+              </TitledPane>
+              <TitledPane animated="false" collapsible="false" text="Selected Configuration List">
+                  <content>
+                      <GridPane vgap="4">
+                          <padding>
+                              <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
+                          </padding>
+                         <children>
+                             <Button text="Click right" />
+                         </children>
+                    <columnConstraints>
+                       <ColumnConstraints />
+                    </columnConstraints>
+                    <rowConstraints>
+                       <RowConstraints />
+                    </rowConstraints>
+                      </GridPane>
+                  </content>
+              </TitledPane>
+          </items>
+       </SplitPane>
+   </children>
+  <columnConstraints>
+     <ColumnConstraints />
+  </columnConstraints>
+  <rowConstraints>
+     <RowConstraints />
+     <RowConstraints />
+  </rowConstraints>
+</GridPane>
