@@ -10,7 +10,7 @@
 <GridPane xmlns:fx="http://javafx.com/fxml/1" id="rootPane" xmlns="http://javafx.com/javafx/8" fx:controller="barista.FXMLDocumentController">
     <rowConstraints>
         <RowConstraints />
-        <RowConstraints fillHeight="true" />
+        <RowConstraints fillHeight="true"  />
     </rowConstraints>
     <columnConstraints>
         <ColumnConstraints fillWidth="true" percentWidth="100" /> 
@@ -18,27 +18,29 @@
     <children>
         <TitledPane animated="false" collapsible="false" text="Project Settings" GridPane.rowIndex="0">
             <content>
-                <GridPane vgap="4">
-                    <padding>
-                        <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
-                    </padding>
-                    <children>
-                        <Label text="Project folder: " GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                        <Label text="${controller.projectFolder}" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                        <Label text="Project description: " GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                        <TextField fx:id="projectDescriptionTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" /> 
-                        <Button disable="${controller.projectSettingsAreUnchanged}" onAction="#handleSaveProjectSettingsChangesAction" text="Save changes" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-                    </children>
-                    <columnConstraints>
-                        <ColumnConstraints />
-                        <ColumnConstraints />
-                    </columnConstraints>
-                    <rowConstraints>
-                        <RowConstraints />
-                        <RowConstraints />
-                        <RowConstraints />
-                    </rowConstraints>
-                </GridPane>
+                <StackPane>
+                    <GridPane vgap="4">
+                        <padding>
+                            <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
+                        </padding>
+                        <children>
+                            <Label text="Project folder: " GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                            <Label text="${controller.projectFolder}" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                            <Label text="Project description: " GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                            <TextField fx:id="projectDescriptionTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" /> 
+                            <Button disable="${controller.projectSettingsAreUnchanged}" onAction="#handleSaveProjectSettingsChangesAction" text="Save changes" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                        </children>
+                        <columnConstraints>
+                            <ColumnConstraints />
+                            <ColumnConstraints />
+                        </columnConstraints>
+                        <rowConstraints>
+                            <RowConstraints />
+                            <RowConstraints />
+                            <RowConstraints />
+                        </rowConstraints>
+                    </GridPane>
+                </StackPane>
             </content>
         </TitledPane>
         <AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="1">
@@ -48,12 +50,14 @@
                         <AnchorPane>
                             <TitledPane animated="false" collapsible="false" text="Configurations List" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <content>
-                                    <TableView>
-                                        <columns>
-                                            <TableColumn prefWidth="75.0" text="C1" />
-                                            <TableColumn prefWidth="75.0" text="C2" />
-                                        </columns>
-                                    </TableView>
+                                    <StackPane>
+                                        <TableView>
+                                            <columns>
+                                                <TableColumn prefWidth="75.0" text="C1" />
+                                                <TableColumn prefWidth="75.0" text="C2" />
+                                            </columns>
+                                        </TableView>
+                                    </StackPane>
                                 </content>
                             </TitledPane>
                         </AnchorPane>
@@ -61,14 +65,16 @@
                         <AnchorPane>
                             <TitledPane animated="false" collapsible="false" text="Selected Configuration List" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <content>
-                                    <GridPane vgap="4">
-                                        <padding>
-                                            <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
-                                        </padding>
-                                        <children>
-                                            <Button text="Click right" />
-                                        </children>
-                                    </GridPane>
+                                    <StackPane>
+                                        <GridPane vgap="4">
+                                            <padding>
+                                                <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
+                                            </padding>
+                                            <children>
+                                                <Button text="Click right" />
+                                            </children>
+                                        </GridPane>
+                                    </StackPane>
                                 </content>
                             </TitledPane>
                             
@@ -79,20 +85,4 @@
             </children>
         </AnchorPane>
     </children>
-    <columnConstraints>
-        <ColumnConstraints />
-        <ColumnConstraints />
-        <ColumnConstraints />
-        <ColumnConstraints />
-    </columnConstraints>
-    <rowConstraints>
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
-        <RowConstraints />
-    </rowConstraints>
 </GridPane>
