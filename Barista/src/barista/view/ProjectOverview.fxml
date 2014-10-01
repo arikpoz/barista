@@ -7,10 +7,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane xmlns:fx="http://javafx.com/fxml/1" id="rootPane" prefHeight="400" prefWidth="600" xmlns="http://javafx.com/javafx/8" fx:controller="barista.FXMLDocumentController">
+<GridPane xmlns:fx="http://javafx.com/fxml/1" id="rootPane" xmlns="http://javafx.com/javafx/8" fx:controller="barista.FXMLDocumentController">
     <rowConstraints>
         <RowConstraints />
-        <RowConstraints percentHeight="100" />
+        <RowConstraints fillHeight="true" />
     </rowConstraints>
     <columnConstraints>
         <ColumnConstraints fillWidth="true" percentWidth="100" /> 
@@ -43,7 +43,7 @@
         </TitledPane>
         <AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="1">
             <children>
-                <SplitPane dividerPositions="0.5" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <items>
                         <AnchorPane>
                             <TitledPane animated="false" collapsible="false" text="Configurations List" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
