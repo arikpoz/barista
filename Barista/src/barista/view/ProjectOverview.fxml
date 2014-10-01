@@ -77,49 +77,51 @@
                                     <content>
                                     </content>
                                     <content>
-                                        <AnchorPane>
+                                        <StackPane>
                                             <children>
-                                                <GridPane hgap="5.0" vgap="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="30.0">
+                                                <GridPane hgap="5.0" vgap="5.0">
+                                                    <padding>
+                                                        <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
+                                                    </padding>
                                                     <columnConstraints>
                                                         <ColumnConstraints />
-                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                        <ColumnConstraints hgrow="ALWAYS" fillWidth="true"  />
                                                         <ColumnConstraints hgrow="SOMETIMES" />
                                                     </columnConstraints>
                                                     <rowConstraints>
-                                                        <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
-                                                        <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
-                                                        <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
-                                                        <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
+                                                        <RowConstraints />
+                                                        <RowConstraints />
+                                                        <RowConstraints />
+                                                        <RowConstraints />
+                                                        <RowConstraints />
                                                     </rowConstraints>
                                                     <children>
                                                         <Label text="Name:" />
-                                                        <Label text="Solver file:" GridPane.rowIndex="1" />
-                                                        <Label text="Train file:" GridPane.rowIndex="2" />
-                                                        <Label text="Test file:" GridPane.rowIndex="3" />
-                                                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                        <Button mnemonicParsing="false" text="..." GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                        <Button mnemonicParsing="false" text="..." GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                        <Button mnemonicParsing="false" text="..." GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                         <TextField GridPane.columnIndex="1" />
+                                                        <Label text="Solver file:" GridPane.rowIndex="1" />
+                                                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                        <Button mnemonicParsing="false" text="..." GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                                        <Label text="Train file:" GridPane.rowIndex="2" />
+                                                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                        <Button mnemonicParsing="false" text="..." GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                                        <Label text="Test file:" GridPane.rowIndex="3" />
+                                                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                        <Button mnemonicParsing="false" text="..." GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                                                        <HBox spacing="5.0" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="4" alignment="CENTER_RIGHT"  >
+                                                            <children>
+                                                                <Button mnemonicParsing="false" text="New" />
+                                                                <Button mnemonicParsing="false" text="Save changes" />
+                                                                <Button mnemonicParsing="false" text="Delete" />
+                                                            </children>
+                                                        </HBox>
                                                     </children>
                                                 </GridPane>
-                                                <HBox layoutX="17.0" layoutY="403.0" spacing="5.0" AnchorPane.bottomAnchor="30.0" AnchorPane.rightAnchor="5.0">
-                                                    <children>
-                                                        <Button layoutX="17.0" layoutY="403.0" mnemonicParsing="false" text="New" />
-                                                        <Button layoutX="70.0" layoutY="403.0" mnemonicParsing="false" text="Save changes" />
-                                                        <Button layoutX="194.0" layoutY="403.0" mnemonicParsing="false" text="Delete" />
-                                                    </children>
-                                                </HBox>
                                             </children>
-                                        </AnchorPane>
+                                        </StackPane>
                                     </content>
                                 </TitledPane>
                             </children>
-                            
                         </AnchorPane>
-                        
                     </items>
                 </SplitPane>
             </children>
