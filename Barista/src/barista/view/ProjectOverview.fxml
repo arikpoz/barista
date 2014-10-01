@@ -21,7 +21,7 @@
             <content>
                 <StackPane>
                     <children>
-                        <GridPane vgap="5" hgap="5" >
+                        <GridPane hgap="5" vgap="5">
                             <padding>
                                 <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
                             </padding>
@@ -30,7 +30,7 @@
                                 <Label text="${controller.projectFolder}" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                                 <Label text="Project description: " GridPane.columnIndex="0" GridPane.rowIndex="1" />
                                 <TextField fx:id="projectDescriptionTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" /> 
-                                <Button disable="${controller.projectSettingsAreUnchanged}" onAction="#handleSaveProjectSettingsChangesAction" text="Save changes" GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.halignment="RIGHT"    />
+                                <Button disable="${controller.projectSettingsAreUnchanged}" onAction="#handleSaveProjectSettingsChangesAction" text="Save changes" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
                             </children>
                             <columnConstraints>
                                 <ColumnConstraints />
@@ -81,7 +81,7 @@
                                             <children>
                                                 <GridPane hgap="5.0" vgap="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="30.0">
                                                     <columnConstraints>
-                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                        <ColumnConstraints />
                                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                                                         <ColumnConstraints hgrow="SOMETIMES" />
                                                     </columnConstraints>
