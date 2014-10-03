@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -26,6 +27,9 @@ import javafx.scene.control.TextField;
  */
 public class ProjectOverviewController {
 
+    @FXML
+    private Label projectFolderLabel;
+    
     @FXML
     private TextField projectDescriptionTextField;
 
@@ -81,6 +85,7 @@ public class ProjectOverviewController {
         configurationTable.setItems(mainApp.getConfigurationList());
 
         // set bindings
+        Bindings.bindBidirectional(projectFolderLabel.textProperty(), mainApp.projectFolderProperty());
         Bindings.bindBidirectional(projectDescriptionTextField.textProperty(), mainApp.projectDescriptionProperty());
     }
 
