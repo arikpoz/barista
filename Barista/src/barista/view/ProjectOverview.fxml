@@ -17,6 +17,8 @@
         <ColumnConstraints fillWidth="true" percentWidth="100" /> 
     </columnConstraints>
     <children>
+        
+        <!-- Project Settings section -->
         <TitledPane animated="false" collapsible="false" text="Project Settings" GridPane.rowIndex="0">
             <content>
                 <StackPane>
@@ -50,6 +52,8 @@
             <children>
                 <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <items>
+                        
+                        <!-- Configuration List section -->
                         <AnchorPane>
                             <children>
                                 <TitledPane animated="false" collapsible="false" text="Configurations List" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -71,6 +75,7 @@
                             </children>
                         </AnchorPane>
                         
+                        <!-- Selected configuration details section -->
                         <AnchorPane>
                             <children>
                                 <TitledPane animated="false" collapsible="false" text="Selected configuration details" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
