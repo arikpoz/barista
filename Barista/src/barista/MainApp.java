@@ -116,14 +116,11 @@ public class MainApp extends Application {
         showProjectOverview();
 
         projectDescriptionProperty().addListener(
-                new ChangeListener<String>() {
-                    @Override
-                    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                        // if we have a selected folder
-                        if (getProjectFolder() != "") {
-                            if (oldValue != newValue) {
-                                setProjectSettingsAreUnchanged(false);
-                            }
+                (observable, oldValue, newValue) -> {
+                    // if we have a selected folder
+                    if (getProjectFolder() != "") {
+                        if (oldValue != newValue) {
+                            setProjectSettingsAreUnchanged(false);
                         }
                     }
                 });

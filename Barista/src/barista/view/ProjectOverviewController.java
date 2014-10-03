@@ -72,9 +72,15 @@ public class ProjectOverviewController {
     @FXML
     private void initialize() {
 
-        // Initialize the configuration table 
+        // initialize the configuration table 
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+        
+        // clear configuration details
+        showConfigurationDetails(null);
 
+        // listen for selection changes and show the configuration details when changed
+        configurationTable.getSelectionModel().selectedItemProperty().addListener(
+            (observable, oldValue, newValue) -> showConfigurationDetails(newValue));
     }
 
     /**
@@ -117,4 +123,26 @@ public class ProjectOverviewController {
             mainApp.setProjectSettingsAreUnchanged(true);
         }
     }
+    
+    /**
+    * Fills all text fields to show details about the configuration.
+    * If the specified configuration is null, all text fields are cleared.
+    * 
+    * @param configuration the configuration or null
+    */
+   private void showConfigurationDetails(Configuration configuration) {
+       if (configuration != null) {
+           // Fill the labels with info from the configuration object.
+           nameTextField.setText(configuration.getName());
+           solverFileNameTextField.setText(configuration.getSolverFileName());
+           trainFileNameTextField.setText(configuration.getTrainFileName());
+           testFileNameTextField.setText(configuration.getTestFileName());
+       } else {
+           // configuration is null, remove all the text.
+           nameTextField.setText("");
+           solverFileNameTextField.setText("");
+           trainFileNameTextField.setText("");
+           testFileNameTextField.setText("");
+       }
+   }
 }
