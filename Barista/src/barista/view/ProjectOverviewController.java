@@ -49,12 +49,6 @@ public class ProjectOverviewController {
     @FXML
     private TextField solverFileNameTextField;
 
-    @FXML
-    private TextField trainFileNameTextField;
-
-    @FXML
-    private TextField testFileNameTextField;
-
     // Reference to the main application.
     private MainApp mainApp;
 
@@ -135,14 +129,10 @@ public class ProjectOverviewController {
            // Fill the labels with info from the configuration object.
            nameTextField.setText(configuration.getName());
            solverFileNameTextField.setText(configuration.getSolverFileName());
-           trainFileNameTextField.setText(configuration.getTrainFileName());
-           testFileNameTextField.setText(configuration.getTestFileName());
        } else {
            // configuration is null, remove all the text.
            nameTextField.setText("");
            solverFileNameTextField.setText("");
-           trainFileNameTextField.setText("");
-           testFileNameTextField.setText("");
        }
    }
 }

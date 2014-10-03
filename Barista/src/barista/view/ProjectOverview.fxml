@@ -106,12 +106,6 @@
                                                         <Label text="Solver file:" GridPane.rowIndex="1" />
                                                         <TextField fx:id="solverFileNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                         <Button mnemonicParsing="false" text="..." GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                        <Label text="Train file:" GridPane.rowIndex="2" />
-                                                        <TextField fx:id="trainFileNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                                        <Button mnemonicParsing="false" text="..." GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                                        <Label text="Test file:" GridPane.rowIndex="3" />
-                                                        <TextField fx:id="testFileNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                                                        <Button mnemonicParsing="false" text="..." GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                                         <HBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="4">
                                                             <children>
                                                                 <Button mnemonicParsing="false" text="New" />

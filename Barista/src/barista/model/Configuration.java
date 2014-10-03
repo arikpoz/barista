@@ -29,8 +29,6 @@ public class Configuration {
     public Configuration(String name) {
         this.name = new SimpleStringProperty(name);
         this.solverFileName = new SimpleStringProperty("");
-        this.trainFileName = new SimpleStringProperty("");
-        this.testFileName = new SimpleStringProperty("");
     }
 
     // <editor-fold desc="name property" defaultstate="collapsed">
@@ -62,38 +60,6 @@ public class Configuration {
 
     public StringProperty solverFileNameProperty() {
         return solverFileName;
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="trainFileName property" defaultstate="collapsed">
-    private final StringProperty trainFileName;
-
-    public final String getTrainFileName() {
-        return trainFileName.get();
-    }
-
-    public final void setTrainFileName(String value) {
-        this.trainFileName.set(value);
-    }
-
-    public StringProperty trainFileNameProperty() {
-        return trainFileName;
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="testFileName property" defaultstate="collapsed">
-    private final StringProperty testFileName;
-
-    public final String getTestFileName() {
-        return testFileName.get();
-    }
-
-    public final void setTestFileName(String value) {
-        this.testFileName.set(value);
-    }
-
-    public StringProperty testFileNameProperty() {
-        return testFileName;
     }
     // </editor-fold>
 
