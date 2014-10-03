@@ -16,6 +16,7 @@ import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -33,6 +34,9 @@ public class ProjectOverviewController {
     @FXML
     private TextField projectDescriptionTextField;
 
+    @FXML
+    private Button saveProjectSettingsButton;
+    
     @FXML
     private TableView<Configuration> configurationTable;
 
@@ -87,10 +91,11 @@ public class ProjectOverviewController {
         // set bindings
         Bindings.bindBidirectional(projectFolderLabel.textProperty(), mainApp.projectFolderProperty());
         Bindings.bindBidirectional(projectDescriptionTextField.textProperty(), mainApp.projectDescriptionProperty());
+        Bindings.bindBidirectional(saveProjectSettingsButton.disableProperty(), mainApp.projectSettingsAreUnchangedProperty());
     }
 
     @FXML
-    private void handleSaveProjectSettingsChangesAction(ActionEvent event) {
+    private void handleSaveProjectSettingsAction(ActionEvent event) {
         // generate project settings object
         BaristaMessages.ProjectSettings.Builder projectSettingsBuilder = BaristaMessages.ProjectSettings.newBuilder();
         projectSettingsBuilder.setProjectDescription(mainApp.getProjectDescription());

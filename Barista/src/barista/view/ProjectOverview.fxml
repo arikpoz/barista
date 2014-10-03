@@ -32,7 +32,7 @@
                                 <Label fx:id="projectFolderLabel" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                                 <Label text="Project description: " GridPane.columnIndex="0" GridPane.rowIndex="1" />
                                 <TextField fx:id="projectDescriptionTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" /> 
-                                <Button disable="${controller.projectSettingsAreUnchanged}" onAction="#handleSaveProjectSettingsChangesAction" text="Save changes" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                                <Button fx:id="saveProjectSettingsButton" onAction="#handleSaveProjectSettingsAction" text="Save changes" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
                             </children>
                             <columnConstraints>
                                 <ColumnConstraints />
