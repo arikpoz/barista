@@ -9,8 +9,12 @@ import barista.BaristaMessages;
 import barista.MainApp;
 import barista.model.Configuration;
 import com.google.protobuf.TextFormat;
+import java.io.File;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
@@ -30,13 +34,13 @@ public class ProjectOverviewController {
 
     @FXML
     private Label projectFolderLabel;
-    
+
     @FXML
     private TextField projectDescriptionTextField;
 
     @FXML
     private Button saveProjectSettingsButton;
-    
+
     @FXML
     private TableView<Configuration> configurationTable;
 
@@ -68,13 +72,13 @@ public class ProjectOverviewController {
 
         // initialize the configuration table 
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
-        
+
         // clear configuration details
         showConfigurationDetails(null);
 
         // listen for selection changes and show the configuration details when changed
         configurationTable.getSelectionModel().selectedItemProperty().addListener(
-            (observable, oldValue, newValue) -> showConfigurationDetails(newValue));
+                (observable, oldValue, newValue) -> showConfigurationDetails(newValue));
     }
 
     /**
@@ -117,22 +121,52 @@ public class ProjectOverviewController {
             mainApp.setProjectSettingsAreUnchanged(true);
         }
     }
-    
+
     /**
-    * Fills all text fields to show details about the configuration.
-    * If the specified configuration is null, all text fields are cleared.
-    * 
-    * @param configuration the configuration or null
-    */
-   private void showConfigurationDetails(Configuration configuration) {
-       if (configuration != null) {
-           // Fill the labels with info from the configuration object.
-           nameTextField.setText(configuration.getName());
-           solverFileNameTextField.setText(configuration.getSolverFileName());
-       } else {
-           // configuration is null, remove all the text.
-           nameTextField.setText("");
-           solverFileNameTextField.setText("");
-       }
-   }
+     * Fills all text fields to show details about the configuration. If the
+     * specified configuration is null, all text fields are cleared.
+     *
+     * @param configuration the configuration or null
+     */
+    private void showConfigurationDetails(Configuration configuration) {
+        if (configuration != null) {
+            // Fill the labels with info from the configuration object.
+            nameTextField.setText(configuration.getName());
+            solverFileNameTextField.setText(configuration.getSolverFileName());
+
+            // TODO temporary test
+            String solverFileName = findSolverFileName(configuration.getName());
+            System.out.println(solverFileName);
+
+        } else {
+            // configuration is null, remove all the text.
+            nameTextField.setText("");
+            solverFileNameTextField.setText("");
+        }
+    }
+
+    private String findSolverFileName(String configurationName) {
+
+        Path configurationFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configurationName);
+        File folder = new File(configurationFilePath.toString());
+
+        FilenameFilter solveFilter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                String lowercaseName = name.toLowerCase();
+                if ((lowercaseName.endsWith(".prototxt")) && (lowercaseName.contains("solver"))) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
+
+        File[] files = folder.listFiles(solveFilter);
+
+        if (files.length == 0) {
+            return null;
+        } else {
+            return files[0].getName();
+        }
+    }
 }
