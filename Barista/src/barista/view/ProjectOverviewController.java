@@ -6,7 +6,6 @@
 package barista.view;
 
 import barista.BaristaMessages;
-import barista.FXMLDocumentController;
 import barista.MainApp;
 import barista.model.Configuration;
 import com.google.protobuf.TextFormat;
@@ -15,8 +14,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -40,10 +37,13 @@ public class ProjectOverviewController {
 
     @FXML
     private TextField nameTextField;
+
     @FXML
     private TextField solverFileNameTextField;
+
     @FXML
     private TextField trainFileNameTextField;
+
     @FXML
     private TextField testFileNameTextField;
 
@@ -63,7 +63,7 @@ public class ProjectOverviewController {
      */
     @FXML
     private void initialize() {
-        
+
         // Initialize the configuration table 
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
 
@@ -79,7 +79,7 @@ public class ProjectOverviewController {
 
         // Add observable list data to the table
         configurationTable.setItems(mainApp.getConfigurationList());
-        
+
         // set bindings
         Bindings.bindBidirectional(projectDescriptionTextField.textProperty(), mainApp.projectDescriptionProperty());
     }
@@ -101,7 +101,7 @@ public class ProjectOverviewController {
                 TextFormat.print(projectSettings, fileWriter);
                 fileWriter.flush();
             } catch (IOException ex) {
-                Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", projectSettingsFileName), ex);
+                Logger.getLogger(ProjectOverviewController.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", projectSettingsFileName), ex);
             }
 
             mainApp.setProjectSettingsAreUnchanged(true);

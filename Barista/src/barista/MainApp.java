@@ -57,7 +57,7 @@ public class MainApp extends Application {
         return projectFolder;
     }
     // </editor-fold>
-    
+
     // <editor-fold desc="projectDescription property" defaultstate="collapsed">
     private final StringProperty projectDescription = new SimpleStringProperty();
 
@@ -88,9 +88,9 @@ public class MainApp extends Application {
     public BooleanProperty projectSettingsAreUnchangedProperty() {
         return projectSettingsAreUnchanged;
     }
-// </editor-fold>
-    
-    
+    // </editor-fold>
+
+    // <editor-fold desc="configurationList property" defaultstate="collapsed">
     /**
      * The data as an observable list of Configurations.
      */
@@ -104,6 +104,7 @@ public class MainApp extends Application {
     public ObservableList<Configuration> getConfigurationList() {
         return configurationList;
     }
+    // </editor-fold>
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -115,18 +116,18 @@ public class MainApp extends Application {
         showProjectOverview();
 
         projectDescriptionProperty().addListener(
-        new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-                // if we have a selected folder
-                if (getProjectFolder() != "") {
-                    if (oldValue != newValue) {
-                        setProjectSettingsAreUnchanged(false);
+                new ChangeListener<String>() {
+                    @Override
+                    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                        // if we have a selected folder
+                        if (getProjectFolder() != "") {
+                            if (oldValue != newValue) {
+                                setProjectSettingsAreUnchanged(false);
+                            }
+                        }
                     }
-                }
-            }
-        });     
-        
+                });
+
         setProjectSettingsAreUnchanged(true);
 
         BaristaMessages.ApplicationSettings applicationSettings = readApplicationSettings();
@@ -134,16 +135,6 @@ public class MainApp extends Application {
         if (applicationSettings != null) {
             loadProject(applicationSettings.getLastProjectDirectory());
         }
-
-                
-        /*
-         Parent root = FXMLLoader.load(getClass().getResource("view/FXMLDocument.fxml"));
-        
-         Scene scene = new Scene(root);
-         stage.setTitle("Barista v0.1");
-         stage.setScene(scene);
-         stage.show();
-         */
     }
 
     /**
@@ -159,11 +150,11 @@ public class MainApp extends Application {
             // Show the scene containing the root layout.
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
-            
+
             // Give the controller access to the main app.
             RootLayoutController controller = loader.getController();
             controller.setMainApp(this);
-            
+
             primaryStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -218,7 +209,6 @@ public class MainApp extends Application {
         return null;
     }
 
-    
     private BaristaMessages.ProjectSettings readProjectSettings() {
         FileReader fileReader = null;
         try {

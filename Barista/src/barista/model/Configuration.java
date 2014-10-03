@@ -33,6 +33,7 @@ public class Configuration {
         this.testFileName = new SimpleStringProperty("");
     }
 
+    // <editor-fold desc="name property" defaultstate="collapsed">
     private final StringProperty name;
 
     public final String getName() {
@@ -46,7 +47,9 @@ public class Configuration {
     public StringProperty nameProperty() {
         return name;
     }
+    // </editor-fold>
 
+    // <editor-fold desc="solverFileName property" defaultstate="collapsed">
     private final StringProperty solverFileName;
 
     public final String getSolverFileName() {
@@ -60,7 +63,9 @@ public class Configuration {
     public StringProperty solverFileNameProperty() {
         return solverFileName;
     }
+    // </editor-fold>
 
+    // <editor-fold desc="trainFileName property" defaultstate="collapsed">
     private final StringProperty trainFileName;
 
     public final String getTrainFileName() {
@@ -74,7 +79,9 @@ public class Configuration {
     public StringProperty trainFileNameProperty() {
         return trainFileName;
     }
+    // </editor-fold>
 
+    // <editor-fold desc="testFileName property" defaultstate="collapsed">
     private final StringProperty testFileName;
 
     public final String getTestFileName() {
@@ -88,5 +95,6 @@ public class Configuration {
     public StringProperty testFileNameProperty() {
         return testFileName;
     }
+    // </editor-fold>
 
 }
