@@ -6,17 +6,15 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" id="BorderPane" prefHeight="650" prefWidth="750">
+<BorderPane id="BorderPane" prefHeight="650" prefWidth="750" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="barista.view.RootLayoutController">
     <top>
         <MenuBar fx:id="menuBar" AnchorPane.topAnchor="0">
             <menus>
-                <Menu text="_File" mnemonicParsing="true" >
+                <Menu mnemonicParsing="true" text="_File">
                    <items>
-                      <!-- <MenuItem text="_Open Project..." onAction="#handleOpenProjectAction" mnemonicParsing="true" /> -->
-                      <MenuItem text="_Open Project..." mnemonicParsing="true" />
-                      <SeparatorMenuItem  />
-                      <!-- <MenuItem text="E_xit" onAction="#handleExitAction" mnemonicParsing="true" /> -->
-                      <MenuItem text="E_xit" mnemonicParsing="true" />
+                      <MenuItem text="_Open Project..." onAction="#handleOpenProjectAction" mnemonicParsing="true" />
+                      <SeparatorMenuItem />
+                      <MenuItem text="E_xit" onAction="#handleExitAction" mnemonicParsing="true" />
                    </items>
                 </Menu>
             </menus>

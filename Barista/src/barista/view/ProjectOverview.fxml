@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane id="rootPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="barista.FXMLDocumentController">
+<GridPane id="rootPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="barista.view.ProjectOverviewController">
     <rowConstraints>
         <RowConstraints />
         <RowConstraints percentHeight="70" />
@@ -56,9 +56,9 @@
                                     <content>
                                         <StackPane>
                                             <children>
-                                                <TableView>
+                                                <TableView fx:id="configurationTable">
                                                     <columns>
-                                                        <TableColumn prefWidth="75.0" text="Name" />
+                                                        <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
                                                     </columns>
                                                     <columnResizePolicy>
                                                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -85,7 +85,7 @@
                                                     </padding>
                                                     <columnConstraints>
                                                         <ColumnConstraints />
-                                                        <ColumnConstraints hgrow="ALWAYS" fillWidth="true"  />
+                                                        <ColumnConstraints fillWidth="true" hgrow="ALWAYS" />
                                                         <ColumnConstraints hgrow="SOMETIMES" />
                                                     </columnConstraints>
                                                     <rowConstraints>
@@ -97,17 +97,17 @@
                                                     </rowConstraints>
                                                     <children>
                                                         <Label text="Name:" />
-                                                        <TextField GridPane.columnIndex="1" />
+                                                        <TextField fx:id="nameTextField" GridPane.columnIndex="1" />
                                                         <Label text="Solver file:" GridPane.rowIndex="1" />
-                                                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                        <TextField fx:id="solverFileNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                         <Button mnemonicParsing="false" text="..." GridPane.columnIndex="2" GridPane.rowIndex="1" />
                                                         <Label text="Train file:" GridPane.rowIndex="2" />
-                                                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                        <TextField fx:id="trainFileNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                         <Button mnemonicParsing="false" text="..." GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                                         <Label text="Test file:" GridPane.rowIndex="3" />
-                                                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                        <TextField fx:id="testFileNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                         <Button mnemonicParsing="false" text="..." GridPane.columnIndex="2" GridPane.rowIndex="3" />
-                                                        <HBox spacing="5.0" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="4" alignment="CENTER_RIGHT"  >
+                                                        <HBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="4">
                                                             <children>
                                                                 <Button mnemonicParsing="false" text="New" />
                                                                 <Button mnemonicParsing="false" text="Save changes" />
