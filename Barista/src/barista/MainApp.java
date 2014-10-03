@@ -309,7 +309,7 @@ public class MainApp extends Application {
         // for each file in project folder
         for (File file : files) {
             if (file.isDirectory()) {
-
+                configurationList.add(new Configuration(file.getName()));
             }
         }
     }
