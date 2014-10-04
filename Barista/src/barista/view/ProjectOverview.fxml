@@ -43,91 +43,87 @@
     </top>
         
     <center>
-        <AnchorPane>
-            <children>
-                <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                    <items>
+        <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <items>
                         
-                        <!-- Configuration List section -->
-                        <AnchorPane>
-                            <children>
-                                <TitledPane animated="false" collapsible="false" text="Configurations List" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                    <content>
-                                        <StackPane>
-                                            <children>
-                                                <TableView fx:id="configurationTable">
-                                                    <columns>
-                                                        <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
-                                                    </columns>
-                                                    <columnResizePolicy>
-                                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                                    </columnResizePolicy>
-                                                </TableView>
-                                            </children>
-                                        </StackPane>
-                                    </content>
-                                </TitledPane>
-                            </children>
-                        </AnchorPane>
+                <!-- Configuration List section -->
+                <AnchorPane>
+                    <children>
+                        <TitledPane animated="false" collapsible="false" text="Configurations List" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <content>
+                                <StackPane>
+                                    <children>
+                                        <TableView fx:id="configurationTable">
+                                            <columns>
+                                                <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
+                                            </columns>
+                                            <columnResizePolicy>
+                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                            </columnResizePolicy>
+                                        </TableView>
+                                    </children>
+                                </StackPane>
+                            </content>
+                        </TitledPane>
+                    </children>
+                </AnchorPane>
                         
-                        <!-- Selected configuration details section -->
-                        <AnchorPane>
-                            <children>
-                                <TitledPane animated="false" collapsible="false" text="Selected configuration details" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                    <content>
-                                    </content>
-                                    <content>
-                                        <StackPane>
+                <!-- Selected configuration details section -->
+                <AnchorPane>
+                    <children>
+                        <TitledPane animated="false" collapsible="false" text="Selected configuration details" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                            <content>
+                            </content>
+                            <content>
+                                <StackPane>
+                                    <children>
+                                        <GridPane hgap="5.0" vgap="5.0">
+                                            <padding>
+                                                <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
+                                            </padding>
+                                            <columnConstraints>
+                                                <ColumnConstraints />
+                                            </columnConstraints>
+                                            <rowConstraints>
+                                                <RowConstraints percentHeight="100.0" />
+                                                <RowConstraints />
+                                            </rowConstraints>
                                             <children>
-                                                <GridPane hgap="5.0" vgap="5.0">
-                                                    <padding>
-                                                        <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
-                                                    </padding>
-                                                    <columnConstraints>
-                                                        <ColumnConstraints />
-                                                    </columnConstraints>
-                                                    <rowConstraints>
-                                                        <RowConstraints percentHeight="100.0" />
-                                                        <RowConstraints />
-                                                    </rowConstraints>
+                                                <TabPane GridPane.rowIndex="0">
+                                                    <tabs>
+                                                        <Tab closable="false" text="Solver">
+                                                            <content>
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="233.0" />
+                                                            </content>
+                                                        </Tab>
+                                                        <Tab closable="false" text="Train">
+                                                            <content>
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                            </content>
+                                                        </Tab>
+                                                        <Tab closable="false" text="Test">
+                                                            <content>
+                                                                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                            </content>
+                                                        </Tab>
+                                                    </tabs>
+                                                </TabPane>
+                                                <HBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.rowIndex="1">
                                                     <children>
-                                                        <TabPane GridPane.rowIndex="0">
-                                                            <tabs>
-                                                                <Tab closable="false" text="Solver">
-                                                                    <content>
-                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="233.0" />
-                                                                    </content>
-                                                                </Tab>
-                                                                <Tab closable="false" text="Train">
-                                                                    <content>
-                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                                                    </content>
-                                                                </Tab>
-                                                                <Tab closable="false" text="Test">
-                                                                    <content>
-                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                                                    </content>
-                                                                </Tab>
-                                                            </tabs>
-                                                        </TabPane>
-                                                        <HBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.rowIndex="1">
-                                                            <children>
-                                                                <Button mnemonicParsing="false" text="New" />
-                                                                <Button mnemonicParsing="false" text="Save changes" />
-                                                                <Button mnemonicParsing="false" text="Delete" />
-                                                            </children>
-                                                        </HBox>
+                                                        <Button mnemonicParsing="false" text="New" />
+                                                        <Button mnemonicParsing="false" text="Save changes" />
+                                                        <Button mnemonicParsing="false" text="Delete" />
                                                     </children>
-                                                </GridPane>
+                                                </HBox>
                                             </children>
-                                        </StackPane>
-                                    </content>
-                                </TitledPane>
-                            </children>
-                        </AnchorPane>
-                    </items>
-                </SplitPane>
-            </children>
-        </AnchorPane>
+                                        </GridPane>
+                                    </children>
+                                </StackPane>
+                            </content>
+                        </TitledPane>
+                    </children>
+                </AnchorPane>
+            </items>
+        </SplitPane>
     </center>
 </BorderPane>
