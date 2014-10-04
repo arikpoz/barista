@@ -96,7 +96,7 @@
                                                                 <columns>
                                                                     <TreeTableColumn prefWidth="75.0" text="Name" />
                                                                     <TreeTableColumn prefWidth="75.0" text="Type" />
-                                                                    <TreeTableColumn prefWidth="75.0" text="Value" />
+                                                                    <TreeTableColumn prefWidth="75.0" text="Value" editable="true" />
                                                                 </columns>
                                                             </TreeTableView>
                                                         </StackPane>
@@ -109,7 +109,7 @@
                                                                 <columns>
                                                                     <TreeTableColumn prefWidth="75.0" text="Name" />
                                                                     <TreeTableColumn prefWidth="75.0" text="Type" />
-                                                                    <TreeTableColumn prefWidth="75.0" text="Value" />
+                                                                    <TreeTableColumn prefWidth="75.0" text="Value" editable="true" />
                                                                 </columns>
                                                             </TreeTableView>
                                                         </StackPane>
@@ -122,7 +122,7 @@
                                                                 <columns>
                                                                     <TreeTableColumn prefWidth="75.0" text="Name" />
                                                                     <TreeTableColumn prefWidth="75.0" text="Type" />
-                                                                    <TreeTableColumn prefWidth="75.0" text="Value" />
+                                                                    <TreeTableColumn prefWidth="75.0" text="Value" editable="true" />
                                                                 </columns>
                                                             </TreeTableView>
                                                         </StackPane>
