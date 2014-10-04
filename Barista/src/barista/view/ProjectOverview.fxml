@@ -8,18 +8,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane id="rootPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="barista.view.ProjectOverviewController">
-    <rowConstraints>
-        <RowConstraints />
-        <RowConstraints percentHeight="70" />
-    </rowConstraints>
-    <columnConstraints>
-        <ColumnConstraints fillWidth="true" percentWidth="100" /> 
-    </columnConstraints>
-    <children>
-        
-        <!-- Project Settings section -->
-        <TitledPane animated="false" collapsible="false" text="Project Settings" GridPane.rowIndex="0">
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" id="rootPane" xmlns="http://javafx.com/javafx/8" fx:controller="barista.view.ProjectOverviewController">
+    <!-- Project Settings section -->
+    <top>
+        <TitledPane animated="false" collapsible="false" text="Project Settings">
             <content>
                 <StackPane>
                     <children>
@@ -48,7 +40,10 @@
                 </StackPane>
             </content>
         </TitledPane>
-        <AnchorPane GridPane.columnIndex="0" GridPane.rowIndex="1">
+    </top>
+        
+    <center>
+        <AnchorPane>
             <children>
                 <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <items>
@@ -97,23 +92,24 @@
                                                     </rowConstraints>
                                                     <children>
                                                         <TabPane GridPane.rowIndex="0">
-                                             <tabs>
-                                                <Tab closable="false" text="Solver">
-                                                  <content>
-                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="233.0" />
-                                                  </content>
-                                                </Tab>
-                                                <Tab closable="false" text="Train">
-                                                  <content>
-                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                                  </content>
-                                                </Tab>
-                                                <Tab closable="false" text="Test">
-                                                  <content>
-                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                                  </content>
-                                                </Tab>
-                                             </tabs></TabPane>
+                                                            <tabs>
+                                                                <Tab closable="false" text="Solver">
+                                                                    <content>
+                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="233.0" />
+                                                                    </content>
+                                                                </Tab>
+                                                                <Tab closable="false" text="Train">
+                                                                    <content>
+                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                                    </content>
+                                                                </Tab>
+                                                                <Tab closable="false" text="Test">
+                                                                    <content>
+                                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                                    </content>
+                                                                </Tab>
+                                                            </tabs>
+                                                        </TabPane>
                                                         <HBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.rowIndex="1">
                                                             <children>
                                                                 <Button mnemonicParsing="false" text="New" />
@@ -133,5 +129,5 @@
                 </SplitPane>
             </children>
         </AnchorPane>
-    </children>
-</GridPane>
+    </center>
+</BorderPane>
