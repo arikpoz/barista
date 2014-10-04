@@ -76,6 +76,9 @@
                                 <BorderPane>
                                     <bottom>
                                         <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                            <padding>
+                                                <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
+                                            </padding>
                                             <children>
                                                 <Button mnemonicParsing="false" text="New" />
                                                 <Button mnemonicParsing="false" text="Save changes" />
