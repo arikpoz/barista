@@ -134,8 +134,6 @@ public class ProjectOverviewController {
     private void showConfigurationDetails(Configuration configuration) {
         if (configuration != null) {
             // Fill the labels with info from the configuration object.
-            nameTextField.setText(configuration.getName());
-            solverFileNameTextField.setText(configuration.getSolverFileName());
 
             // find solver file name
             File solverFile = findSolverFile(configuration.getName());
@@ -157,9 +155,7 @@ public class ProjectOverviewController {
             }
 
         } else {
-            // configuration is null, remove all the text.
-            nameTextField.setText("");
-            solverFileNameTextField.setText("");
+            // configuration is null
         }
     }
 

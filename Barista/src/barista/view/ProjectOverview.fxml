@@ -90,23 +90,31 @@
                                                     </padding>
                                                     <columnConstraints>
                                                         <ColumnConstraints />
-                                                        <ColumnConstraints fillWidth="true" hgrow="ALWAYS" />
-                                                        <ColumnConstraints hgrow="SOMETIMES" />
                                                     </columnConstraints>
                                                     <rowConstraints>
-                                                        <RowConstraints />
-                                                        <RowConstraints />
-                                                        <RowConstraints />
-                                                        <RowConstraints />
+                                                        <RowConstraints percentHeight="100.0" />
                                                         <RowConstraints />
                                                     </rowConstraints>
                                                     <children>
-                                                        <Label text="Name:" />
-                                                        <TextField fx:id="nameTextField" GridPane.columnIndex="1" />
-                                                        <Label text="Solver file:" GridPane.rowIndex="1" />
-                                                        <TextField fx:id="solverFileNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                        <Button mnemonicParsing="false" text="..." GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                                        <HBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.columnIndex="0" GridPane.columnSpan="3" GridPane.rowIndex="4">
+                                                        <TabPane GridPane.rowIndex="0">
+                                             <tabs>
+                                                <Tab closable="false" text="Solver">
+                                                  <content>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="233.0" />
+                                                  </content>
+                                                </Tab>
+                                                <Tab closable="false" text="Train">
+                                                  <content>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                  </content>
+                                                </Tab>
+                                                <Tab closable="false" text="Test">
+                                                  <content>
+                                                    <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                  </content>
+                                                </Tab>
+                                             </tabs></TabPane>
+                                                        <HBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.rowIndex="1">
                                                             <children>
                                                                 <Button mnemonicParsing="false" text="New" />
                                                                 <Button mnemonicParsing="false" text="Save changes" />
