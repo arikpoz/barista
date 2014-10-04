@@ -8,6 +8,9 @@ package barista;
 import barista.model.Configuration;
 import barista.view.ProjectOverviewController;
 import barista.view.RootLayoutController;
+import caffe.Caffe;
+import caffe.Caffe.NetParameter;
+import caffe.Caffe.SolverParameter;
 import com.google.protobuf.TextFormat;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -256,6 +259,54 @@ public class MainApp extends Application {
         return null;
     }
 
+    public SolverParameter readSolverParameter(String solverFileName) {
+        FileReader fileReader = null;
+        try {
+
+            if (new File(solverFileName).isFile()) {
+                SolverParameter.Builder solverParameterBuilder = SolverParameter.newBuilder();
+
+                // read from file using protobuf properties format
+                fileReader = new FileReader(solverFileName);
+                TextFormat.merge(fileReader, solverParameterBuilder);
+                fileReader.close();
+
+                return solverParameterBuilder.build();
+            }
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, "", ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+
+    public NetParameter readNetParameter(String netFileName) {
+        FileReader fileReader = null;
+        try {
+
+            if (new File(netFileName).isFile()) {
+                NetParameter.Builder netParameterBuilder = NetParameter.newBuilder();
+
+                // read from file using protobuf properties format
+                fileReader = new FileReader(netFileName);
+                TextFormat.merge(fileReader, netParameterBuilder);
+                fileReader.close();
+
+                return netParameterBuilder.build();
+            }
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, "", ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+    }
+
     // get application settings file name
     private String getApplicationSettingsFileName() {
         // generate application settings file name
@@ -310,4 +361,5 @@ public class MainApp extends Application {
             }
         }
     }
+
 }

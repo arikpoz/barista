@@ -8,6 +8,9 @@ package barista.view;
 import barista.BaristaMessages;
 import barista.MainApp;
 import barista.model.Configuration;
+import caffe.Caffe;
+import caffe.Caffe.NetParameter;
+import caffe.Caffe.SolverParameter;
 import com.google.protobuf.TextFormat;
 import java.io.File;
 import java.io.FileWriter;
@@ -134,9 +137,24 @@ public class ProjectOverviewController {
             nameTextField.setText(configuration.getName());
             solverFileNameTextField.setText(configuration.getSolverFileName());
 
-            // TODO temporary test
-            String solverFileName = findSolverFileName(configuration.getName());
-            System.out.println(solverFileName);
+            // find solver file name
+            File solverFile = findSolverFile(configuration.getName());
+            if (solverFile != null) {
+                
+                // build solver object
+                SolverParameter solverParameter = mainApp.readSolverParameter(solverFile.getAbsolutePath());
+
+                Path trainFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getName(), solverParameter.getTrainNet());
+                NetParameter trainNetParameter = mainApp.readNetParameter(trainFilePath.toString());
+
+                Path testFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getName(), solverParameter.getTestNet());
+                NetParameter testNetParameter = mainApp.readNetParameter(testFilePath.toString());
+
+                // TODO remove when debugging is over
+                System.out.println(solverParameter.toString());
+                System.out.println(trainNetParameter.toString());
+                System.out.println(testNetParameter.toString());
+            }
 
         } else {
             // configuration is null, remove all the text.
@@ -145,7 +163,7 @@ public class ProjectOverviewController {
         }
     }
 
-    private String findSolverFileName(String configurationName) {
+    private File findSolverFile(String configurationName) {
 
         Path configurationFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configurationName);
         File folder = new File(configurationFilePath.toString());
@@ -166,7 +184,7 @@ public class ProjectOverviewController {
         if (files.length == 0) {
             return null;
         } else {
-            return files[0].getName();
+            return files[0];
         }
     }
 }
