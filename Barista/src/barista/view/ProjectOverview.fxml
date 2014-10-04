@@ -8,7 +8,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" id="rootPane" xmlns="http://javafx.com/javafx/8" fx:controller="barista.view.ProjectOverviewController">
+<BorderPane id="rootPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="barista.view.ProjectOverviewController">
     <!-- Project Settings section -->
     <top>
         <TitledPane animated="false" collapsible="false" text="Project Settings">
@@ -75,7 +75,7 @@
                             <content>
                                 <BorderPane>
                                     <bottom>
-                                        <HBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.rowIndex="1">
+                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
                                             <children>
                                                 <Button mnemonicParsing="false" text="New" />
                                                 <Button mnemonicParsing="false" text="Save changes" />
@@ -84,21 +84,45 @@
                                         </HBox>
                                     </bottom>
                                     <center>
-                                        <TabPane GridPane.rowIndex="0">
+                                        <TabPane>
                                             <tabs>
                                                 <Tab closable="false" text="Solver">
                                                     <content>
-                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="300.0" prefWidth="233.0" />
+                                                        <StackPane>
+                                                            <TreeTableView>
+                                                                <columns>
+                                                                    <TreeTableColumn prefWidth="75.0" text="Name" />
+                                                                    <TreeTableColumn prefWidth="75.0" text="Type" />
+                                                                    <TreeTableColumn prefWidth="75.0" text="Value" />
+                                                                </columns>
+                                                            </TreeTableView>
+                                                        </StackPane>
                                                     </content>
                                                 </Tab>
                                                 <Tab closable="false" text="Train">
                                                     <content>
-                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                        <StackPane>
+                                                            <TreeTableView>
+                                                                <columns>
+                                                                    <TreeTableColumn prefWidth="75.0" text="Name" />
+                                                                    <TreeTableColumn prefWidth="75.0" text="Type" />
+                                                                    <TreeTableColumn prefWidth="75.0" text="Value" />
+                                                                </columns>
+                                                            </TreeTableView>
+                                                        </StackPane>
                                                     </content>
                                                 </Tab>
                                                 <Tab closable="false" text="Test">
                                                     <content>
-                                                        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                                                        <StackPane>
+                                                            <TreeTableView>
+                                                                <columns>
+                                                                    <TreeTableColumn prefWidth="75.0" text="Name" />
+                                                                    <TreeTableColumn prefWidth="75.0" text="Type" />
+                                                                    <TreeTableColumn prefWidth="75.0" text="Value" />
+                                                                </columns>
+                                                            </TreeTableView>
+                                                        </StackPane>
                                                     </content>
                                                 </Tab>
                                             </tabs>
