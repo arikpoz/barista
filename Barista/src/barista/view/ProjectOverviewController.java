@@ -115,6 +115,7 @@ public class ProjectOverviewController {
         // set root element for trees
         solverRootItem = new TreeItem<ProtobufProperty>();
         solverTreeTableView.setRoot(solverRootItem);
+        solverTreeTableView.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
         nameSolverColumn.setCellValueFactory(new TreeItemPropertyValueFactory("name"));
         typeSolverColumn.setCellValueFactory(new TreeItemPropertyValueFactory("type"));
         valueSolverColumn.setCellValueFactory(new TreeItemPropertyValueFactory("value"));
