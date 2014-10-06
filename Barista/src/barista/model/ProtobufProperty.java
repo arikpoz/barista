@@ -11,6 +11,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 /**
  *
@@ -67,17 +69,17 @@ public class ProtobufProperty {
     // </editor-fold>
 
     // <editor-fold desc="value property" defaultstate="collapsed">
-    private final ObjectProperty value = new SimpleObjectProperty();
+    private final StringProperty value = new SimpleStringProperty();
 
-    public final Object getValue() {
+    public final String getValue() {
         return value.get();
     }
 
-    public final void setValue(Object value) {
+    public final void setValue(String value) {
         this.value.set(value);
     }
 
-    public ObjectProperty valueProperty() {
+    public StringProperty valueProperty() {
         return value;
     }
     // </editor-fold>
@@ -130,6 +132,22 @@ public class ProtobufProperty {
     }
     // </editor-fold>
 
+    // <editor-fold desc="children property" defaultstate="collapsed">
+    /**
+     * The data as an observable list of Configurations.
+     */
+    private ObservableList<ProtobufProperty> children = FXCollections.observableArrayList();
+
+    /**
+     * Returns the data as an observable list of Configurations.
+     *
+     * @return
+     */
+    public ObservableList<ProtobufProperty> getChildren() {
+        return children;
+    }
+    // </editor-fold>
+    
     /**
      * Intended only for debugging.
      *

@@ -40,6 +40,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableView;
+import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 
 /**
  *
@@ -63,27 +64,29 @@ public class ProjectOverviewController {
     private TableColumn<Configuration, String> nameColumn;
 
     @FXML
-    private TreeTableView solverTreeTableView;
+    private TreeTableView<ProtobufProperty> solverTreeTableView;
 
     @FXML
-    private TreeTableColumn nameSolverColumn;
+    private TreeTableColumn<ProtobufProperty, String> nameSolverColumn = new TreeTableColumn<>("Name");
 
     @FXML
-    private TreeTableColumn typeSolverColumn;
+    private TreeTableColumn<ProtobufProperty, String> typeSolverColumn = new TreeTableColumn<>("Type");
 
     @FXML
-    private TreeTableColumn valueSolverColumn;
-
-    private TreeItem solverRootItem;
+    private TreeTableColumn<ProtobufProperty, Object> valueSolverColumn = new TreeTableColumn<>("Value");
 
     @FXML
-    private TreeTableView trainTreeTableView;
+    private TreeTableView<ProtobufProperty> trainTreeTableView;
 
     @FXML
-    private TreeTableView testTreeTableView;
+    private TreeTableView<ProtobufProperty> testTreeTableView;
 
     // Reference to the main application.
     private MainApp mainApp;
+
+    private TreeItem<ProtobufProperty> solverRootItem;
+    private TreeItem<ProtobufProperty> trainRootItem;
+    private TreeItem<ProtobufProperty> testRootItem;
 
     /**
      * The constructor. The constructor is called before the initialize()
@@ -109,8 +112,19 @@ public class ProjectOverviewController {
         configurationTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showConfigurationDetails(newValue));
 
-        solverRootItem = new TreeItem();
+        // set root element for trees
+        solverRootItem = new TreeItem<ProtobufProperty>();
         solverTreeTableView.setRoot(solverRootItem);
+        nameSolverColumn.setCellValueFactory(new TreeItemPropertyValueFactory("name"));
+        typeSolverColumn.setCellValueFactory(new TreeItemPropertyValueFactory("type"));
+        valueSolverColumn.setCellValueFactory(new TreeItemPropertyValueFactory("value"));
+        solverTreeTableView.getColumns().setAll(nameSolverColumn,typeSolverColumn,valueSolverColumn);
+
+        trainRootItem = new TreeItem<ProtobufProperty>();
+        trainTreeTableView.setRoot(trainRootItem);
+
+        testRootItem = new TreeItem<ProtobufProperty>();
+        testTreeTableView.setRoot(testRootItem);
     }
 
     /**
@@ -202,10 +216,12 @@ public class ProjectOverviewController {
                 Path testFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getName(), solverParameter.getTestNet());
                 NetParameter testNetParameter = mainApp.readNetParameter(testFilePath.toString());
 
-                ProtobufPropertyList solverPropertyList = loadProtoObjectToProtoPropertyList(solverParameter);
-                ProtobufPropertyList trainPropertyList = loadProtoObjectToProtoPropertyList(trainNetParameter);
-                ProtobufPropertyList testPropertyList = loadProtoObjectToProtoPropertyList(testNetParameter);
+                ProtobufProperty solverProperty = initLoadProtoObjectToProtobufProperty("solver", solverParameter);
+                ProtobufProperty trainProperty = initLoadProtoObjectToProtobufProperty("train", trainNetParameter);
+                ProtobufProperty testProperty = initLoadProtoObjectToProtobufProperty("test", testNetParameter);
 
+                populateTreeTableView(solverRootItem, solverProperty);
+                
                 // TODO remove when debugging is over
                 //System.out.println(solverParameter.toString());
                 //System.out.println(trainNetParameter.toString());
@@ -217,74 +233,137 @@ public class ProjectOverviewController {
         }
     }
 
-    private ProtobufPropertyList loadProtoObjectToProtoPropertyList(GeneratedMessage protobufMessage) {
-
-        ProtobufPropertyList protobufPropertyList = new ProtobufPropertyList();
+    private ProtobufProperty initLoadProtoObjectToProtobufProperty(String rootName, GeneratedMessage protobufMessage) {
 
         Descriptor descriptor = protobufMessage.getDescriptorForType();
 
-        List<FieldDescriptor> fieldsDescriptors = descriptor.getFields();
+        // create root object to return
+        ProtobufProperty rootProtobufProperty = new ProtobufProperty();
+        rootProtobufProperty.setName(rootName);
+        rootProtobufProperty.setType(descriptor.getName());
+        rootProtobufProperty.setValue("");
+        rootProtobufProperty.setHasValue(true);
+        rootProtobufProperty.setIsMessage(true);
+        rootProtobufProperty.setIsOptional(false);
+        rootProtobufProperty.setIsRepeated(false);
+        
+        loadProtoObjectToProtobufProperty(rootProtobufProperty, protobufMessage);
+        
+        return rootProtobufProperty;
+    }
+    
+    private void loadProtoObjectToProtobufProperty(ProtobufProperty rootProtobufProperty, GeneratedMessage protobufMessage) {
 
+        Descriptor descriptor = protobufMessage.getDescriptorForType();
+        List<FieldDescriptor> fieldsDescriptors = descriptor.getFields();
+        
+        // get children property
+        ObservableList<ProtobufProperty> children = rootProtobufProperty.getChildren();
+                
+        // go over all fields in the given protobuf message
         for (FieldDescriptor fieldDescriptor : fieldsDescriptors) {
 
+            // create new property
             ProtobufProperty protobufProperty = new ProtobufProperty();
+            
+            // add property as child of root 
+            children.add(protobufProperty);
+
+            // set property fields
             protobufProperty.setName(fieldDescriptor.getName());
             protobufProperty.setType(fieldDescriptor.getType().name());
+            protobufProperty.setIsOptional(fieldDescriptor.isOptional());
+            protobufProperty.setIsRepeated(fieldDescriptor.isRepeated());
 
-            if (protobufProperty.getType() == "MESSAGE") {
+            // set type for complex types
+            if (protobufProperty.getType().equals("MESSAGE")) {
                 protobufProperty.setIsMessage(true);
                 protobufProperty.setType(fieldDescriptor.getMessageType().getName());
             } else {
                 protobufProperty.setIsMessage(false);
             }
 
-            protobufProperty.setIsOptional(fieldDescriptor.isOptional());
-            protobufProperty.setIsRepeated(fieldDescriptor.isRepeated());
-
-            protobufProperty.setHasValue((protobufProperty.getIsOptional()) && (protobufMessage.hasField(fieldDescriptor)));
+            // set type for repeated fields
+            if (protobufProperty.getIsRepeated()) {
+                protobufProperty.setType("list");
+            }
+            
+            // property has a value if it is optional and a value exists, or if it repeated and at least one value exists
+            protobufProperty.setHasValue( ( (protobufProperty.getIsOptional()) && (protobufMessage.hasField(fieldDescriptor)) ) || 
+                                            ((protobufProperty.getIsRepeated()) && (protobufMessage.getRepeatedFieldCount(fieldDescriptor) > 0)) );
 
             // handle repeated message
             if ((protobufProperty.getIsMessage()) && (protobufProperty.getIsRepeated())) {
-                ObservableList<ProtobufPropertyList> objectsList = FXCollections.observableArrayList();
+                
+                protobufProperty.setValue("");
+                
+                ObservableList<ProtobufProperty> grandChildren = protobufProperty.getChildren();
 
                 // for each item
                 int count = protobufMessage.getRepeatedFieldCount(fieldDescriptor);
                 for (int i = 0; i < count; i++) {
-                    GeneratedMessage currentMessageItem = (GeneratedMessage) protobufMessage.getRepeatedField(fieldDescriptor, i);
-                    ProtobufPropertyList currentObject = loadProtoObjectToProtoPropertyList(currentMessageItem);
-                    objectsList.add(currentObject);
+                    
+                    ProtobufProperty grandChild = new ProtobufProperty();
+                    grandChild.setHasValue(true);
+                    grandChild.setIsMessage(true);
+                    grandChild.setIsOptional(false);
+                    grandChild.setIsRepeated(false);
+                    grandChild.setName("[" + Integer.toString(i) + "]");
+                    grandChild.setType(fieldDescriptor.getMessageType().getName());
+                    GeneratedMessage singleMessageItem = (GeneratedMessage) protobufMessage.getRepeatedField(fieldDescriptor, i);
+                    loadProtoObjectToProtobufProperty(grandChild,singleMessageItem);
+                    grandChildren.add(grandChild);
                 }
-
-                protobufProperty.setValue(objectsList);
 
             } else if (protobufProperty.getIsRepeated()) {
                 // handle repeated
-                ObservableList<Object> objectsList = FXCollections.observableArrayList();
+                
+                protobufProperty.setValue("");
 
+                ObservableList<ProtobufProperty> grandChildren = protobufProperty.getChildren();
+                
                 // for each item
                 int count = protobufMessage.getRepeatedFieldCount(fieldDescriptor);
                 for (int i = 0; i < count; i++) {
-                    Object currentItem = protobufMessage.getRepeatedField(fieldDescriptor, i);
-                    objectsList.add(currentItem);
+                    
+                    ProtobufProperty grandChild = new ProtobufProperty();
+                    grandChild.setHasValue(true);
+                    grandChild.setIsMessage(false);
+                    grandChild.setIsOptional(false);
+                    grandChild.setIsRepeated(false);
+                    grandChild.setName("[" + Integer.toString(i) + "]");
+                    grandChild.setType(fieldDescriptor.getType().name());
+                    grandChild.setValue(protobufMessage.getRepeatedField(fieldDescriptor, i).toString());
+                    grandChildren.add(grandChild);
                 }
-
-                protobufProperty.setValue(objectsList);
-
+                
             } else if (protobufProperty.getIsMessage()) {
                 // handle message
                 GeneratedMessage singleMessageItem = (GeneratedMessage) protobufMessage.getField(fieldDescriptor);
-                ProtobufPropertyList singleObject = loadProtoObjectToProtoPropertyList(singleMessageItem);
-                protobufProperty.setValue(singleObject);
+                loadProtoObjectToProtobufProperty(protobufProperty, singleMessageItem);
             } else if (protobufProperty.getHasValue()) {
-                protobufProperty.setValue(protobufMessage.getField(fieldDescriptor));
+                protobufProperty.setValue(protobufMessage.getField(fieldDescriptor).toString());
             } else if (fieldDescriptor.hasDefaultValue()) {
-                protobufProperty.setValue(fieldDescriptor.getDefaultValue());
+                protobufProperty.setValue(fieldDescriptor.getDefaultValue().toString());
             }
-
-            //System.out.println(protobufProperty);
-            protobufPropertyList.getProtobufPropertyList().add(protobufProperty);
         }
+    }
 
-        return protobufPropertyList;
+    private void populateTreeTableView(TreeItem<ProtobufProperty> currentRootItem, ProtobufProperty protobufProperty) {
+        
+        currentRootItem.setValue(protobufProperty);
+        
+        // for each property in list
+        for (ProtobufProperty childProtobufProperty : protobufProperty.getChildren()) {
+
+            // create tree item
+            TreeItem<ProtobufProperty> newItem = new TreeItem<>();
+
+            // populate sub-tree
+            populateTreeTableView(newItem, childProtobufProperty);
+
+            // add tree item to current root
+            currentRootItem.getChildren().add(newItem);
+        }
     }
 }
