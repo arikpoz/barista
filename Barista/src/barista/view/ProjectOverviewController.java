@@ -9,8 +9,6 @@ import barista.BaristaMessages;
 import barista.MainApp;
 import barista.model.Configuration;
 import barista.model.ProtobufProperty;
-import barista.model.ProtobufPropertyList;
-import caffe.Caffe;
 import caffe.Caffe.NetParameter;
 import caffe.Caffe.SolverParameter;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -24,11 +22,9 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Observable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
-import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -67,15 +63,6 @@ public class ProjectOverviewController {
     private TreeTableView<ProtobufProperty> solverTreeTableView;
 
     @FXML
-    private TreeTableColumn<ProtobufProperty, String> nameSolverColumn = new TreeTableColumn<>("Name");
-
-    @FXML
-    private TreeTableColumn<ProtobufProperty, String> typeSolverColumn = new TreeTableColumn<>("Type");
-
-    @FXML
-    private TreeTableColumn<ProtobufProperty, Object> valueSolverColumn = new TreeTableColumn<>("Value");
-
-    @FXML
     private TreeTableView<ProtobufProperty> trainTreeTableView;
 
     @FXML
@@ -83,10 +70,6 @@ public class ProjectOverviewController {
 
     // Reference to the main application.
     private MainApp mainApp;
-
-    private TreeItem<ProtobufProperty> solverRootItem;
-    private TreeItem<ProtobufProperty> trainRootItem;
-    private TreeItem<ProtobufProperty> testRootItem;
 
     /**
      * The constructor. The constructor is called before the initialize()
@@ -112,20 +95,11 @@ public class ProjectOverviewController {
         configurationTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showConfigurationDetails(newValue));
 
-        // set root element for trees
-        solverRootItem = new TreeItem<ProtobufProperty>();
-        solverTreeTableView.setRoot(solverRootItem);
-        solverTreeTableView.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
-        nameSolverColumn.setCellValueFactory(new TreeItemPropertyValueFactory("name"));
-        typeSolverColumn.setCellValueFactory(new TreeItemPropertyValueFactory("type"));
-        valueSolverColumn.setCellValueFactory(new TreeItemPropertyValueFactory("value"));
-        solverTreeTableView.getColumns().setAll(nameSolverColumn,typeSolverColumn,valueSolverColumn);
+        // configure properties trees 
+        configurePropertiesTree(solverTreeTableView);
+        configurePropertiesTree(trainTreeTableView);
+        configurePropertiesTree(testTreeTableView);
 
-        trainRootItem = new TreeItem<ProtobufProperty>();
-        trainTreeTableView.setRoot(trainRootItem);
-
-        testRootItem = new TreeItem<ProtobufProperty>();
-        testTreeTableView.setRoot(testRootItem);
     }
 
     /**
@@ -211,27 +185,28 @@ public class ProjectOverviewController {
                 // build solver object
                 SolverParameter solverParameter = mainApp.readSolverParameter(solverFile.getAbsolutePath());
 
+                // build train object
                 Path trainFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getName(), solverParameter.getTrainNet());
                 NetParameter trainNetParameter = mainApp.readNetParameter(trainFilePath.toString());
 
+                // build test object
                 Path testFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getName(), solverParameter.getTestNet());
                 NetParameter testNetParameter = mainApp.readNetParameter(testFilePath.toString());
 
-                ProtobufProperty solverProperty = initLoadProtoObjectToProtobufProperty("solver", solverParameter);
-                ProtobufProperty trainProperty = initLoadProtoObjectToProtobufProperty("train", trainNetParameter);
-                ProtobufProperty testProperty = initLoadProtoObjectToProtobufProperty("test", testNetParameter);
-
-                populateTreeTableView(solverRootItem, solverProperty);
-                
-                // TODO remove when debugging is over
-                //System.out.println(solverParameter.toString());
-                //System.out.println(trainNetParameter.toString());
-                //System.out.println(testNetParameter.toString());
+                buildPropertiesTree("solver", solverParameter, solverTreeTableView);
+                buildPropertiesTree("train", trainNetParameter, trainTreeTableView);
+                buildPropertiesTree("test", testNetParameter, testTreeTableView);
             }
 
         } else {
             // configuration is null
         }
+    }
+
+    private void buildPropertiesTree(String rootName, GeneratedMessage protobufMessage, TreeTableView<ProtobufProperty> treeTableView) {
+
+        ProtobufProperty protobufProperty = initLoadProtoObjectToProtobufProperty(rootName, protobufMessage);
+        initPopulateTreeTableView(treeTableView, protobufProperty);
     }
 
     private ProtobufProperty initLoadProtoObjectToProtobufProperty(String rootName, GeneratedMessage protobufMessage) {
@@ -247,26 +222,26 @@ public class ProjectOverviewController {
         rootProtobufProperty.setIsMessage(true);
         rootProtobufProperty.setIsOptional(false);
         rootProtobufProperty.setIsRepeated(false);
-        
+
         loadProtoObjectToProtobufProperty(rootProtobufProperty, protobufMessage);
-        
+
         return rootProtobufProperty;
     }
-    
+
     private void loadProtoObjectToProtobufProperty(ProtobufProperty rootProtobufProperty, GeneratedMessage protobufMessage) {
 
         Descriptor descriptor = protobufMessage.getDescriptorForType();
         List<FieldDescriptor> fieldsDescriptors = descriptor.getFields();
-        
+
         // get children property
         ObservableList<ProtobufProperty> children = rootProtobufProperty.getChildren();
-                
+
         // go over all fields in the given protobuf message
         for (FieldDescriptor fieldDescriptor : fieldsDescriptors) {
 
             // create new property
             ProtobufProperty protobufProperty = new ProtobufProperty();
-            
+
             // add property as child of root 
             children.add(protobufProperty);
 
@@ -286,24 +261,24 @@ public class ProjectOverviewController {
 
             // set type for repeated fields
             if (protobufProperty.getIsRepeated()) {
-                protobufProperty.setType("list");
+                protobufProperty.setType("LIST");
             }
-            
+
             // property has a value if it is optional and a value exists, or if it repeated and at least one value exists
-            protobufProperty.setHasValue( ( (protobufProperty.getIsOptional()) && (protobufMessage.hasField(fieldDescriptor)) ) || 
-                                            ((protobufProperty.getIsRepeated()) && (protobufMessage.getRepeatedFieldCount(fieldDescriptor) > 0)) );
+            protobufProperty.setHasValue(((protobufProperty.getIsOptional()) && (protobufMessage.hasField(fieldDescriptor)))
+                    || ((protobufProperty.getIsRepeated()) && (protobufMessage.getRepeatedFieldCount(fieldDescriptor) > 0)));
 
             // handle repeated message
             if ((protobufProperty.getIsMessage()) && (protobufProperty.getIsRepeated())) {
-                
+
                 protobufProperty.setValue("");
-                
+
                 ObservableList<ProtobufProperty> grandChildren = protobufProperty.getChildren();
 
                 // for each item
                 int count = protobufMessage.getRepeatedFieldCount(fieldDescriptor);
                 for (int i = 0; i < count; i++) {
-                    
+
                     ProtobufProperty grandChild = new ProtobufProperty();
                     grandChild.setHasValue(true);
                     grandChild.setIsMessage(true);
@@ -312,21 +287,21 @@ public class ProjectOverviewController {
                     grandChild.setName("[" + Integer.toString(i) + "]");
                     grandChild.setType(fieldDescriptor.getMessageType().getName());
                     GeneratedMessage singleMessageItem = (GeneratedMessage) protobufMessage.getRepeatedField(fieldDescriptor, i);
-                    loadProtoObjectToProtobufProperty(grandChild,singleMessageItem);
+                    loadProtoObjectToProtobufProperty(grandChild, singleMessageItem);
                     grandChildren.add(grandChild);
                 }
 
             } else if (protobufProperty.getIsRepeated()) {
                 // handle repeated
-                
+
                 protobufProperty.setValue("");
 
                 ObservableList<ProtobufProperty> grandChildren = protobufProperty.getChildren();
-                
+
                 // for each item
                 int count = protobufMessage.getRepeatedFieldCount(fieldDescriptor);
                 for (int i = 0; i < count; i++) {
-                    
+
                     ProtobufProperty grandChild = new ProtobufProperty();
                     grandChild.setHasValue(true);
                     grandChild.setIsMessage(false);
@@ -337,7 +312,7 @@ public class ProjectOverviewController {
                     grandChild.setValue(protobufMessage.getRepeatedField(fieldDescriptor, i).toString());
                     grandChildren.add(grandChild);
                 }
-                
+
             } else if (protobufProperty.getIsMessage()) {
                 // handle message
                 GeneratedMessage singleMessageItem = (GeneratedMessage) protobufMessage.getField(fieldDescriptor);
@@ -350,10 +325,22 @@ public class ProjectOverviewController {
         }
     }
 
+    private void initPopulateTreeTableView(TreeTableView<ProtobufProperty> treeTableView, ProtobufProperty protobufProperty) {
+
+        // get root item
+        TreeItem rootItem = treeTableView.getRoot();
+
+        // set only root as expanded
+        rootItem.setExpanded(true);
+
+        // fill tree table view
+        populateTreeTableView(rootItem, protobufProperty);
+    }
+
     private void populateTreeTableView(TreeItem<ProtobufProperty> currentRootItem, ProtobufProperty protobufProperty) {
-        
+
         currentRootItem.setValue(protobufProperty);
-        
+
         // for each property in list
         for (ProtobufProperty childProtobufProperty : protobufProperty.getChildren()) {
 
@@ -366,5 +353,23 @@ public class ProjectOverviewController {
             // add tree item to current root
             currentRootItem.getChildren().add(newItem);
         }
+    }
+
+    private void configurePropertiesTree(TreeTableView<ProtobufProperty> treeTableView) {
+
+        // set root element for trees
+        TreeItem<ProtobufProperty> rootItem = new TreeItem<>();
+        treeTableView.setRoot(rootItem);
+        treeTableView.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
+
+        ObservableList<TreeTableColumn<ProtobufProperty, ?>> columns = treeTableView.getColumns();
+
+        final int NAME_COLUMN_ID = 0;
+        final int TYPE_COLUMN_ID = 1;
+        final int VALUE_COLUMN_ID = 2;
+
+        columns.get(NAME_COLUMN_ID).setCellValueFactory(new TreeItemPropertyValueFactory("name"));
+        columns.get(TYPE_COLUMN_ID).setCellValueFactory(new TreeItemPropertyValueFactory("type"));
+        columns.get(VALUE_COLUMN_ID).setCellValueFactory(new TreeItemPropertyValueFactory("value"));
     }
 }
