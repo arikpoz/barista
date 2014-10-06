@@ -327,6 +327,9 @@ public class ProjectOverviewController {
 
     private void initPopulateTreeTableView(TreeTableView<ProtobufProperty> treeTableView, ProtobufProperty protobufProperty) {
 
+        // clean up old tree element
+        treeTableView.getRoot().getChildren().clear();
+                
         // get root item
         TreeItem rootItem = treeTableView.getRoot();
 
@@ -358,8 +361,7 @@ public class ProjectOverviewController {
     private void configurePropertiesTree(TreeTableView<ProtobufProperty> treeTableView) {
 
         // set root element for trees
-        TreeItem<ProtobufProperty> rootItem = new TreeItem<>();
-        treeTableView.setRoot(rootItem);
+        treeTableView.setRoot(new TreeItem<>());
         treeTableView.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
 
         ObservableList<TreeTableColumn<ProtobufProperty, ?>> columns = treeTableView.getColumns();
