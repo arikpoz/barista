@@ -24,7 +24,16 @@
                                 <Label fx:id="projectFolderLabel" GridPane.columnIndex="1" GridPane.rowIndex="0" />
                                 <Label text="Project description: " GridPane.columnIndex="0" GridPane.rowIndex="1" />
                                 <TextField fx:id="projectDescriptionTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" /> 
-                                <Button fx:id="saveProjectSettingsButton" onAction="#handleSaveProjectSettingsAction" text="Save changes" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" />
+                                <HBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                                    <padding>
+                                        <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
+                                    </padding>
+                                    <children>
+                                        <Button fx:id="saveProjectSettingsButton" onAction="#handleSaveProjectSettingsAction" text="Save changes"  />
+                                        <Button fx:id="revertProjectSettingsButton" onAction="#handleRevertProjectSettingsAction" text="Revert changes" />
+                                    </children>
+                                </HBox>
+
                             </children>
                             <columnConstraints>
                                 <ColumnConstraints />
@@ -80,9 +89,9 @@
                                                 <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
                                             </padding>
                                             <children>
-                                                <Button mnemonicParsing="false" text="New" />
-                                                <Button mnemonicParsing="false" text="Save changes" />
-                                                <Button mnemonicParsing="false" text="Delete" />
+                                                <Button text="New" />
+                                                <Button text="Save changes" />
+                                                <Button text="Delete" />
                                             </children>
                                         </HBox>
                                     </bottom>

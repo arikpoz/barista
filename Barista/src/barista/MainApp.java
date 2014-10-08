@@ -316,10 +316,7 @@ public class MainApp extends Application {
         return applicationSettingsFilePath.toString();
     }
 
-    public void loadProject(String projectDirectory) {
-        // update project directory label
-        setProjectFolder(projectDirectory);
-
+    public void loadProjectSettings(){
         // load project settings from file
         BaristaMessages.ProjectSettings projectSettings = readProjectSettings();
         if (projectSettings != null) {
@@ -328,6 +325,13 @@ public class MainApp extends Application {
 
         // mark project settings as unchanged, since we just load them
         setProjectSettingsAreUnchanged(true);
+    }
+    
+    public void loadProject(String projectDirectory) {
+        // update project directory label
+        setProjectFolder(projectDirectory);
+
+        loadProjectSettings();
 
         // generate application settings object
         BaristaMessages.ApplicationSettings.Builder applicationSettingsBuilder = BaristaMessages.ApplicationSettings.newBuilder();

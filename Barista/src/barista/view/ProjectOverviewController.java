@@ -60,6 +60,9 @@ public class ProjectOverviewController {
     private Button saveProjectSettingsButton;
 
     @FXML
+    private Button revertProjectSettingsButton;
+
+    @FXML
     private TableView<Configuration> configurationTable;
 
     @FXML
@@ -123,10 +126,12 @@ public class ProjectOverviewController {
         Bindings.bindBidirectional(projectFolderLabel.textProperty(), mainApp.projectFolderProperty());
         Bindings.bindBidirectional(projectDescriptionTextField.textProperty(), mainApp.projectDescriptionProperty());
         Bindings.bindBidirectional(saveProjectSettingsButton.disableProperty(), mainApp.projectSettingsAreUnchangedProperty());
+        Bindings.bindBidirectional(revertProjectSettingsButton.disableProperty(), mainApp.projectSettingsAreUnchangedProperty());
     }
 
     @FXML
     private void handleSaveProjectSettingsAction(ActionEvent event) {
+        
         // generate project settings object
         BaristaMessages.ProjectSettings.Builder projectSettingsBuilder = BaristaMessages.ProjectSettings.newBuilder();
         projectSettingsBuilder.setProjectDescription(mainApp.getProjectDescription());
@@ -149,6 +154,12 @@ public class ProjectOverviewController {
         }
     }
 
+    @FXML
+    private void handleRevertProjectSettingsAction(ActionEvent event){
+        
+        mainApp.loadProjectSettings();
+    }
+    
     private File findSolverFile(String configurationName) {
 
         Path configurationFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configurationName);
