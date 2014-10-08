@@ -27,7 +27,9 @@ import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -35,7 +37,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
+import javafx.scene.control.TreeTableColumn.CellEditEvent;
 import javafx.scene.control.TreeTableView;
+import javafx.scene.control.cell.CheckBoxTreeTableCell;
+import javafx.scene.control.cell.TextFieldTableCell;
+import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 
 /**
@@ -329,7 +335,7 @@ public class ProjectOverviewController {
 
         // clean up old tree element
         treeTableView.getRoot().getChildren().clear();
-                
+
         // get root item
         TreeItem rootItem = treeTableView.getRoot();
 
@@ -363,15 +369,46 @@ public class ProjectOverviewController {
         // set root element for trees
         treeTableView.setRoot(new TreeItem<>());
         treeTableView.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
+        treeTableView.setEditable(true);
 
         ObservableList<TreeTableColumn<ProtobufProperty, ?>> columns = treeTableView.getColumns();
 
         final int NAME_COLUMN_ID = 0;
         final int TYPE_COLUMN_ID = 1;
-        final int VALUE_COLUMN_ID = 2;
+        final int HASVALUE_COLUMN_ID = 2;
+        final int VALUE_COLUMN_ID = 3;
 
-        columns.get(NAME_COLUMN_ID).setCellValueFactory(new TreeItemPropertyValueFactory("name"));
-        columns.get(TYPE_COLUMN_ID).setCellValueFactory(new TreeItemPropertyValueFactory("type"));
-        columns.get(VALUE_COLUMN_ID).setCellValueFactory(new TreeItemPropertyValueFactory("value"));
+        TreeTableColumn<ProtobufProperty, String> nameColumn = (TreeTableColumn<ProtobufProperty, String>) columns.get(NAME_COLUMN_ID);
+        TreeTableColumn<ProtobufProperty, String> typeColumn = (TreeTableColumn<ProtobufProperty, String>) columns.get(TYPE_COLUMN_ID);
+        TreeTableColumn<ProtobufProperty, Boolean> hasValueColumn = (TreeTableColumn<ProtobufProperty, Boolean>) columns.get(HASVALUE_COLUMN_ID);
+        TreeTableColumn<ProtobufProperty, String> valueColumn = (TreeTableColumn<ProtobufProperty, String>) columns.get(VALUE_COLUMN_ID);
+
+        nameColumn.setCellValueFactory(new TreeItemPropertyValueFactory("name"));
+        typeColumn.setCellValueFactory(new TreeItemPropertyValueFactory("type"));
+        hasValueColumn.setCellValueFactory(new TreeItemPropertyValueFactory("hasValue"));
+        hasValueColumn.setCellFactory(treeTableColumn -> {
+            CheckBoxTreeTableCell<ProtobufProperty, Boolean> checkBoxTreeTableCell = new CheckBoxTreeTableCell<>();
+            checkBoxTreeTableCell.setAlignment(Pos.CENTER);
+            return checkBoxTreeTableCell;
+        });
+        hasValueColumn.setEditable(true);
+        hasValueColumn.setOnEditCommit(
+                new EventHandler<CellEditEvent<ProtobufProperty, Boolean>>() {
+                    @Override
+                    public void handle(CellEditEvent<ProtobufProperty, Boolean> t) {
+                        t.getRowValue().getValue().setHasValue(t.getNewValue());
+                    }
+                });
+        
+        valueColumn.setCellValueFactory(new TreeItemPropertyValueFactory("value"));
+        valueColumn.setEditable(true);
+        valueColumn.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn());
+        valueColumn.setOnEditCommit(
+                new EventHandler<CellEditEvent<ProtobufProperty, String>>() {
+                    @Override
+                    public void handle(CellEditEvent<ProtobufProperty, String> t) {
+                        t.getRowValue().getValue().setValue(t.getNewValue());
+                    }
+                });
     }
 }

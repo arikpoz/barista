@@ -94,9 +94,10 @@
                                                         <StackPane>
                                                             <TreeTableView fx:id="solverTreeTableView">
                                                                 <columns>
-                                                                    <TreeTableColumn fx:id="nameSolverColumn" prefWidth="75.0" text="Name" />
-                                                                    <TreeTableColumn fx:id="typeSolverColumn" prefWidth="75.0" text="Type" />
-                                                                    <TreeTableColumn fx:id="valueSolverColumn" prefWidth="75.0" text="Value" editable="true" />
+                                                                    <TreeTableColumn text="Name" />
+                                                                    <TreeTableColumn text="Type" />
+                                                                    <TreeTableColumn text="Has Value?" />
+                                                                    <TreeTableColumn text="Value" />
                                                                 </columns>
                                                             </TreeTableView>
                                                         </StackPane>
@@ -107,9 +108,10 @@
                                                         <StackPane>
                                                             <TreeTableView fx:id="trainTreeTableView">
                                                                 <columns>
-                                                                    <TreeTableColumn prefWidth="75.0" text="Name" />
-                                                                    <TreeTableColumn prefWidth="75.0" text="Type" />
-                                                                    <TreeTableColumn prefWidth="75.0" text="Value" editable="true" />
+                                                                    <TreeTableColumn text="Name" />
+                                                                    <TreeTableColumn text="Type" />
+                                                                    <TreeTableColumn text="Has Value?" />
+                                                                    <TreeTableColumn text="Value" />
                                                                 </columns>
                                                             </TreeTableView>
                                                         </StackPane>
@@ -120,9 +122,10 @@
                                                         <StackPane>
                                                             <TreeTableView fx:id="testTreeTableView">
                                                                 <columns>
-                                                                    <TreeTableColumn prefWidth="75.0" text="Name" />
-                                                                    <TreeTableColumn prefWidth="75.0" text="Type" />
-                                                                    <TreeTableColumn prefWidth="75.0" text="Value" editable="true" />
+                                                                    <TreeTableColumn text="Name" />
+                                                                    <TreeTableColumn text="Type" />
+                                                                    <TreeTableColumn text="Has Value?" />
+                                                                    <TreeTableColumn text="Value" />
                                                                 </columns>
                                                             </TreeTableView>
                                                         </StackPane>
