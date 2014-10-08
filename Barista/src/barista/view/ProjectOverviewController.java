@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package barista.view;
 
 import barista.BaristaMessages;
@@ -11,8 +6,10 @@ import barista.model.Configuration;
 import barista.model.ProtobufProperty;
 import caffe.Caffe.NetParameter;
 import caffe.Caffe.SolverParameter;
+import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
+import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.TextFormat;
 import java.io.File;
@@ -21,6 +18,8 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,6 +31,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -42,10 +42,11 @@ import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.CheckBoxTreeTableCell;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
+import javafx.util.Callback;
 
 /**
  *
- * @author Arik
+ * @author Arik Poznanski
  */
 public class ProjectOverviewController {
 
@@ -246,23 +247,27 @@ public class ProjectOverviewController {
         Descriptor descriptor = protobufMessage.getDescriptorForType();
 
         // create root object to return
-        ProtobufProperty rootProtobufProperty = new ProtobufProperty();
+        ProtobufProperty rootProtobufProperty = new ProtobufProperty(null);
         rootProtobufProperty.setName(rootName);
         rootProtobufProperty.setType(descriptor.getName());
-        rootProtobufProperty.setValue("");
+        rootProtobufProperty.setListItemType(null);
+        rootProtobufProperty.setValue(null);
         rootProtobufProperty.setHasValue(true);
         rootProtobufProperty.setIsMessage(true);
         rootProtobufProperty.setIsOptional(false);
         rootProtobufProperty.setIsRepeated(false);
+        rootProtobufProperty.setDescriptor(descriptor);
 
-        loadProtoObjectToProtobufProperty(rootProtobufProperty, protobufMessage);
+        loadProtoObjectToProtobufProperty(rootProtobufProperty, protobufMessage, null);
 
         return rootProtobufProperty;
     }
 
-    private void loadProtoObjectToProtobufProperty(ProtobufProperty rootProtobufProperty, GeneratedMessage protobufMessage) {
+    private void loadProtoObjectToProtobufProperty(ProtobufProperty rootProtobufProperty, GeneratedMessage protobufMessage, Descriptor descriptor) {
 
-        Descriptor descriptor = protobufMessage.getDescriptorForType();
+        if (protobufMessage != null) {
+            descriptor = protobufMessage.getDescriptorForType();
+        }
         List<FieldDescriptor> fieldsDescriptors = descriptor.getFields();
 
         // get children property
@@ -272,7 +277,7 @@ public class ProjectOverviewController {
         for (FieldDescriptor fieldDescriptor : fieldsDescriptors) {
 
             // create new property
-            ProtobufProperty protobufProperty = new ProtobufProperty();
+            ProtobufProperty protobufProperty = new ProtobufProperty(rootProtobufProperty);
 
             // add property as child of root 
             children.add(protobufProperty);
@@ -287,18 +292,30 @@ public class ProjectOverviewController {
             if (protobufProperty.getType().equals("MESSAGE")) {
                 protobufProperty.setIsMessage(true);
                 protobufProperty.setType(fieldDescriptor.getMessageType().getName());
+                protobufProperty.setDescriptor(fieldDescriptor.getMessageType());
             } else {
                 protobufProperty.setIsMessage(false);
             }
 
             // set type for repeated fields
             if (protobufProperty.getIsRepeated()) {
-                protobufProperty.setType("LIST");
+                if (protobufProperty.getIsMessage()) {
+                    protobufProperty.setType(String.format("LIST<%s>", fieldDescriptor.getMessageType().getName()));
+                    protobufProperty.setListItemType(fieldDescriptor.getMessageType().getName());
+                } else {
+                    protobufProperty.setType(String.format("LIST<%s>", fieldDescriptor.getType().name()));
+                    protobufProperty.setListItemType(fieldDescriptor.getType().name());
+                }
             }
 
-            // property has a value if it is optional and a value exists, or if it repeated and at least one value exists
-            protobufProperty.setHasValue(((protobufProperty.getIsOptional()) && (protobufMessage.hasField(fieldDescriptor)))
-                    || ((protobufProperty.getIsRepeated()) && (protobufMessage.getRepeatedFieldCount(fieldDescriptor) > 0)));
+            // if protobufMessage is not empty
+            if (protobufMessage != null) {
+                // property has a value if it is optional and a value exists, or if it repeated and at least one value exists
+                protobufProperty.setHasValue(((protobufProperty.getIsOptional()) && (protobufMessage.hasField(fieldDescriptor)))
+                        || ((protobufProperty.getIsRepeated()) && (protobufMessage.getRepeatedFieldCount(fieldDescriptor) > 0)));
+            } else {
+                protobufProperty.setHasValue(false);
+            }
 
             // handle repeated message
             if ((protobufProperty.getIsMessage()) && (protobufProperty.getIsRepeated())) {
@@ -308,18 +325,22 @@ public class ProjectOverviewController {
                 ObservableList<ProtobufProperty> grandChildren = protobufProperty.getChildren();
 
                 // for each item
-                int count = protobufMessage.getRepeatedFieldCount(fieldDescriptor);
+                int count = 0;
+                if (protobufMessage != null) {
+                    count = protobufMessage.getRepeatedFieldCount(fieldDescriptor);
+                }
                 for (int i = 0; i < count; i++) {
 
-                    ProtobufProperty grandChild = new ProtobufProperty();
+                    ProtobufProperty grandChild = new ProtobufProperty(protobufProperty);
                     grandChild.setHasValue(true);
                     grandChild.setIsMessage(true);
                     grandChild.setIsOptional(false);
                     grandChild.setIsRepeated(false);
-                    grandChild.setName("[" + Integer.toString(i) + "]");
+                    grandChild.setName("[" + Integer.toString(i + 1) + "]");
                     grandChild.setType(fieldDescriptor.getMessageType().getName());
                     GeneratedMessage singleMessageItem = (GeneratedMessage) protobufMessage.getRepeatedField(fieldDescriptor, i);
-                    loadProtoObjectToProtobufProperty(grandChild, singleMessageItem);
+                    grandChild.setDescriptor(fieldDescriptor.getMessageType());
+                    loadProtoObjectToProtobufProperty(grandChild, singleMessageItem, null);
                     grandChildren.add(grandChild);
                 }
 
@@ -331,15 +352,18 @@ public class ProjectOverviewController {
                 ObservableList<ProtobufProperty> grandChildren = protobufProperty.getChildren();
 
                 // for each item
-                int count = protobufMessage.getRepeatedFieldCount(fieldDescriptor);
+                int count = 0;
+                if (protobufMessage != null) {
+                    count = protobufMessage.getRepeatedFieldCount(fieldDescriptor);
+                }
                 for (int i = 0; i < count; i++) {
 
-                    ProtobufProperty grandChild = new ProtobufProperty();
+                    ProtobufProperty grandChild = new ProtobufProperty(protobufProperty);
                     grandChild.setHasValue(true);
                     grandChild.setIsMessage(false);
                     grandChild.setIsOptional(false);
                     grandChild.setIsRepeated(false);
-                    grandChild.setName("[" + Integer.toString(i) + "]");
+                    grandChild.setName("[" + Integer.toString(i + 1) + "]");
                     grandChild.setType(fieldDescriptor.getType().name());
                     grandChild.setValue(protobufMessage.getRepeatedField(fieldDescriptor, i).toString());
                     grandChildren.add(grandChild);
@@ -347,8 +371,13 @@ public class ProjectOverviewController {
 
             } else if (protobufProperty.getIsMessage()) {
                 // handle message
-                GeneratedMessage singleMessageItem = (GeneratedMessage) protobufMessage.getField(fieldDescriptor);
-                loadProtoObjectToProtobufProperty(protobufProperty, singleMessageItem);
+                if (protobufMessage != null) {
+                    GeneratedMessage singleMessageItem = (GeneratedMessage) protobufMessage.getField(fieldDescriptor);
+                    loadProtoObjectToProtobufProperty(protobufProperty, singleMessageItem, null);
+                } else {
+                    Descriptor childDescriptor = fieldDescriptor.getMessageType();
+                    loadProtoObjectToProtobufProperty(protobufProperty, null, childDescriptor);
+                }
             } else if (protobufProperty.getHasValue()) {
                 protobufProperty.setValue(protobufMessage.getField(fieldDescriptor).toString());
             } else if (fieldDescriptor.hasDefaultValue()) {
@@ -366,7 +395,7 @@ public class ProjectOverviewController {
 
         // hide root element
         treeTableView.setShowRoot(false);
-        
+
         // load items to tree
         treeTableView.setItems(protobufProperty.getChildren());
 
@@ -376,7 +405,11 @@ public class ProjectOverviewController {
 
         // set root element for trees
         treeTableView.setRoot(new TreeItem<>());
+
+        // set column resize policy
         treeTableView.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
+
+        // make table editable
         treeTableView.setEditable(true);
 
         ObservableList<TreeTableColumn<ProtobufProperty, ?>> columns = treeTableView.getColumns();
@@ -386,13 +419,19 @@ public class ProjectOverviewController {
         final int HASVALUE_COLUMN_ID = 2;
         final int VALUE_COLUMN_ID = 3;
 
+        // generate columns
         TreeTableColumn<ProtobufProperty, String> nameColumn = (TreeTableColumn<ProtobufProperty, String>) columns.get(NAME_COLUMN_ID);
         TreeTableColumn<ProtobufProperty, String> typeColumn = (TreeTableColumn<ProtobufProperty, String>) columns.get(TYPE_COLUMN_ID);
         TreeTableColumn<ProtobufProperty, Boolean> hasValueColumn = (TreeTableColumn<ProtobufProperty, Boolean>) columns.get(HASVALUE_COLUMN_ID);
         TreeTableColumn<ProtobufProperty, String> valueColumn = (TreeTableColumn<ProtobufProperty, String>) columns.get(VALUE_COLUMN_ID);
 
+        // configure name column
         nameColumn.setCellValueFactory(new TreeItemPropertyValueFactory("name"));
+
+        // configure type column
         typeColumn.setCellValueFactory(new TreeItemPropertyValueFactory("type"));
+
+        // configure hasValue column
         hasValueColumn.setCellValueFactory(new TreeItemPropertyValueFactory("hasValue"));
         hasValueColumn.setCellFactory(treeTableColumn -> {
             CheckBoxTreeTableCell<ProtobufProperty, Boolean> checkBoxTreeTableCell = new CheckBoxTreeTableCell<>();
@@ -400,14 +439,8 @@ public class ProjectOverviewController {
             return checkBoxTreeTableCell;
         });
         hasValueColumn.setEditable(true);
-        hasValueColumn.setOnEditCommit(
-                new EventHandler<CellEditEvent<ProtobufProperty, Boolean>>() {
-                    @Override
-                    public void handle(CellEditEvent<ProtobufProperty, Boolean> t) {
-                        t.getRowValue().getValue().setHasValue(t.getNewValue());
-                    }
-                });
 
+        // configure value column
         valueColumn.setCellValueFactory(new TreeItemPropertyValueFactory("value"));
         valueColumn.setEditable(true);
         valueColumn.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn());
@@ -418,5 +451,115 @@ public class ProjectOverviewController {
                         t.getRowValue().getValue().setValue(t.getNewValue());
                     }
                 });
+
+        // configure row context menu
+        Callback<ProtobufProperty, List<MenuItem>> rowMenuItemFactory = new Callback<ProtobufProperty, List<MenuItem>>() {
+            @Override
+            public List<MenuItem> call(final ProtobufProperty protobufProperty) {
+
+                // create menu-items list to return
+                ArrayList<MenuItem> menuItems = new ArrayList<>();
+
+                // item is list
+                if (protobufProperty.getIsRepeated()) {
+                    // add menu-item "add item"
+                    final MenuItem addItemMenuItem = new MenuItem("Add Item");
+                    menuItems.add(addItemMenuItem);
+
+                    // set event handler
+                    addItemMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            addNewSubItem(protobufProperty, protobufProperty.getChildren().size());
+                        }
+                    });
+                }
+
+                // if item parent is list
+                ProtobufProperty parentProtobufProperty = protobufProperty.getParent();
+                if ((parentProtobufProperty != null) && (parentProtobufProperty.getIsRepeated())) {
+                    ObservableList<ProtobufProperty> parentChildren = parentProtobufProperty.getChildren();
+
+                    // add menu-item "add new item before"
+                    final MenuItem addNewItemBeforeMenuItem = new MenuItem("Add New Item Before");
+                    menuItems.add(addNewItemBeforeMenuItem);
+
+                    // set event handler
+                    addNewItemBeforeMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            addNewSubItem(parentProtobufProperty, parentChildren.indexOf(protobufProperty));
+                        }
+                    });
+
+                    // add menu-item "add new item after"
+                    final MenuItem addNewItemAfterMenuItem = new MenuItem("Add New Item After");
+                    menuItems.add(addNewItemAfterMenuItem);
+
+                    // set event handler
+                    addNewItemAfterMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+                            addNewSubItem(parentProtobufProperty, parentChildren.indexOf(protobufProperty) + 1);
+                        }
+                    });
+
+                    // add menu-item "remove item"
+                    final MenuItem removeItemMenuItem = new MenuItem("Remove Item");
+                    menuItems.add(removeItemMenuItem);
+
+                    // set event handler
+                    removeItemMenuItem.setOnAction(new EventHandler<ActionEvent>() {
+                        @Override
+                        public void handle(ActionEvent event) {
+
+                            // remove item from specfic location 
+                            int currentIndex = parentChildren.indexOf(protobufProperty);
+                            parentChildren.remove(currentIndex);
+
+                            // update names of rest of the list
+                            for (int i = currentIndex; i < parentChildren.size(); i++) {
+                                parentChildren.get(i).setName("[" + Integer.toString(i + 1) + "]");
+                            }
+                        }
+                    });
+                }
+
+                return menuItems;
+            }
+        };
+
+        treeTableView.setRowFactory(new ContentMenuTreeTableRowFactory<>(rowMenuItemFactory));
+    }
+
+    private void addNewSubItem(ProtobufProperty parentProtobufProperty, int insertIndex) {
+        ObservableList<ProtobufProperty> parentChildren = parentProtobufProperty.getChildren();
+
+        ProtobufProperty childProtobufProperty = new ProtobufProperty(parentProtobufProperty);
+        childProtobufProperty.setHasValue(false);
+        childProtobufProperty.setHasDefaultValue(false);
+        childProtobufProperty.setIsMessage(parentProtobufProperty.getIsMessage());
+        childProtobufProperty.setIsOptional(false);
+        childProtobufProperty.setIsRepeated(false);
+
+        childProtobufProperty.setType(parentProtobufProperty.getListItemType());
+        childProtobufProperty.setListItemType(null);
+
+        childProtobufProperty.setName("[" + Integer.toString(insertIndex + 1) + "]");
+        childProtobufProperty.setDescriptor(parentProtobufProperty.getDescriptor());
+
+        // add item to specific location 
+        parentChildren.add(insertIndex, childProtobufProperty);
+
+        // update names of rest of the list
+        for (int i = insertIndex + 1; i < parentChildren.size(); i++) {
+            parentChildren.get(i).setName("[" + Integer.toString(i + 1) + "]");
+        }
+
+        // if the type is complex, we need to build a suitable sub-tree 
+        if (childProtobufProperty.getIsMessage()) {
+            Descriptor descriptor = parentProtobufProperty.getDescriptor();
+            loadProtoObjectToProtobufProperty(childProtobufProperty, null, descriptor);
+        }
     }
 }

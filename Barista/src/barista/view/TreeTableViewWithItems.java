@@ -1,11 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package barista.view;
-
-//import extfx.util.HierarchyData;
 
 import barista.model.HierarchyData;
 import java.util.HashMap;
@@ -32,7 +25,7 @@ import javafx.scene.control.TreeTableView;
  * <p/>
  * Each change in the underlying data (adding, removing, sorting) will then be automatically reflected in the UI.
  *
- * based on the work of Christian Schudt (http://myjavafx.blogspot.co.il/2012/03/treeview-with-data-source.html)
+ * based on the work of Christian Schudt, see http://myjavafx.blogspot.co.il/2012/03/treeview-with-data-source.html
  * 
  * @author Arik Poznanski
  */

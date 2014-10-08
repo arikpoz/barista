@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package barista.model;
 
 import javafx.collections.ObservableList;
@@ -11,6 +6,8 @@ import javafx.collections.ObservableList;
  * Used to mark an object as hierarchical data.
  * This object can then be used as data source for an hierarchical control, like the {@link javafx.scene.control.TreeView}.
  *
+ * based on the work of Christian Schudt, see http://myjavafx.blogspot.co.il/2012/03/treeview-with-data-source.html
+ * 
  * @author Christian Schudt
  */
 public interface HierarchyData<T extends HierarchyData> {

@@ -1,14 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package barista.model;
 
+import com.google.protobuf.Descriptors.Descriptor;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -16,12 +10,14 @@ import javafx.collections.ObservableList;
 
 /**
  *
- * @author Arik
+ * @author Arik Poznanski
  */
 public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
 
-    public ProtobufProperty() {
+    public ProtobufProperty(ProtobufProperty parent) {
 
+        this.parent = parent;
+        
         // listen on hasValue changes
         hasValueProperty().addListener(
                 (observable, oldValue, newValue) -> {
@@ -86,6 +82,22 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
     }
     // </editor-fold>
 
+    // <editor-fold desc="listItemType property" defaultstate="collapsed">
+        private final StringProperty listItemtype = new SimpleStringProperty();
+
+        public final String getListItemType() {
+            return listItemtype.get();
+        }
+
+        public final void setListItemType(String value) {
+            this.listItemtype.set(value);
+        }
+
+        public StringProperty listItemtypeProperty() {
+            return listItemtype;
+        }
+        // </editor-fold>
+    
     // <editor-fold desc="hasValue property" defaultstate="collapsed">
     private final BooleanProperty hasValue = new SimpleBooleanProperty();
 
@@ -198,6 +210,14 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
     }
     // </editor-fold>
 
+    // <editor-fold desc="parent property" defaultstate="collapsed">
+    private final ProtobufProperty parent;
+    
+    public final ProtobufProperty getParent() {
+        return parent;
+    }
+    // </editor-fold>
+    
     // <editor-fold desc="children property" defaultstate="collapsed">
     /**
      * The data as an observable list of Configurations.
@@ -215,6 +235,19 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
     }
     // </editor-fold>
 
+    // <editor-fold desc="descriptor property" defaultstate="collapsed">
+    private Descriptor descriptor;
+    
+    public final Descriptor getDescriptor() {
+        return descriptor;
+    }
+    
+    public final void setDescriptor(Descriptor value) {
+        this.descriptor = value;
+    }
+    // </editor-fold>
+    
+    
     /**
      * Intended only for debugging.
      *

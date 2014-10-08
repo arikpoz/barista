@@ -11,7 +11,7 @@ import javafx.stage.Window;
 
 /**
  *
- * @author Arik
+ * @author Arik Poznanski
  */
 public class RootLayoutController {
 
