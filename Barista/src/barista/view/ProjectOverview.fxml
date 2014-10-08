@@ -7,6 +7,7 @@
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import barista.view.*?>
 
 <BorderPane id="rootPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="barista.view.ProjectOverviewController">
     <!-- Project Settings section -->
@@ -67,6 +68,7 @@
                                                 <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
                                             </columns>
                                             <columnResizePolicy>
+                                                <!-- the following line generates a warning in NetBeans, you can safely ignore it --> 
                                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                                             </columnResizePolicy>
                                         </TableView>
@@ -102,42 +104,42 @@
                                                 <Tab closable="false" text="Solver">
                                                     <content>
                                                         <StackPane>
-                                                            <TreeTableView fx:id="solverTreeTableView">
+                                                            <TreeTableViewWithItems fx:id="solverTreeTableView">
                                                                 <columns>
                                                                     <TreeTableColumn text="Name" />
                                                                     <TreeTableColumn text="Type" />
                                                                     <TreeTableColumn text="Has Value?" />
                                                                     <TreeTableColumn text="Value" />
                                                                 </columns>
-                                                            </TreeTableView>
+                                                            </TreeTableViewWithItems>
                                                         </StackPane>
                                                     </content>
                                                 </Tab>
                                                 <Tab closable="false" text="Train">
                                                     <content>
                                                         <StackPane>
-                                                            <TreeTableView fx:id="trainTreeTableView">
+                                                            <TreeTableViewWithItems fx:id="trainTreeTableView">
                                                                 <columns>
                                                                     <TreeTableColumn text="Name" />
                                                                     <TreeTableColumn text="Type" />
                                                                     <TreeTableColumn text="Has Value?" />
                                                                     <TreeTableColumn text="Value" />
                                                                 </columns>
-                                                            </TreeTableView>
+                                                            </TreeTableViewWithItems>
                                                         </StackPane>
                                                     </content>
                                                 </Tab>
                                                 <Tab closable="false" text="Test">
                                                     <content>
                                                         <StackPane>
-                                                            <TreeTableView fx:id="testTreeTableView">
+                                                            <TreeTableViewWithItems fx:id="testTreeTableView">
                                                                 <columns>
                                                                     <TreeTableColumn text="Name" />
                                                                     <TreeTableColumn text="Type" />
                                                                     <TreeTableColumn text="Has Value?" />
                                                                     <TreeTableColumn text="Value" />
                                                                 </columns>
-                                                            </TreeTableView>
+                                                            </TreeTableViewWithItems>
                                                         </StackPane>
                                                     </content>
                                                 </Tab>

@@ -18,7 +18,7 @@ import javafx.collections.ObservableList;
  *
  * @author Arik
  */
-public class ProtobufProperty {
+public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
 
     public ProtobufProperty() {
 
@@ -28,16 +28,14 @@ public class ProtobufProperty {
                     // remove actual value if hasValue is set to false
                     if (newValue == false) {
 
-                        /* if (getIsRepeated()) {
-                         // if list
+                        // if list
+                        if (getIsRepeated()) {
+                            // remove all children
+                            getChildren().clear();
 
-                         // remove all children
-                         getChildren().clear();
+                        } else if (getIsMessage()) {
+                            // if complex type
 
-                         } else 
-                         */
-                        // if complex type
-                        if (getIsMessage()) {
                             // reset hasValue of all children
                             for (ProtobufProperty childProtobufProperty : getChildren()) {
                                 childProtobufProperty.setHasValue(false);
@@ -211,6 +209,7 @@ public class ProtobufProperty {
      *
      * @return
      */
+    @Override
     public ObservableList<ProtobufProperty> getChildren() {
         return children;
     }

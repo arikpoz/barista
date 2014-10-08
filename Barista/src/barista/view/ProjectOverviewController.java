@@ -74,13 +74,13 @@ public class ProjectOverviewController {
     private TableColumn<Configuration, String> nameColumn;
 
     @FXML
-    private TreeTableView<ProtobufProperty> solverTreeTableView;
+    private TreeTableViewWithItems<ProtobufProperty> solverTreeTableView;
 
     @FXML
-    private TreeTableView<ProtobufProperty> trainTreeTableView;
+    private TreeTableViewWithItems<ProtobufProperty> trainTreeTableView;
 
     @FXML
-    private TreeTableView<ProtobufProperty> testTreeTableView;
+    private TreeTableViewWithItems<ProtobufProperty> testTreeTableView;
 
     // Reference to the main application.
     private MainApp mainApp;
@@ -235,7 +235,7 @@ public class ProjectOverviewController {
         }
     }
 
-    private void buildPropertiesTree(String rootName, GeneratedMessage protobufMessage, TreeTableView<ProtobufProperty> treeTableView) {
+    private void buildPropertiesTree(String rootName, GeneratedMessage protobufMessage, TreeTableViewWithItems<ProtobufProperty> treeTableView) {
 
         ProtobufProperty protobufProperty = initLoadProtoObjectToProtobufProperty(rootName, protobufMessage);
         initPopulateTreeTableView(treeTableView, protobufProperty);
@@ -362,40 +362,17 @@ public class ProjectOverviewController {
         }
     }
 
-    private void initPopulateTreeTableView(TreeTableView<ProtobufProperty> treeTableView, ProtobufProperty protobufProperty) {
+    private void initPopulateTreeTableView(TreeTableViewWithItems<ProtobufProperty> treeTableView, ProtobufProperty protobufProperty) {
 
-        // clean up old tree element
-        treeTableView.getRoot().getChildren().clear();
+        // hide root element
+        treeTableView.setShowRoot(false);
+        
+        // load items to tree
+        treeTableView.setItems(protobufProperty.getChildren());
 
-        // get root item
-        TreeItem rootItem = treeTableView.getRoot();
-
-        // set only root as expanded
-        rootItem.setExpanded(true);
-
-        // fill tree table view
-        populateTreeTableView(rootItem, protobufProperty);
     }
 
-    private void populateTreeTableView(TreeItem<ProtobufProperty> currentRootItem, ProtobufProperty protobufProperty) {
-
-        currentRootItem.setValue(protobufProperty);
-
-        // for each property in list
-        for (ProtobufProperty childProtobufProperty : protobufProperty.getChildren()) {
-
-            // create tree item
-            TreeItem<ProtobufProperty> newItem = new TreeItem<>();
-
-            // populate sub-tree
-            populateTreeTableView(newItem, childProtobufProperty);
-
-            // add tree item to current root
-            currentRootItem.getChildren().add(newItem);
-        }
-    }
-
-    private void configurePropertiesTree(TreeTableView<ProtobufProperty> treeTableView) {
+    private void configurePropertiesTree(TreeTableViewWithItems<ProtobufProperty> treeTableView) {
 
         // set root element for trees
         treeTableView.setRoot(new TreeItem<>());
