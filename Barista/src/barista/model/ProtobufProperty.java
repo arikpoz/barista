@@ -28,10 +28,28 @@ public class ProtobufProperty {
                     // remove actual value if hasValue is set to false
                     if (newValue == false) {
 
-                        // set value to default, if we have such a value
-                        if (getHasDefaultValue()) {
+                        /* if (getIsRepeated()) {
+                         // if list
+
+                         // remove all children
+                         getChildren().clear();
+
+                         } else 
+                         */
+                        // if complex type
+                        if (getIsMessage()) {
+                            // reset hasValue of all children
+                            for (ProtobufProperty childProtobufProperty : getChildren()) {
+                                childProtobufProperty.setHasValue(false);
+                            }
+                        } else if (getHasDefaultValue()) {
+                            // if simple type with default value
                             setValue(getDefaultValue());
+
                         } else {
+                            // if simple type with not default value
+
+                            // clear value
                             setValue(null);
                         }
                     }
