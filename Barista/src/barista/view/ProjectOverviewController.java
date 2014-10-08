@@ -40,7 +40,6 @@ import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.TreeTableColumn.CellEditEvent;
 import javafx.scene.control.TreeTableView;
 import javafx.scene.control.cell.CheckBoxTreeTableCell;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 
@@ -61,6 +60,12 @@ public class ProjectOverviewController {
 
     @FXML
     private Button revertProjectSettingsButton;
+
+    @FXML
+    private Button saveConfigurationSettingsButton;
+
+    @FXML
+    private Button revertConfigurationSettingsButton;
 
     @FXML
     private TableView<Configuration> configurationTable;
@@ -131,7 +136,7 @@ public class ProjectOverviewController {
 
     @FXML
     private void handleSaveProjectSettingsAction(ActionEvent event) {
-        
+
         // generate project settings object
         BaristaMessages.ProjectSettings.Builder projectSettingsBuilder = BaristaMessages.ProjectSettings.newBuilder();
         projectSettingsBuilder.setProjectDescription(mainApp.getProjectDescription());
@@ -155,11 +160,21 @@ public class ProjectOverviewController {
     }
 
     @FXML
-    private void handleRevertProjectSettingsAction(ActionEvent event){
-        
+    private void handleRevertProjectSettingsAction(ActionEvent event) {
+
         mainApp.loadProjectSettings();
     }
-    
+
+    @FXML
+    private void handleSaveConfigurationSettingsAction(ActionEvent event) {
+
+    }
+
+    @FXML
+    private void handleRevertConfigurationSettingsAction(ActionEvent event) {
+
+    }
+
     private File findSolverFile(String configurationName) {
 
         Path configurationFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configurationName);
@@ -339,6 +354,11 @@ public class ProjectOverviewController {
             } else if (fieldDescriptor.hasDefaultValue()) {
                 protobufProperty.setValue(fieldDescriptor.getDefaultValue().toString());
             }
+
+            protobufProperty.setHasDefaultValue(fieldDescriptor.hasDefaultValue());
+            if (fieldDescriptor.hasDefaultValue()) {
+                protobufProperty.setDefaultValue(fieldDescriptor.getDefaultValue().toString());
+            }
         }
     }
 
@@ -410,7 +430,7 @@ public class ProjectOverviewController {
                         t.getRowValue().getValue().setHasValue(t.getNewValue());
                     }
                 });
-        
+
         valueColumn.setCellValueFactory(new TreeItemPropertyValueFactory("value"));
         valueColumn.setEditable(true);
         valueColumn.setCellFactory(TextFieldTreeTableCell.forTreeTableColumn());

@@ -20,6 +20,24 @@ import javafx.collections.ObservableList;
  */
 public class ProtobufProperty {
 
+    public ProtobufProperty() {
+
+        // listen on hasValue changes
+        hasValueProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    // remove actual value if hasValue is set to false
+                    if (newValue == false) {
+
+                        // set value to default, if we have such a value
+                        if (getHasDefaultValue()) {
+                            setValue(getDefaultValue());
+                        } else {
+                            setValue(null);
+                        }
+                    }
+                });
+    }
+
     // <editor-fold desc="name property" defaultstate="collapsed">
     private final StringProperty name = new SimpleStringProperty();
 
@@ -84,6 +102,38 @@ public class ProtobufProperty {
     }
     // </editor-fold>
 
+    // <editor-fold desc="hasDefaultValue property" defaultstate="collapsed">
+    private final BooleanProperty hasDefaultValue = new SimpleBooleanProperty();
+
+    public final Boolean getHasDefaultValue() {
+        return hasDefaultValue.get();
+    }
+
+    public final void setHasDefaultValue(Boolean value) {
+        this.hasDefaultValue.set(value);
+    }
+
+    public BooleanProperty hasDefaultValueProperty() {
+        return hasDefaultValue;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="defaultValue property" defaultstate="collapsed">
+    private final StringProperty defaultValue = new SimpleStringProperty();
+
+    public final String getDefaultValue() {
+        return defaultValue.get();
+    }
+
+    public final void setDefaultValue(String value) {
+        this.defaultValue.set(value);
+    }
+
+    public StringProperty defaultValueProperty() {
+        return defaultValue;
+    }
+    // </editor-fold>
+
     // <editor-fold desc="isMessage property" defaultstate="collapsed">
     private final BooleanProperty isMessage = new SimpleBooleanProperty();
 
@@ -99,7 +149,7 @@ public class ProtobufProperty {
         return isMessage;
     }
     // </editor-fold>
-    
+
     // <editor-fold desc="isOptional property" defaultstate="collapsed">
     private final BooleanProperty isOptional = new SimpleBooleanProperty();
 
@@ -147,14 +197,15 @@ public class ProtobufProperty {
         return children;
     }
     // </editor-fold>
-    
+
     /**
      * Intended only for debugging.
      *
      * <P>
      * Here, the contents of every field are placed into the result, with one
      * field per line.
-     * @return 
+     *
+     * @return
      */
     @Override
     public String toString() {
