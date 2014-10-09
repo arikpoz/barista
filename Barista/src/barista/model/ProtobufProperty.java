@@ -17,7 +17,7 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
     public ProtobufProperty(ProtobufProperty parent) {
 
         this.parent = parent;
-        
+  
         // listen on hasValue changes
         hasValueProperty().addListener(
                 (observable, oldValue, newValue) -> {

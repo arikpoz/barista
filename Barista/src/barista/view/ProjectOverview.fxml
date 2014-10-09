@@ -93,8 +93,6 @@
                                             <children>
                                                 <Button fx:id="saveConfigurationSettingsButton" onAction="#handleSaveConfigurationSettingsAction" text="Save changes" />
                                                 <Button fx:id="revertConfigurationSettingsButton" onAction="#handleRevertConfigurationSettingsAction" text="Revert changes" />
-<!--                                                <Button text="New" />
-                                                <Button text="Delete" />-->
                                             </children>
                                         </HBox>
                                     </bottom>

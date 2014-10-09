@@ -101,6 +101,18 @@ public class MainApp extends Application {
     }
     // </editor-fold>
 
+    // <editor-fold desc="currentConfiguration property" defaultstate="collapsed">
+    private Configuration currentConfiguration;
+
+    public final Configuration getCurrentConfiguration() {
+        return currentConfiguration;
+    }
+
+    public final void setCurrentConfiguration(Configuration value) {
+        currentConfiguration = value;
+    }
+    // </editor-fold>
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;

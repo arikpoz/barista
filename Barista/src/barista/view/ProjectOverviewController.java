@@ -24,6 +24,8 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -104,11 +106,11 @@ public class ProjectOverviewController {
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
 
         // clear configuration details
-        showConfigurationDetails(null);
+        showConfigurationDetails(null, null);
 
         // listen for selection changes and show the configuration details when changed
         configurationTable.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> showConfigurationDetails(newValue));
+                (observable, oldValue, newValue) -> showConfigurationDetails(newValue, oldValue));
 
         // configure properties trees 
         configurePropertiesTree(solverTreeTableView);
@@ -169,11 +171,17 @@ public class ProjectOverviewController {
     @FXML
     private void handleSaveConfigurationSettingsAction(ActionEvent event) {
 
+        // TODO: handle saving configuration
+        // mark current configuration as unchanged
+        mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(true);
     }
 
     @FXML
     private void handleRevertConfigurationSettingsAction(ActionEvent event) {
 
+        // TODO: handle revert configuration
+        // mark current configuration as unchanged
+        mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(true);
     }
 
     private File findSolverFile(String configurationName) {
@@ -207,29 +215,41 @@ public class ProjectOverviewController {
      *
      * @param configuration the configuration or null
      */
-    private void showConfigurationDetails(Configuration configuration) {
-        if (configuration != null) {
+    private void showConfigurationDetails(Configuration newConfiguration, Configuration oldConfiguration) {
+        if (newConfiguration != null) {
             // Fill the labels with info from the configuration object.
 
+            mainApp.setCurrentConfiguration(newConfiguration);
+
             // find solver file name
-            File solverFile = findSolverFile(configuration.getName());
+            File solverFile = findSolverFile(newConfiguration.getName());
             if (solverFile != null) {
 
                 // build solver object
                 SolverParameter solverParameter = mainApp.readSolverParameter(solverFile.getAbsolutePath());
 
                 // build train object
-                Path trainFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getName(), solverParameter.getTrainNet());
+                Path trainFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getName(), solverParameter.getTrainNet());
                 NetParameter trainNetParameter = mainApp.readNetParameter(trainFilePath.toString());
 
                 // build test object
-                Path testFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getName(), solverParameter.getTestNet());
+                Path testFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getName(), solverParameter.getTestNet());
                 NetParameter testNetParameter = mainApp.readNetParameter(testFilePath.toString());
 
                 buildPropertiesTree("solver", solverParameter, solverTreeTableView);
                 buildPropertiesTree("train", trainNetParameter, trainTreeTableView);
                 buildPropertiesTree("test", testNetParameter, testTreeTableView);
             }
+
+            // remove old bindings
+            if (oldConfiguration != null) {
+                Bindings.unbindBidirectional(saveConfigurationSettingsButton.disableProperty(), oldConfiguration.configurationSettingsAreUnchangedProperty());
+                Bindings.unbindBidirectional(revertConfigurationSettingsButton.disableProperty(), oldConfiguration.configurationSettingsAreUnchangedProperty());
+            }
+
+            // add new bindings
+            Bindings.bindBidirectional(saveConfigurationSettingsButton.disableProperty(), newConfiguration.configurationSettingsAreUnchangedProperty());
+            Bindings.bindBidirectional(revertConfigurationSettingsButton.disableProperty(), newConfiguration.configurationSettingsAreUnchangedProperty());
 
         } else {
             // configuration is null
@@ -257,6 +277,8 @@ public class ProjectOverviewController {
         rootProtobufProperty.setIsOptional(false);
         rootProtobufProperty.setIsRepeated(false);
         rootProtobufProperty.setDescriptor(descriptor);
+
+        registerForDataChanges(rootProtobufProperty);
 
         loadProtoObjectToProtobufProperty(rootProtobufProperty, protobufMessage, null);
 
@@ -342,6 +364,8 @@ public class ProjectOverviewController {
                     grandChild.setDescriptor(fieldDescriptor.getMessageType());
                     loadProtoObjectToProtobufProperty(grandChild, singleMessageItem, null);
                     grandChildren.add(grandChild);
+
+                    registerForDataChanges(grandChild);
                 }
 
             } else if (protobufProperty.getIsRepeated()) {
@@ -367,6 +391,8 @@ public class ProjectOverviewController {
                     grandChild.setType(fieldDescriptor.getType().name());
                     grandChild.setValue(protobufMessage.getRepeatedField(fieldDescriptor, i).toString());
                     grandChildren.add(grandChild);
+
+                    registerForDataChanges(grandChild);
                 }
 
             } else if (protobufProperty.getIsMessage()) {
@@ -388,17 +414,37 @@ public class ProjectOverviewController {
             if (fieldDescriptor.hasDefaultValue()) {
                 protobufProperty.setDefaultValue(fieldDescriptor.getDefaultValue().toString());
             }
+
+            registerForDataChanges(protobufProperty);
         }
+    }
+
+    private void registerForDataChanges(ProtobufProperty protobufProperty) {
+
+        // listen for changes in hasValue property
+        protobufProperty.hasValueProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    if (oldValue != newValue) {
+                        mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(false);
+                    }
+                });
+
+        // listen for changes in value property
+        protobufProperty.valueProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    if (!oldValue.equals(newValue)) {
+                        mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(false);
+                    }
+                });
     }
 
     private void initPopulateTreeTableView(TreeTableViewWithItems<ProtobufProperty> treeTableView, ProtobufProperty protobufProperty) {
 
-        // hide root element
-        treeTableView.setShowRoot(false);
-
+        // clear selection
+        treeTableView.getSelectionModel().clearSelection();
+        
         // load items to tree
         treeTableView.setItems(protobufProperty.getChildren());
-
     }
 
     private void configurePropertiesTree(TreeTableViewWithItems<ProtobufProperty> treeTableView) {
@@ -411,6 +457,9 @@ public class ProjectOverviewController {
 
         // make table editable
         treeTableView.setEditable(true);
+
+        // hide root element
+        treeTableView.setShowRoot(false);
 
         ObservableList<TreeTableColumn<ProtobufProperty, ?>> columns = treeTableView.getColumns();
 
@@ -447,7 +496,8 @@ public class ProjectOverviewController {
         valueColumn.setOnEditCommit(
                 new EventHandler<CellEditEvent<ProtobufProperty, String>>() {
                     @Override
-                    public void handle(CellEditEvent<ProtobufProperty, String> t) {
+        public void handle(CellEditEvent<ProtobufProperty, String> t) {
+                        // update row value
                         t.getRowValue().getValue().setValue(t.getNewValue());
                     }
                 });
@@ -455,7 +505,7 @@ public class ProjectOverviewController {
         // configure row context menu
         Callback<ProtobufProperty, List<MenuItem>> rowMenuItemFactory = new Callback<ProtobufProperty, List<MenuItem>>() {
             @Override
-            public List<MenuItem> call(final ProtobufProperty protobufProperty) {
+        public List<MenuItem> call(final ProtobufProperty protobufProperty) {
 
                 // create menu-items list to return
                 ArrayList<MenuItem> menuItems = new ArrayList<>();
@@ -469,8 +519,9 @@ public class ProjectOverviewController {
                     // set event handler
                     addItemMenuItem.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
-                        public void handle(ActionEvent event) {
+        public void handle(ActionEvent event) {
                             addNewSubItem(protobufProperty, protobufProperty.getChildren().size());
+                            mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(false);
                         }
                     });
                 }
@@ -487,8 +538,9 @@ public class ProjectOverviewController {
                     // set event handler
                     addNewItemBeforeMenuItem.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
-                        public void handle(ActionEvent event) {
+        public void handle(ActionEvent event) {
                             addNewSubItem(parentProtobufProperty, parentChildren.indexOf(protobufProperty));
+                            mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(false);
                         }
                     });
 
@@ -499,8 +551,9 @@ public class ProjectOverviewController {
                     // set event handler
                     addNewItemAfterMenuItem.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
-                        public void handle(ActionEvent event) {
+        public void handle(ActionEvent event) {
                             addNewSubItem(parentProtobufProperty, parentChildren.indexOf(protobufProperty) + 1);
+                            mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(false);
                         }
                     });
 
@@ -511,7 +564,7 @@ public class ProjectOverviewController {
                     // set event handler
                     removeItemMenuItem.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
-                        public void handle(ActionEvent event) {
+        public void handle(ActionEvent event) {
 
                             // remove item from specfic location 
                             int currentIndex = parentChildren.indexOf(protobufProperty);
@@ -521,6 +574,8 @@ public class ProjectOverviewController {
                             for (int i = currentIndex; i < parentChildren.size(); i++) {
                                 parentChildren.get(i).setName("[" + Integer.toString(i + 1) + "]");
                             }
+                            
+                            mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(false);
                         }
                     });
                 }
@@ -561,5 +616,7 @@ public class ProjectOverviewController {
             Descriptor descriptor = parentProtobufProperty.getDescriptor();
             loadProtoObjectToProtobufProperty(childProtobufProperty, null, descriptor);
         }
+
+        registerForDataChanges(childProtobufProperty);
     }
 }
