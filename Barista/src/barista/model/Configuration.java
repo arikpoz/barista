@@ -25,11 +25,11 @@ public class Configuration {
      */
     public Configuration(String name) {
         this.name = new SimpleStringProperty(name);
-        this.solverFileName = new SimpleStringProperty("");
         this.setConfigurationSettingsAreUnchanged(true);
+        this.setIsLoaded(false);
     }
 
-    // <editor-fold desc="name property" defaultstate="collapsed">
+    // <editor-fold desc="name javafx property" defaultstate="collapsed">
     private final StringProperty name;
 
     public final String getName() {
@@ -45,23 +45,7 @@ public class Configuration {
     }
     // </editor-fold>
 
-    // <editor-fold desc="solverFileName property" defaultstate="collapsed">
-    private final StringProperty solverFileName;
-
-    public final String getSolverFileName() {
-        return solverFileName.get();
-    }
-
-    public final void setSolverFileName(String value) {
-        this.solverFileName.set(value);
-    }
-
-    public StringProperty solverFileNameProperty() {
-        return solverFileName;
-    }
-    // </editor-fold>
-
-    // <editor-fold desc="configurationSettingsAreUnchanged property" defaultstate="collapsed">
+    // <editor-fold desc="configurationSettingsAreUnchanged javafx property" defaultstate="collapsed">
     private final BooleanProperty configurationSettingsAreUnchanged = new SimpleBooleanProperty();
 
     public final Boolean getConfigurationSettingsAreUnchanged() {
@@ -74,6 +58,58 @@ public class Configuration {
 
     public BooleanProperty configurationSettingsAreUnchangedProperty() {
         return configurationSettingsAreUnchanged;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="isLoaded javafx property" defaultstate="collapsed">
+    private final BooleanProperty isLoaded = new SimpleBooleanProperty();
+
+    public final Boolean getIsLoaded() {
+        return isLoaded.get();
+    }
+
+    public final void setIsLoaded(Boolean value) {
+        isLoaded.set(value);
+    }
+
+    public BooleanProperty isLoadedProperty() {
+        return isLoaded;
+    }
+    // </editor-fold>
+    
+    // <editor-fold desc="solverProtobufProperty property" defaultstate="collapsed">
+    private ProtobufProperty solverProtobufProperty;
+
+    public final ProtobufProperty getSolverProtobufProperty() {
+        return solverProtobufProperty;
+    }
+
+    public final void setSolverProtobufProperty(ProtobufProperty value) {
+        this.solverProtobufProperty = value;
+    }
+    // </editor-fold>
+    
+    // <editor-fold desc="trainProtobufProperty property" defaultstate="collapsed">
+    private ProtobufProperty trainProtobufProperty;
+
+    public final ProtobufProperty getTrainProtobufProperty() {
+        return trainProtobufProperty;
+    }
+
+    public final void setTrainProtobufProperty(ProtobufProperty value) {
+        this.trainProtobufProperty = value;
+    }
+    // </editor-fold>
+    
+    // <editor-fold desc="testProtobufProperty property" defaultstate="collapsed">
+    private ProtobufProperty testProtobufProperty;
+
+    public final ProtobufProperty getTestProtobufProperty() {
+        return testProtobufProperty;
+    }
+
+    public final void setTestProtobufProperty(ProtobufProperty value) {
+        this.testProtobufProperty = value;
     }
     // </editor-fold>
 

@@ -221,25 +221,47 @@ public class ProjectOverviewController {
 
             mainApp.setCurrentConfiguration(newConfiguration);
 
-            // find solver file name
-            File solverFile = findSolverFile(newConfiguration.getName());
-            if (solverFile != null) {
+            // check if we already loaded this configuration
+            if (!newConfiguration.getIsLoaded()) {
+                // handle case when configuration is not loaded
 
-                // build solver object
-                SolverParameter solverParameter = mainApp.readSolverParameter(solverFile.getAbsolutePath());
+                // find solver file name
+                File solverFile = findSolverFile(newConfiguration.getName());
+                if (solverFile != null) {
 
-                // build train object
-                Path trainFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getName(), solverParameter.getTrainNet());
-                NetParameter trainNetParameter = mainApp.readNetParameter(trainFilePath.toString());
+                    // build solver object
+                    SolverParameter solverParameter = mainApp.readSolverParameter(solverFile.getAbsolutePath());
 
-                // build test object
-                Path testFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getName(), solverParameter.getTestNet());
-                NetParameter testNetParameter = mainApp.readNetParameter(testFilePath.toString());
+                    // build train object
+                    Path trainFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getName(), solverParameter.getTrainNet());
+                    NetParameter trainNetParameter = mainApp.readNetParameter(trainFilePath.toString());
 
-                buildPropertiesTree("solver", solverParameter, solverTreeTableView);
-                buildPropertiesTree("train", trainNetParameter, trainTreeTableView);
-                buildPropertiesTree("test", testNetParameter, testTreeTableView);
+                    // build test object
+                    Path testFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getName(), solverParameter.getTestNet());
+                    NetParameter testNetParameter = mainApp.readNetParameter(testFilePath.toString());
+
+                    // load solver data
+                    newConfiguration.setSolverProtobufProperty(initLoadProtoObjectToProtobufProperty("solver", solverParameter));
+
+                    // load train data
+                    newConfiguration.setTrainProtobufProperty(initLoadProtoObjectToProtobufProperty("train", trainNetParameter));
+
+                    // load test data
+                    newConfiguration.setTestProtobufProperty(initLoadProtoObjectToProtobufProperty("test", testNetParameter));
+
+                    // mark configuration as loaded
+                    newConfiguration.setIsLoaded(true);
+                }
             }
+
+            // populate solver tree
+            populateTreeTableView(solverTreeTableView, newConfiguration.getSolverProtobufProperty());
+
+            // populate train tree
+            populateTreeTableView(trainTreeTableView, newConfiguration.getTrainProtobufProperty());
+
+            // populate test tree
+            populateTreeTableView(testTreeTableView, newConfiguration.getTestProtobufProperty());
 
             // remove old bindings
             if (oldConfiguration != null) {
@@ -254,12 +276,6 @@ public class ProjectOverviewController {
         } else {
             // configuration is null
         }
-    }
-
-    private void buildPropertiesTree(String rootName, GeneratedMessage protobufMessage, TreeTableViewWithItems<ProtobufProperty> treeTableView) {
-
-        ProtobufProperty protobufProperty = initLoadProtoObjectToProtobufProperty(rootName, protobufMessage);
-        initPopulateTreeTableView(treeTableView, protobufProperty);
     }
 
     private ProtobufProperty initLoadProtoObjectToProtobufProperty(String rootName, GeneratedMessage protobufMessage) {
@@ -438,13 +454,17 @@ public class ProjectOverviewController {
                 });
     }
 
-    private void initPopulateTreeTableView(TreeTableViewWithItems<ProtobufProperty> treeTableView, ProtobufProperty protobufProperty) {
+    private void populateTreeTableView(TreeTableViewWithItems<ProtobufProperty> treeTableView, ProtobufProperty protobufProperty) {
 
         // clear selection
         treeTableView.getSelectionModel().clearSelection();
-        
+
         // load items to tree
-        treeTableView.setItems(protobufProperty.getChildren());
+        if (protobufProperty != null) {
+            treeTableView.setItems(protobufProperty.getChildren());
+        } else {
+            treeTableView.setItems(null);
+        }
     }
 
     private void configurePropertiesTree(TreeTableViewWithItems<ProtobufProperty> treeTableView) {
@@ -496,7 +516,7 @@ public class ProjectOverviewController {
         valueColumn.setOnEditCommit(
                 new EventHandler<CellEditEvent<ProtobufProperty, String>>() {
                     @Override
-        public void handle(CellEditEvent<ProtobufProperty, String> t) {
+                    public void handle(CellEditEvent<ProtobufProperty, String> t) {
                         // update row value
                         t.getRowValue().getValue().setValue(t.getNewValue());
                     }
@@ -505,7 +525,7 @@ public class ProjectOverviewController {
         // configure row context menu
         Callback<ProtobufProperty, List<MenuItem>> rowMenuItemFactory = new Callback<ProtobufProperty, List<MenuItem>>() {
             @Override
-        public List<MenuItem> call(final ProtobufProperty protobufProperty) {
+            public List<MenuItem> call(final ProtobufProperty protobufProperty) {
 
                 // create menu-items list to return
                 ArrayList<MenuItem> menuItems = new ArrayList<>();
@@ -519,7 +539,7 @@ public class ProjectOverviewController {
                     // set event handler
                     addItemMenuItem.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
-        public void handle(ActionEvent event) {
+                        public void handle(ActionEvent event) {
                             addNewSubItem(protobufProperty, protobufProperty.getChildren().size());
                             mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(false);
                         }
@@ -538,7 +558,7 @@ public class ProjectOverviewController {
                     // set event handler
                     addNewItemBeforeMenuItem.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
-        public void handle(ActionEvent event) {
+                        public void handle(ActionEvent event) {
                             addNewSubItem(parentProtobufProperty, parentChildren.indexOf(protobufProperty));
                             mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(false);
                         }
@@ -551,7 +571,7 @@ public class ProjectOverviewController {
                     // set event handler
                     addNewItemAfterMenuItem.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
-        public void handle(ActionEvent event) {
+                        public void handle(ActionEvent event) {
                             addNewSubItem(parentProtobufProperty, parentChildren.indexOf(protobufProperty) + 1);
                             mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(false);
                         }
@@ -564,7 +584,7 @@ public class ProjectOverviewController {
                     // set event handler
                     removeItemMenuItem.setOnAction(new EventHandler<ActionEvent>() {
                         @Override
-        public void handle(ActionEvent event) {
+                        public void handle(ActionEvent event) {
 
                             // remove item from specfic location 
                             int currentIndex = parentChildren.indexOf(protobufProperty);
@@ -574,7 +594,7 @@ public class ProjectOverviewController {
                             for (int i = currentIndex; i < parentChildren.size(); i++) {
                                 parentChildren.get(i).setName("[" + Integer.toString(i + 1) + "]");
                             }
-                            
+
                             mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(false);
                         }
                     });
