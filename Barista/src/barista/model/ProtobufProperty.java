@@ -17,7 +17,7 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
     public ProtobufProperty(ProtobufProperty parent) {
 
         this.parent = parent;
-  
+
         // listen on hasValue changes
         hasValueProperty().addListener(
                 (observable, oldValue, newValue) -> {
@@ -83,21 +83,21 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
     // </editor-fold>
 
     // <editor-fold desc="listItemType property" defaultstate="collapsed">
-        private final StringProperty listItemtype = new SimpleStringProperty();
+    private final StringProperty listItemtype = new SimpleStringProperty();
 
-        public final String getListItemType() {
-            return listItemtype.get();
-        }
+    public final String getListItemType() {
+        return listItemtype.get();
+    }
 
-        public final void setListItemType(String value) {
-            this.listItemtype.set(value);
-        }
+    public final void setListItemType(String value) {
+        this.listItemtype.set(value);
+    }
 
-        public StringProperty listItemtypeProperty() {
-            return listItemtype;
-        }
+    public StringProperty listItemtypeProperty() {
+        return listItemtype;
+    }
         // </editor-fold>
-    
+
     // <editor-fold desc="hasValue property" defaultstate="collapsed">
     private final BooleanProperty hasValue = new SimpleBooleanProperty();
 
@@ -212,12 +212,12 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
 
     // <editor-fold desc="parent property" defaultstate="collapsed">
     private final ProtobufProperty parent;
-    
+
     public final ProtobufProperty getParent() {
         return parent;
     }
     // </editor-fold>
-    
+
     // <editor-fold desc="children property" defaultstate="collapsed">
     /**
      * The data as an observable list of Configurations.
@@ -237,17 +237,16 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
 
     // <editor-fold desc="descriptor property" defaultstate="collapsed">
     private Descriptor descriptor;
-    
+
     public final Descriptor getDescriptor() {
         return descriptor;
     }
-    
+
     public final void setDescriptor(Descriptor value) {
         this.descriptor = value;
     }
     // </editor-fold>
-    
-    
+
     /**
      * Intended only for debugging.
      *

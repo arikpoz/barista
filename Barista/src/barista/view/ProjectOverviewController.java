@@ -6,8 +6,8 @@ import barista.model.Configuration;
 import barista.model.ProtobufProperty;
 import caffe.Caffe.NetParameter;
 import caffe.Caffe.SolverParameter;
-import com.google.protobuf.Descriptors;
 import com.google.protobuf.Descriptors.Descriptor;
+import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.DynamicMessage;
 import com.google.protobuf.GeneratedMessage;
@@ -19,13 +19,10 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -106,11 +103,11 @@ public class ProjectOverviewController {
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
 
         // clear configuration details
-        showConfigurationDetails(null, null);
+        showConfigurationDetails(null, null, false);
 
         // listen for selection changes and show the configuration details when changed
         configurationTable.getSelectionModel().selectedItemProperty().addListener(
-                (observable, oldValue, newValue) -> showConfigurationDetails(newValue, oldValue));
+                (observable, oldValue, newValue) -> showConfigurationDetails(newValue, oldValue, false));
 
         // configure properties trees 
         configurePropertiesTree(solverTreeTableView);
@@ -171,7 +168,55 @@ public class ProjectOverviewController {
     @FXML
     private void handleSaveConfigurationSettingsAction(ActionEvent event) {
 
-        // TODO: handle saving configuration
+        // get current configuration
+        Configuration configuration = mainApp.getCurrentConfiguration();
+
+        // save solver file
+        File solverFile = findSolverFile(configuration.getName());
+        if (solverFile != null) {
+
+            // get updated solver parameter object
+            Descriptor solverParameterDescriptor = SolverParameter.getDescriptor();
+            DynamicMessage solverParameter = loadProtobufPropertyToProtoObject(configuration.getSolverProtobufProperty(), solverParameterDescriptor);
+
+            // write solver object to file
+            String solverFileName = solverFile.getAbsolutePath();
+            try (FileWriter fileWriter = new FileWriter(solverFileName)) {
+                TextFormat.print(solverParameter, fileWriter);
+                fileWriter.flush();
+            } catch (IOException ex) {
+                Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", solverFileName), ex);
+            }
+
+            Descriptor netParameterDescriptor = NetParameter.getDescriptor();
+
+            // get updated train parameter object
+            DynamicMessage trainParameter = loadProtobufPropertyToProtoObject(configuration.getTrainProtobufProperty(), netParameterDescriptor);
+
+            // write train object to file
+            FieldDescriptor trainNetFieldDescriptor = solverParameterDescriptor.findFieldByName("train_net");
+            String trainFileName = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getName(), solverParameter.getField(trainNetFieldDescriptor).toString()).toString();
+            try (FileWriter fileWriter = new FileWriter(trainFileName)) {
+                TextFormat.print(trainParameter, fileWriter);
+                fileWriter.flush();
+            } catch (IOException ex) {
+                Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", trainFileName), ex);
+            }
+
+            // get updated test parameter object
+            DynamicMessage testParameter = loadProtobufPropertyToProtoObject(configuration.getTestProtobufProperty(), netParameterDescriptor);
+
+            // write test object to file
+            FieldDescriptor testNetFieldDescriptor = solverParameterDescriptor.findFieldByName("test_net");
+            String testFileName = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getName(), solverParameter.getField(testNetFieldDescriptor).toString()).toString();
+            try (FileWriter fileWriter = new FileWriter(testFileName)) {
+                TextFormat.print(testParameter, fileWriter);
+                fileWriter.flush();
+            } catch (IOException ex) {
+                Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", testFileName), ex);
+            }
+        }
+
         // mark current configuration as unchanged
         mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(true);
     }
@@ -179,7 +224,12 @@ public class ProjectOverviewController {
     @FXML
     private void handleRevertConfigurationSettingsAction(ActionEvent event) {
 
-        // TODO: handle revert configuration
+        // get current configuration
+        Configuration configuration = mainApp.getCurrentConfiguration();
+
+        // force reload configuration from file
+        showConfigurationDetails(configuration, configuration, true);
+
         // mark current configuration as unchanged
         mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(true);
     }
@@ -215,14 +265,14 @@ public class ProjectOverviewController {
      *
      * @param configuration the configuration or null
      */
-    private void showConfigurationDetails(Configuration newConfiguration, Configuration oldConfiguration) {
+    private void showConfigurationDetails(Configuration newConfiguration, Configuration oldConfiguration, boolean forceLoad) {
         if (newConfiguration != null) {
             // Fill the labels with info from the configuration object.
 
             mainApp.setCurrentConfiguration(newConfiguration);
 
             // check if we already loaded this configuration
-            if (!newConfiguration.getIsLoaded()) {
+            if ((!newConfiguration.getIsLoaded()) || (forceLoad)) {
                 // handle case when configuration is not loaded
 
                 // find solver file name
@@ -276,6 +326,109 @@ public class ProjectOverviewController {
         } else {
             // configuration is null
         }
+    }
+
+    private static EnumValueDescriptor toEnumValueDescriptor(FieldDescriptor fieldDescriptor, String name) {
+        EnumValueDescriptor out = fieldDescriptor.getEnumType().findValueByName(name);
+        if (out == null) {
+            throw new IllegalArgumentException(String.format("Failed to convert string '%s'" + " to enum value of type '%s'", name, fieldDescriptor.getEnumType().getFullName()));
+        }
+        return out;
+    }
+
+    private DynamicMessage loadProtobufPropertyToProtoObject(ProtobufProperty rootProtobufProperty, Descriptor descriptor) {
+
+        // generate Builder object for DynamicMessage
+        DynamicMessage.Builder dynamicMessageBuilder = DynamicMessage.newBuilder(descriptor);
+
+        // go over children of rootProtobufProperty
+        for (ProtobufProperty childProtobufProperty : rootProtobufProperty.getChildren()) {
+
+            // get fieldDescriptor by name
+            FieldDescriptor currentFieldDescriptor = descriptor.findFieldByName(childProtobufProperty.getName());
+
+            // if field has value
+            if (childProtobufProperty.getHasValue()) {
+                // handle repeated message
+                if ((childProtobufProperty.getIsMessage()) && (childProtobufProperty.getIsRepeated())) {
+
+                    for (ProtobufProperty grandChildProtobufProperty : childProtobufProperty.getChildren()) {
+
+                        Object valueToSet = loadProtobufPropertyToProtoObject(grandChildProtobufProperty, grandChildProtobufProperty.getDescriptor());
+                        dynamicMessageBuilder.addRepeatedField(currentFieldDescriptor, valueToSet);
+                    }
+                } else if (childProtobufProperty.getIsRepeated()) {
+                    // handle simple repeated
+
+                    for (ProtobufProperty grandChildProtobufProperty : childProtobufProperty.getChildren()) {
+
+                        Object valueToSet = convertStringToValue(grandChildProtobufProperty.getType(), grandChildProtobufProperty.getValue(), currentFieldDescriptor);
+                        dynamicMessageBuilder.addRepeatedField(currentFieldDescriptor, valueToSet);
+                    }
+
+                } else if (childProtobufProperty.getIsMessage()) {
+                    // handle message
+                    Object valueToSet = loadProtobufPropertyToProtoObject(childProtobufProperty, childProtobufProperty.getDescriptor());
+                    dynamicMessageBuilder.setField(currentFieldDescriptor, valueToSet);
+
+                } else {
+                    // handle simple value
+                    Object valueToSet = convertStringToValue(childProtobufProperty.getType(), childProtobufProperty.getValue(), currentFieldDescriptor);
+                    dynamicMessageBuilder.setField(currentFieldDescriptor, valueToSet);
+                }
+
+            }
+        }
+
+        return dynamicMessageBuilder.build();
+    }
+
+    private Object convertStringToValue(String valueType, String valueString, FieldDescriptor fieldDescriptor) {
+        Object valueToSet = null;
+
+        switch (valueType.toLowerCase()) {
+            case "string":
+                valueToSet = valueString;
+                break;
+
+            case "int32":
+                valueToSet = Integer.parseInt(valueString);
+                break;
+
+            case "uint32":
+                valueToSet = Integer.parseUnsignedInt(valueString);
+                break;
+
+            case "int64":
+                valueToSet = Long.parseLong(valueString);
+                break;
+
+            case "float":
+                valueToSet = Float.parseFloat(valueString);
+                break;
+
+            case "bool":
+                valueToSet = Boolean.parseBoolean(valueString);
+                break;
+
+            case "bytes":
+                throw new UnsupportedOperationException("NOT IMPLEMENTED (but could be..)!");
+
+            case "enum":
+                valueToSet = toEnumValueDescriptor(fieldDescriptor, valueString);
+                break;
+
+            default:
+                throw new UnsupportedOperationException("NOT IMPLEMENTED (but could be..)!");
+
+        }
+
+        return valueToSet;
+    }
+
+    private GeneratedMessage loadProtobufPropertyToProtoObject(ProtobufProperty rootProtobufProperty) {
+
+        return null;
     }
 
     private ProtobufProperty initLoadProtoObjectToProtobufProperty(String rootName, GeneratedMessage protobufMessage) {
