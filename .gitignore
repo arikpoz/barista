@@ -1,3 +1,16 @@
+/ThirdParty/protobuf-2.6.0/src/google/protobuf/compiler/.deps/parser.Plo
+/ThirdParty/protobuf-2.6.0/src/google/protobuf/.libs/descriptor.o
+/ThirdParty/protobuf-2.6.0/src/google/protobuf/.deps/.dirstamp
+/ThirdParty/protobuf-2.6.0/src/Makefile
+/ThirdParty/protobuf-2.6.0/libtool
+/ThirdParty/protobuf-2.6.0/src/.libs/libprotobuf-lite.a
+/ThirdParty/protobuf-2.6.0/protobuf.pc
+/ThirdParty/protobuf-2.6.0/protobuf-lite.pc
+/ThirdParty/protobuf-2.6.0/gtest/Makefile
+/ThirdParty/protobuf-2.6.0/config.status
+/ThirdParty/protobuf-2.6.0/config.log
+/ThirdParty/protobuf-2.6.0/config.h
+/ThirdParty/protobuf-2.6.0/Makefile
 *.class
 
 # Mobile Tools for Java (J2ME)
