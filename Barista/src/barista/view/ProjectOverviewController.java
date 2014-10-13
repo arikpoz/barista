@@ -167,20 +167,23 @@ public class ProjectOverviewController {
     }
 
     @FXML
-    private void handleRunConfigurationAction(ActionEvent event){
-        
+    private void handleRunConfigurationAction(ActionEvent event) {
+
         // get current configuration
         Configuration configuration = mainApp.getCurrentConfiguration();
-        
-        String solverFileName = "icdar2003-50words_solver.prototxt";
+
+        String solverFileName = configuration.getSolverFileName();
         String trainTool = "../../build/tools/train_net.bin";
-        String commandLine = String.format("%s %s", trainTool, solverFileName);
-        
-                
-                
-        
+        String commandLine = trainTool + " " + solverFileName;
+
+        try {
+            // run command line
+            Runtime.getRuntime().exec(commandLine);
+        } catch (IOException ex) {
+            Logger.getLogger(ProjectOverviewController.class.getName()).log(Level.SEVERE, "Failed while running command: " + commandLine, ex);
+        }
     }
-    
+
     @FXML
     private void handleSaveConfigurationSettingsAction(ActionEvent event) {
 
