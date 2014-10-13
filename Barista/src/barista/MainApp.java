@@ -29,7 +29,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
 // test git
-
 /**
  *
  * @author Arik Poznanski
@@ -127,8 +126,8 @@ public class MainApp extends Application {
         projectDescriptionProperty().addListener(
                 (observable, oldValue, newValue) -> {
                     // if we have a selected folder
-                    if (getProjectFolder() != "") {
-                        if (oldValue != newValue) {
+                    if (!getProjectFolder().equalsIgnoreCase("")) {
+                        if (!oldValue.equals(newValue)) {
                             setProjectSettingsAreUnchanged(false);
                         }
                     }
@@ -207,7 +206,7 @@ public class MainApp extends Application {
     // get project settings file name
     public String getProjectSettingsFileName() {
         String currentProjectFolder = getProjectFolder();
-        if ((currentProjectFolder != null) && (currentProjectFolder != "")) {
+        if ((currentProjectFolder != null) && (!currentProjectFolder.equalsIgnoreCase(""))) {
             Path projectSettingsFilePath = FileSystems.getDefault().getPath(getProjectFolder(), "project.settings");
             return projectSettingsFilePath.toString();
         }
@@ -322,7 +321,7 @@ public class MainApp extends Application {
         return applicationSettingsFilePath.toString();
     }
 
-    public void loadProjectSettings(){
+    public void loadProjectSettings() {
         // load project settings from file
         BaristaMessages.ProjectSettings projectSettings = readProjectSettings();
         if (projectSettings != null) {
@@ -332,7 +331,7 @@ public class MainApp extends Application {
         // mark project settings as unchanged, since we just load them
         setProjectSettingsAreUnchanged(true);
     }
-    
+
     public void loadProject(String projectDirectory) {
         // update project directory label
         setProjectFolder(projectDirectory);

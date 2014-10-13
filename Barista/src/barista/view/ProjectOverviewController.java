@@ -20,6 +20,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
@@ -426,11 +427,6 @@ public class ProjectOverviewController {
         return valueToSet;
     }
 
-    private GeneratedMessage loadProtobufPropertyToProtoObject(ProtobufProperty rootProtobufProperty) {
-
-        return null;
-    }
-
     private ProtobufProperty initLoadProtoObjectToProtobufProperty(String rootName, GeneratedMessage protobufMessage) {
 
         Descriptor descriptor = protobufMessage.getDescriptorForType();
@@ -593,7 +589,7 @@ public class ProjectOverviewController {
         // listen for changes in hasValue property
         protobufProperty.hasValueProperty().addListener(
                 (observable, oldValue, newValue) -> {
-                    if (oldValue != newValue) {
+                    if (!Objects.equals(oldValue, newValue)) {
                         mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(false);
                     }
                 });

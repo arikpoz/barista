@@ -50,7 +50,7 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
                 });
     }
 
-    // <editor-fold desc="name property" defaultstate="collapsed">
+    // <editor-fold desc="name javafx property" defaultstate="collapsed">
     private final StringProperty name = new SimpleStringProperty();
 
     public final String getName() {
@@ -66,7 +66,7 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
     }
     // </editor-fold>
 
-    // <editor-fold desc="type property" defaultstate="collapsed">
+    // <editor-fold desc="type javafx property" defaultstate="collapsed">
     private final StringProperty type = new SimpleStringProperty();
 
     public final String getType() {
@@ -82,7 +82,7 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
     }
     // </editor-fold>
 
-    // <editor-fold desc="listItemType property" defaultstate="collapsed">
+    // <editor-fold desc="listItemType javafx property" defaultstate="collapsed">
     private final StringProperty listItemtype = new SimpleStringProperty();
 
     public final String getListItemType() {
@@ -98,7 +98,7 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
     }
         // </editor-fold>
 
-    // <editor-fold desc="hasValue property" defaultstate="collapsed">
+    // <editor-fold desc="hasValue javafx property" defaultstate="collapsed">
     private final BooleanProperty hasValue = new SimpleBooleanProperty();
 
     public final Boolean getHasValue() {
@@ -114,7 +114,7 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
     }
     // </editor-fold>
 
-    // <editor-fold desc="value property" defaultstate="collapsed">
+    // <editor-fold desc="value javafx property" defaultstate="collapsed">
     private final StringProperty value = new SimpleStringProperty();
 
     public final String getValue() {
@@ -130,7 +130,7 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
     }
     // </editor-fold>
 
-    // <editor-fold desc="hasDefaultValue property" defaultstate="collapsed">
+    // <editor-fold desc="hasDefaultValue javafx property" defaultstate="collapsed">
     private final BooleanProperty hasDefaultValue = new SimpleBooleanProperty();
 
     public final Boolean getHasDefaultValue() {
@@ -146,7 +146,7 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
     }
     // </editor-fold>
 
-    // <editor-fold desc="defaultValue property" defaultstate="collapsed">
+    // <editor-fold desc="defaultValue javafx property" defaultstate="collapsed">
     private final StringProperty defaultValue = new SimpleStringProperty();
 
     public final String getDefaultValue() {
@@ -162,7 +162,7 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
     }
     // </editor-fold>
 
-    // <editor-fold desc="isMessage property" defaultstate="collapsed">
+    // <editor-fold desc="isMessage javafx property" defaultstate="collapsed">
     private final BooleanProperty isMessage = new SimpleBooleanProperty();
 
     public final Boolean getIsMessage() {
@@ -178,7 +178,7 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
     }
     // </editor-fold>
 
-    // <editor-fold desc="isOptional property" defaultstate="collapsed">
+    // <editor-fold desc="isOptional javafx property" defaultstate="collapsed">
     private final BooleanProperty isOptional = new SimpleBooleanProperty();
 
     public final Boolean getIsOptional() {
@@ -194,7 +194,7 @@ public class ProtobufProperty implements HierarchyData<ProtobufProperty> {
     }
     // </editor-fold>
 
-    // <editor-fold desc="isRepeated property" defaultstate="collapsed">
+    // <editor-fold desc="isRepeated javafx property" defaultstate="collapsed">
     private final BooleanProperty isRepeated = new SimpleBooleanProperty();
 
     public final Boolean getIsRepeated() {
