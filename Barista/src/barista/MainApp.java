@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -127,7 +128,7 @@ public class MainApp extends Application {
                 (observable, oldValue, newValue) -> {
                     // if we have a selected folder
                     if (!getProjectFolder().equalsIgnoreCase("")) {
-                        if (!oldValue.equals(newValue)) {
+                        if (oldValue == null ? newValue != null : !oldValue.equals(newValue)) {
                             setProjectSettingsAreUnchanged(false);
                         }
                     }
@@ -358,6 +359,31 @@ public class MainApp extends Application {
         loadConfigurations();
     }
 
+    private String findSolverFileName(String configurationName) {
+
+        Path configurationFilePath = FileSystems.getDefault().getPath(getProjectFolder(), configurationName);
+        File folder = new File(configurationFilePath.toString());
+
+        FilenameFilter solveFilter = new FilenameFilter() {
+            public boolean accept(File dir, String name) {
+                String lowercaseName = name.toLowerCase();
+                if ((lowercaseName.endsWith(".prototxt")) && (lowercaseName.contains("solver"))) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        };
+
+        File[] files = folder.listFiles(solveFilter);
+
+        if (files.length == 0) {
+            return null;
+        } else {
+            return files[0].getAbsolutePath();
+        }
+    }
+
     private void loadConfigurations() {
         // enumerate sub-folders in project folder
         File folder = new File(getProjectFolder());
@@ -366,7 +392,17 @@ public class MainApp extends Application {
         // for each file in project folder
         for (File file : files) {
             if (file.isDirectory()) {
-                configurationList.add(new Configuration(file.getName()));
+    
+                String configurationName = file.getName();
+                
+                // find solver file name
+                String solverFileName = findSolverFileName(configurationName);
+
+                // only add configurations which have a solver file
+                if (solverFileName != null)
+                {
+                    configurationList.add(new Configuration(configurationName, solverFileName));
+                }
             }
         }
     }

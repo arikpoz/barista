@@ -91,6 +91,7 @@
                                                 <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
                                             </padding>
                                             <children>
+                                                <Button fx:id="runConfigurationButton" onAction="#handleRunConfigurationAction" text="Run" />
                                                 <Button fx:id="saveConfigurationSettingsButton" onAction="#handleSaveConfigurationSettingsAction" text="Save changes" />
                                                 <Button fx:id="revertConfigurationSettingsButton" onAction="#handleRevertConfigurationSettingsAction" text="Revert changes" />
                                             </children>

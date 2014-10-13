@@ -167,21 +167,35 @@ public class ProjectOverviewController {
     }
 
     @FXML
+    private void handleRunConfigurationAction(ActionEvent event){
+        
+        // get current configuration
+        Configuration configuration = mainApp.getCurrentConfiguration();
+        
+        String solverFileName = "icdar2003-50words_solver.prototxt";
+        String trainTool = "../../build/tools/train_net.bin";
+        String commandLine = String.format("%s %s", trainTool, solverFileName);
+        
+                
+                
+        
+    }
+    
+    @FXML
     private void handleSaveConfigurationSettingsAction(ActionEvent event) {
 
         // get current configuration
         Configuration configuration = mainApp.getCurrentConfiguration();
 
         // save solver file
-        File solverFile = findSolverFile(configuration.getName());
-        if (solverFile != null) {
+        String solverFileName = configuration.getSolverFileName();
+        if (solverFileName != null) {
 
             // get updated solver parameter object
             Descriptor solverParameterDescriptor = SolverParameter.getDescriptor();
             DynamicMessage solverParameter = loadProtobufPropertyToProtoObject(configuration.getSolverProtobufProperty(), solverParameterDescriptor);
 
             // write solver object to file
-            String solverFileName = solverFile.getAbsolutePath();
             try (FileWriter fileWriter = new FileWriter(solverFileName)) {
                 TextFormat.print(solverParameter, fileWriter);
                 fileWriter.flush();
@@ -235,31 +249,6 @@ public class ProjectOverviewController {
         mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(true);
     }
 
-    private File findSolverFile(String configurationName) {
-
-        Path configurationFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configurationName);
-        File folder = new File(configurationFilePath.toString());
-
-        FilenameFilter solveFilter = new FilenameFilter() {
-            public boolean accept(File dir, String name) {
-                String lowercaseName = name.toLowerCase();
-                if ((lowercaseName.endsWith(".prototxt")) && (lowercaseName.contains("solver"))) {
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        };
-
-        File[] files = folder.listFiles(solveFilter);
-
-        if (files.length == 0) {
-            return null;
-        } else {
-            return files[0];
-        }
-    }
-
     /**
      * Fills all text fields to show details about the configuration. If the
      * specified configuration is null, all text fields are cleared.
@@ -277,11 +266,11 @@ public class ProjectOverviewController {
                 // handle case when configuration is not loaded
 
                 // find solver file name
-                File solverFile = findSolverFile(newConfiguration.getName());
-                if (solverFile != null) {
+                String solverFileName = newConfiguration.getSolverFileName();
+                if (solverFileName != null) {
 
                     // build solver object
-                    SolverParameter solverParameter = mainApp.readSolverParameter(solverFile.getAbsolutePath());
+                    SolverParameter solverParameter = mainApp.readSolverParameter(solverFileName);
 
                     // build train object
                     Path trainFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getName(), solverParameter.getTrainNet());

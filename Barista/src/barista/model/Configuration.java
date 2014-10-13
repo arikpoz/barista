@@ -15,7 +15,7 @@ public class Configuration {
      * Default constructor.
      */
     public Configuration() {
-        this(null);
+        this(null, null);
     }
 
     /**
@@ -23,8 +23,9 @@ public class Configuration {
      *
      * @param name
      */
-    public Configuration(String name) {
+    public Configuration(String name, String solverFileName) {
         this.name = new SimpleStringProperty(name);
+        this.solverFileName = new SimpleStringProperty(solverFileName);
         this.setConfigurationSettingsAreUnchanged(true);
         this.setIsLoaded(false);
     }
@@ -42,6 +43,22 @@ public class Configuration {
 
     public StringProperty nameProperty() {
         return name;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="solverFileName javafx property" defaultstate="collapsed">
+    private final StringProperty solverFileName;
+
+    public final String getSolverFileName() {
+        return solverFileName.get();
+    }
+
+    public final void setSolverFileName(String value) {
+        this.solverFileName.set(value);
+    }
+
+    public StringProperty solverFileNameProperty() {
+        return solverFileName;
     }
     // </editor-fold>
 
