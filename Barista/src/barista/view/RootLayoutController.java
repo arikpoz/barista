@@ -6,7 +6,6 @@ import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
@@ -16,9 +15,6 @@ import javafx.stage.Window;
  * @author Arik Poznanski
  */
 public class RootLayoutController {
-
-    @FXML
-    private MenuBar menuBar;
 
     @FXML
     private MenuItem openProjectMenuItem;
@@ -47,15 +43,14 @@ public class RootLayoutController {
     private void handleOpenProjectAction(ActionEvent event) {
         // select project folder
         DirectoryChooser directoryChooser = new DirectoryChooser();
-        Window currentWindow = menuBar.getScene().getWindow();
+        Window currentWindow = mainApp.getPrimaryStage().getOwner();
         File selectedFolder = directoryChooser.showDialog(currentWindow);
 
         if (selectedFolder != null) {
             // use selected project directory
             mainApp.loadProject(selectedFolder.getAbsolutePath());
         } else {
-            // empty project folder
-            mainApp.loadProject("");
+            // don't change loaded project
         }
     }
 

@@ -17,10 +17,23 @@
                                 <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
                             </padding>
                             <children>
+                                <!-- caffe folder -->
                                 <Label text="Caffe folder: " GridPane.columnIndex="0" GridPane.rowIndex="0" />
                                 <TextField fx:id="caffeFolderTextField" GridPane.columnIndex="1" GridPane.rowIndex="0" /> 
+                                <Button text="..." onAction="#handleSelectCaffeFolderAction" GridPane.columnIndex="2" GridPane.rowIndex="0">  
+                                    <tooltip> 
+                                        <Tooltip text="Choose caffe folder..." />
+                                    </tooltip>
+                                </Button>
+                                
+                                <!-- last project folder -->
                                 <Label text="Last project folder: " GridPane.columnIndex="0" GridPane.rowIndex="1" />
                                 <TextField fx:id="lastProjectFolderTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" /> 
+                                <Button text="..." onAction="#handleSelectLastProjectFolderAction" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                                    <tooltip> 
+                                        <Tooltip text="Choose last project folder..." />
+                                    </tooltip>
+                                </Button>
                                 
                                 <HBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
                                     <padding>
@@ -36,6 +49,7 @@
                             <columnConstraints>
                                 <ColumnConstraints />
                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints prefWidth="20" />
                             </columnConstraints>
                             <rowConstraints>
                                 <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />

@@ -7,6 +7,7 @@ package barista.view;
 
 import barista.BaristaMessages;
 import barista.MainApp;
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.beans.binding.Bindings;
@@ -19,6 +20,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.Window;
 
 /**
  * FXML Controller class
@@ -133,7 +136,7 @@ public class ApplicationSettingsController implements Initializable {
         // set bindings
         Bindings.bindBidirectional(caffeFolderTextField.textProperty(), caffeFolderProperty());
         Bindings.bindBidirectional(lastProjectFolderTextField.textProperty(), lastProjectFolderProperty());
-        
+
         Bindings.bindBidirectional(saveApplicationSettingsButton.disableProperty(), applicationSettingsAreUnchangedProperty());
     }
 
@@ -157,8 +160,35 @@ public class ApplicationSettingsController implements Initializable {
     private void handleRevertApplicationSettingsAction(ActionEvent event) {
 
         // we don't save application settings, so we effectivly revert the user input
-        
         // load previous screen
         mainApp.showPreviousScreen();
+    }
+
+    @FXML
+    private void handleSelectCaffeFolderAction(ActionEvent event) {
+        // select caffe folder
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        Window currentWindow = mainApp.getPrimaryStage().getOwner();
+        File selectedFolder = directoryChooser.showDialog(currentWindow);
+
+        if (selectedFolder != null) {
+            setCaffeFolder(selectedFolder.getAbsolutePath());
+        } else {
+            // don't change caffe folder setting
+        }
+    }
+
+    @FXML
+    private void handleSelectLastProjectFolderAction(ActionEvent event) {
+        // select last project folder
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        Window currentWindow = mainApp.getPrimaryStage().getOwner();
+        File selectedFolder = directoryChooser.showDialog(currentWindow);
+
+        if (selectedFolder != null) {
+            setLastProjectFolder(selectedFolder.getAbsolutePath());
+        } else {
+            // don't change last project folder setting
+        }
     }
 }

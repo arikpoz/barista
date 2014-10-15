@@ -431,10 +431,18 @@ public class MainApp extends Application {
 
         loadProjectSettings();
 
+        // get current application settings
+        BaristaMessages.ApplicationSettings applicationSettings = readApplicationSettings();
+
         // generate application settings object
-        BaristaMessages.ApplicationSettings.Builder applicationSettingsBuilder = BaristaMessages.ApplicationSettings.newBuilder();
+        BaristaMessages.ApplicationSettings.Builder applicationSettingsBuilder;
+        if (applicationSettings != null) {
+            applicationSettingsBuilder = BaristaMessages.ApplicationSettings.newBuilder(applicationSettings);
+        } else {
+            applicationSettingsBuilder = BaristaMessages.ApplicationSettings.newBuilder();
+        }
         applicationSettingsBuilder.setLastProjectFolder(projectFolder);
-        BaristaMessages.ApplicationSettings applicationSettings = applicationSettingsBuilder.build();
+        applicationSettings = applicationSettingsBuilder.build();
 
         // save application settings
         writeApplicationSettings(applicationSettings);
