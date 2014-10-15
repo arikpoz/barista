@@ -30,8 +30,16 @@
                                         <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
                                     </padding>
                                     <children>
-                                        <Button fx:id="saveProjectSettingsButton" onAction="#handleSaveProjectSettingsAction" text="Save changes"  />
-                                        <Button fx:id="revertProjectSettingsButton" onAction="#handleRevertProjectSettingsAction" text="Revert changes" />
+                                        <Button fx:id="saveProjectSettingsButton" onAction="#handleSaveProjectSettingsAction" text="Save changes">
+                                            <tooltip> 
+                                                <Tooltip text="Save project settings changes" />
+                                            </tooltip>
+                                        </Button>
+                                        <Button fx:id="revertProjectSettingsButton" onAction="#handleRevertProjectSettingsAction" text="Revert changes">
+                                            <tooltip> 
+                                                <Tooltip text="Revert project settings changes" />
+                                            </tooltip>
+                                        </Button>
                                     </children>
                                 </HBox>
 
@@ -91,9 +99,21 @@
                                                 <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
                                             </padding>
                                             <children>
-                                                <Button fx:id="runConfigurationButton" onAction="#handleRunConfigurationAction" text="Run" />
-                                                <Button fx:id="saveConfigurationSettingsButton" onAction="#handleSaveConfigurationSettingsAction" text="Save changes" />
-                                                <Button fx:id="revertConfigurationSettingsButton" onAction="#handleRevertConfigurationSettingsAction" text="Revert changes" />
+                                                <Button fx:id="runConfigurationButton" onAction="#handleRunConfigurationAction" text="Run">
+                                                    <tooltip> 
+                                                        <Tooltip text="Run this configuration" />
+                                                    </tooltip>
+                                                </Button>
+                                                <Button fx:id="saveConfigurationSettingsButton" onAction="#handleSaveConfigurationSettingsAction" text="Save changes">
+                                                    <tooltip> 
+                                                        <Tooltip text="Save configuration settings changes" />
+                                                    </tooltip>
+                                                </Button>
+                                                <Button fx:id="revertConfigurationSettingsButton" onAction="#handleRevertConfigurationSettingsAction" text="Revert changes">
+                                                    <tooltip> 
+                                                        <Tooltip text="Revert configuration settings changes" />
+                                                    </tooltip>
+                                                </Button>
                                             </children>
                                         </HBox>
                                     </bottom>

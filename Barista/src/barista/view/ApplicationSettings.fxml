@@ -40,8 +40,16 @@
                                         <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
                                     </padding>
                                     <children>
-                                        <Button fx:id="saveApplicationSettingsButton" onAction="#handleSaveApplicationSettingsAction" text="Save changes"  />
-                                        <Button fx:id="revertApplicationSettingsButton" onAction="#handleRevertApplicationSettingsAction" text="Cancel" />
+                                        <Button fx:id="saveApplicationSettingsButton" onAction="#handleSaveApplicationSettingsAction" text="Save changes">
+                                            <tooltip> 
+                                                <Tooltip text="Save application settings changes" />
+                                            </tooltip>
+                                        </Button>
+                                        <Button fx:id="revertApplicationSettingsButton" onAction="#handleRevertApplicationSettingsAction" text="Cancel">
+                                            <tooltip> 
+                                                <Tooltip text="Revert application settings changes" />
+                                            </tooltip>
+                                        </Button>
                                     </children>
                                 </HBox>
 
