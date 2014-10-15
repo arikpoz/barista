@@ -4,6 +4,7 @@ import barista.BaristaMessages;
 import barista.MainApp;
 import barista.model.Configuration;
 import barista.model.ProtobufProperty;
+import barista.utils.StringUtils;
 import caffe.Caffe.NetParameter;
 import caffe.Caffe.SolverParameter;
 import com.google.protobuf.Descriptors.Descriptor;
@@ -177,9 +178,17 @@ public class ProjectViewController {
         // get current configuration
         Configuration configuration = mainApp.getCurrentConfiguration();
 
+        // get caffe folder
+        String caffeFolder = mainApp.getCaffeFolder();
+        if (StringUtils.isBlank(caffeFolder))
+        {
+            // TODO: handle invalid caffe folder
+            return;
+        }
+        
         String solverFileName = configuration.getSolverFileName();
-        String trainTool = "../../build/tools/train_net.bin";
-        String commandLine = trainTool + " " + solverFileName;
+        String trainTool = "/build/tools/train_net.bin";
+        String commandLine = caffeFolder + trainTool + " " + solverFileName;
 
         try {
             // run command line

@@ -177,7 +177,7 @@ public class MainApp extends Application {
             // load main view from fxml file.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource("view/MainView.fxml"));
-            mainView = (BorderPane)loader.load();
+            mainView = (BorderPane) loader.load();
 
             // show the scene containing the main view
             Scene scene = new Scene(mainView);
@@ -188,7 +188,7 @@ public class MainApp extends Application {
             controller.setMainApp(this);
 
             primaryStage.show();
-            
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -202,7 +202,7 @@ public class MainApp extends Application {
             // Load project overview.
             FXMLLoader loader = new FXMLLoader();
             loader.setLocation(MainApp.class.getResource("view/ProjectView.fxml"));
-            Node projectView = (Node)loader.load();
+            Node projectView = (Node) loader.load();
 
             // Set project overview into the center of main view.
             mainView.setCenter(projectView);
@@ -318,6 +318,16 @@ public class MainApp extends Application {
         }
 
         return null;
+    }
+
+    // get caffe folder from application settings, or null if no settings exists
+    public String getCaffeFolder() {
+        BaristaMessages.ApplicationSettings applicationSettings = readApplicationSettings();
+        if (applicationSettings == null) {
+            return null;
+        } else {
+            return applicationSettings.getCaffeFolder();
+        }
     }
 
     public BaristaMessages.ApplicationSettings readApplicationSettings() {
