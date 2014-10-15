@@ -461,7 +461,7 @@ public class MainApp extends Application {
 
         File[] files = folder.listFiles(solveFilter);
 
-        if (files.length == 0) {
+        if ((files == null) || (files.length == 0)) {
             return null;
         } else {
             return files[0].getAbsolutePath();
@@ -469,6 +469,10 @@ public class MainApp extends Application {
     }
 
     private void loadConfigurations() {
+
+        // clear old configurations
+        configurationList.clear();
+
         // enumerate sub-folders in project folder
         File folder = new File(getProjectFolder());
         File[] files = folder.listFiles();
