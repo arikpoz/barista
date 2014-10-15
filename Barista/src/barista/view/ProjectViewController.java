@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -124,9 +125,14 @@ public class ProjectViewController {
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
 
-        // Add observable list data to the table
-        configurationTable.setItems(mainApp.getConfigurationList());
+        // Add observable list data to the table, with sorting support 
+        SortedList<Configuration> sortedData = new SortedList<>(mainApp.getConfigurationList());
+        sortedData.comparatorProperty().bind(configurationTable.comparatorProperty());
+        configurationTable.setItems(sortedData);
 
+        // add default sort by name
+        configurationTable.getSortOrder().add(nameColumn);
+        
         // set bindings
         Bindings.bindBidirectional(projectFolderLabel.textProperty(), mainApp.projectFolderProperty());
         Bindings.bindBidirectional(projectDescriptionTextField.textProperty(), mainApp.projectDescriptionProperty());

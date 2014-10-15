@@ -73,7 +73,7 @@
                                     <children>
                                         <TableView fx:id="configurationTable">
                                             <columns>
-                                                <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" />
+                                                <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" sortType="ASCENDING"  />
                                             </columns>
                                             <columnResizePolicy>
                                                 <!-- the following line generates a warning in NetBeans, you can safely ignore it --> 
