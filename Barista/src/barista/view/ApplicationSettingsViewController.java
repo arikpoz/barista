@@ -28,7 +28,7 @@ import javafx.stage.Window;
  *
  * @author Arik
  */
-public class ApplicationSettingsController implements Initializable {
+public class ApplicationSettingsViewController implements Initializable {
 
     // <editor-fold desc="caffeFolder javafx property" defaultstate="collapsed">
     private final StringProperty caffeFolder = new SimpleStringProperty();

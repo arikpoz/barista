@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane id="BorderPane" prefHeight="650" prefWidth="750" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="barista.view.RootLayoutController">
+<BorderPane id="BorderPane" prefHeight="650" prefWidth="750" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="barista.view.MainViewController">
     <top>
         <MenuBar>
             <menus>

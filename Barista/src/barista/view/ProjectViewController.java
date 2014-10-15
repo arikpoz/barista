@@ -48,7 +48,7 @@ import javafx.util.Callback;
  *
  * @author Arik Poznanski
  */
-public class ProjectOverviewController {
+public class ProjectViewController {
 
     @FXML
     private Label projectFolderLabel;
@@ -90,7 +90,7 @@ public class ProjectOverviewController {
      * The constructor. The constructor is called before the initialize()
      * method.
      */
-    public ProjectOverviewController() {
+    public ProjectViewController() {
     }
 
     /**
@@ -152,7 +152,7 @@ public class ProjectOverviewController {
                 TextFormat.print(projectSettings, fileWriter);
                 fileWriter.flush();
             } catch (IOException ex) {
-                Logger.getLogger(ProjectOverviewController.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", projectSettingsFileName), ex);
+                Logger.getLogger(ProjectViewController.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", projectSettingsFileName), ex);
             }
 
             mainApp.setProjectSettingsAreUnchanged(true);
@@ -179,7 +179,7 @@ public class ProjectOverviewController {
             // run command line
             Runtime.getRuntime().exec(commandLine);
         } catch (IOException ex) {
-            Logger.getLogger(ProjectOverviewController.class.getName()).log(Level.SEVERE, "Failed while running command: " + commandLine, ex);
+            Logger.getLogger(ProjectViewController.class.getName()).log(Level.SEVERE, "Failed while running command: " + commandLine, ex);
         }
     }
 

@@ -1,9 +1,9 @@
 package barista;
 
 import barista.model.Configuration;
-import barista.view.ApplicationSettingsController;
-import barista.view.ProjectOverviewController;
-import barista.view.RootLayoutController;
+import barista.view.ApplicationSettingsViewController;
+import barista.view.ProjectViewController;
+import barista.view.MainViewController;
 import caffe.Caffe.NetParameter;
 import caffe.Caffe.SolverParameter;
 import com.google.protobuf.TextFormat;
@@ -38,7 +38,7 @@ import javafx.stage.Stage;
 public class MainApp extends Application {
 
     private Stage primaryStage;
-    private BorderPane rootLayout;
+    private BorderPane mainView;
 
     // <editor-fold desc="projectFolder javafx property" defaultstate="collapsed">
     private final StringProperty projectFolder = new SimpleStringProperty();
@@ -146,9 +146,9 @@ public class MainApp extends Application {
         this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Barista v0.1");
 
-        initRootLayout();
+        initMainView();
 
-        showProjectOverview();
+        showProjectView();
 
         projectDescriptionProperty().addListener(
                 (observable, oldValue, newValue) -> {
@@ -170,47 +170,48 @@ public class MainApp extends Application {
     }
 
     /**
-     * Initializes the root layout.
+     * Initializes the main view
      */
-    public void initRootLayout() {
+    public void initMainView() {
         try {
-            // Load root layout from fxml file.
+            // load main view from fxml file.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainApp.class.getResource("view/RootLayout.fxml"));
-            rootLayout = (BorderPane) loader.load();
+            loader.setLocation(MainApp.class.getResource("view/MainView.fxml"));
+            mainView = (BorderPane)loader.load();
 
-            // Show the scene containing the root layout.
-            Scene scene = new Scene(rootLayout);
+            // show the scene containing the main view
+            Scene scene = new Scene(mainView);
             primaryStage.setScene(scene);
 
-            // Give the controller access to the main app.
-            RootLayoutController controller = loader.getController();
+            // give the controller access to the main app.
+            MainViewController controller = loader.getController();
             controller.setMainApp(this);
 
             primaryStage.show();
+            
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Shows the project overview inside the root layout.
+     * Shows the project view inside the main view.
      */
-    public void showProjectOverview() {
+    public void showProjectView() {
         try {
             // Load project overview.
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainApp.class.getResource("view/ProjectOverview.fxml"));
-            Node projectOverview = (Node) loader.load();
+            loader.setLocation(MainApp.class.getResource("view/ProjectView.fxml"));
+            Node projectView = (Node)loader.load();
 
-            // Set project overview into the center of root layout.
-            rootLayout.setCenter(projectOverview);
+            // Set project overview into the center of main view.
+            mainView.setCenter(projectView);
 
             // set IsApplicationSettingsOpened flag to false, which enables the relevant menu items
             setIsApplicationSettingsOpened(false);
 
             // Give the controller access to the main app.
-            ProjectOverviewController controller = loader.getController();
+            ProjectViewController controller = loader.getController();
             controller.setMainApp(this);
 
         } catch (IOException e) {
@@ -221,33 +222,33 @@ public class MainApp extends Application {
     private void saveCurrentScreenState() {
 
         // save current screen so we can easily get back to it
-        previousScreen = rootLayout.getCenter();
+        previousScreen = mainView.getCenter();
 
         // save state of isApplicationSettingsOpened flag
         previousIsApplicationSettingsOpened = getIsApplicationSettingsOpened();
     }
 
     /**
-     * Shows the application settings inside the root layout.
+     * Shows the application settings inside the main view.
      */
     public void showApplicationSettings() {
         try {
             // load application settings screen
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainApp.class.getResource("view/ApplicationSettings.fxml"));
+            loader.setLocation(MainApp.class.getResource("view/ApplicationSettingsView.fxml"));
             Node applicationSettings = (Node) loader.load();
 
             // save current screen state, so we can get back to it when we close the application settings screen
             saveCurrentScreenState();
 
-            // set application settings into the center of root layout.
-            rootLayout.setCenter(applicationSettings);
+            // set application settings into the center of main view.
+            mainView.setCenter(applicationSettings);
 
             // set IsApplicationSettingsOpened flag to true, which disabled the relevant menu items
             setIsApplicationSettingsOpened(true);
 
             // give the controller access to the main app.
-            ApplicationSettingsController controller = loader.getController();
+            ApplicationSettingsViewController controller = loader.getController();
             controller.setMainApp(this);
 
         } catch (IOException e) {
@@ -256,12 +257,12 @@ public class MainApp extends Application {
     }
 
     /**
-     * Shows the previous screen inside the root layout.
+     * Shows the previous screen inside the main view.
      */
     public void showPreviousScreen() {
 
-        // set previous screen into the center of root layout.
-        rootLayout.setCenter(previousScreen);
+        // set previous screen into the center of main view
+        mainView.setCenter(previousScreen);
 
         // set IsApplicationSettingsOpened flag to true, which disabled the relevant menu items
         setIsApplicationSettingsOpened(previousIsApplicationSettingsOpened);

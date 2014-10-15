@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane id="rootPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="barista.view.ApplicationSettingsController">
+<BorderPane id="rootPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="barista.view.ApplicationSettingsViewController">
     <top>
         <TitledPane animated="false" collapsible="false" text="Application Settings">
             <content>

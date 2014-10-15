@@ -14,7 +14,7 @@ import javafx.stage.Window;
  *
  * @author Arik Poznanski
  */
-public class RootLayoutController {
+public class MainViewController {
 
     @FXML
     private MenuItem openProjectMenuItem;
