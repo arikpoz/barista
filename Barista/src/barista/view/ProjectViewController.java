@@ -45,6 +45,8 @@ import javafx.scene.control.cell.CheckBoxTreeTableCell;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.util.Callback;
+import org.controlsfx.control.action.Action;
+import org.controlsfx.dialog.Dialogs;
 
 /**
  *
@@ -133,7 +135,7 @@ public class ProjectViewController {
 
         // add default sort by name
         configurationTable.getSortOrder().add(nameColumn);
-        
+
         // set bindings
         Bindings.bindBidirectional(projectFolderLabel.textProperty(), mainApp.projectFolderProperty());
         Bindings.bindBidirectional(projectDescriptionTextField.textProperty(), mainApp.projectDescriptionProperty());
@@ -180,12 +182,17 @@ public class ProjectViewController {
 
         // get caffe folder
         String caffeFolder = mainApp.getCaffeFolder();
-        if (StringUtils.isBlank(caffeFolder))
-        {
-            // TODO: handle invalid caffe folder
+        // TODO uncomment this before commit
+        if (StringUtils.isBlank(caffeFolder)){
+            Dialogs.create()
+                    .title("Caffe Folder Not Chosen")
+                    .masthead("Caffe Folder Setting is Empty")
+                    .message("Please go to application settings and choose a valid caffe folder.")
+                    .showWarning();
+
             return;
         }
-        
+
         String solverFileName = configuration.getSolverFileName();
         String trainTool = "/build/tools/train_net.bin";
         String commandLine = caffeFolder + trainTool + " " + solverFileName;
