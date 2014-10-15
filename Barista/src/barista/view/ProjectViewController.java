@@ -186,18 +186,60 @@ public class ProjectViewController {
         if (StringUtils.isBlank(caffeFolder)){
             Dialogs.create()
                     .title("Caffe Folder Not Chosen")
-                    .masthead("Caffe Folder Setting is Empty")
+                    .masthead("Caffe folder setting is empty")
                     .message("Please go to application settings and choose a valid caffe folder.")
                     .showWarning();
 
             return;
         }
 
+        // get solver file name
         String solverFileName = configuration.getSolverFileName();
-        String trainTool = "/build/tools/train_net.bin";
-        String commandLine = caffeFolder + trainTool + " " + solverFileName;
+        if (StringUtils.isBlank(solverFileName)){
+            Dialogs.create()
+                    .title("No Solver File")
+                    .masthead("Solver file name is empty")
+                    .message("Please make sure the selected configuration folder has a solver file in it.")
+                    .showWarning();
+            
+            return;
+        }
+
+        // check solver file exists
+        if (!new File(solverFileName).exists())
+        {
+            Dialogs.create()
+                    .title("No Solver File")
+                    .masthead("Solver file does not exist")
+                    .message("Please make sure the selected configuration folder has a solver file in it.")
+                    .showWarning();
+            
+            return;
+        }
+
+        // path to train tool inside caffe folder
+        String trainToolRelativePath = "/build/tools/train_net.bin";
+        String trainToolFileName = FileSystems.getDefault().getPath(caffeFolder, trainToolRelativePath).toString();
+
+        // check train tool exists
+        if (!new File(trainToolFileName).exists())
+        {
+            Dialogs.create()
+                    .title("No Train Tool")
+                    .masthead("Could not find train tool")
+                    .message("Please make sure the selected caffe folder contains the train tool in the following relative path: " + trainToolRelativePath)
+                    .showWarning();
+            
+            return;
+        }
+
+        // build command line
+        String commandLine = trainToolFileName + " " + solverFileName;
 
         try {
+            
+            // TODO: handle input, output and errors streams
+            
             // run command line
             Runtime.getRuntime().exec(commandLine);
         } catch (IOException ex) {
