@@ -3,9 +3,11 @@ package barista.view;
 import barista.MainApp;
 import java.io.File;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Window;
 
@@ -18,6 +20,13 @@ public class RootLayoutController {
     @FXML
     private MenuBar menuBar;
 
+    @FXML
+    private MenuItem openProjectMenuItem;
+    
+    @FXML
+    private MenuItem settingsMenuItem;
+    
+    
     // Reference to the main application
     private MainApp mainApp;
 
@@ -28,24 +37,35 @@ public class RootLayoutController {
      */
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
+        
+        // set bindings
+        Bindings.bindBidirectional(openProjectMenuItem.disableProperty(), mainApp.isApplicationSettingsOpenedProperty());
+        Bindings.bindBidirectional(settingsMenuItem.disableProperty(), mainApp.isApplicationSettingsOpenedProperty());
     }
 
     @FXML
     private void handleOpenProjectAction(ActionEvent event) {
-        // select project directory
+        // select project folder
         DirectoryChooser directoryChooser = new DirectoryChooser();
         Window currentWindow = menuBar.getScene().getWindow();
-        File selectedDirectory = directoryChooser.showDialog(currentWindow);
+        File selectedFolder = directoryChooser.showDialog(currentWindow);
 
-        if (selectedDirectory != null) {
+        if (selectedFolder != null) {
             // use selected project directory
-            mainApp.loadProject(selectedDirectory.getAbsolutePath());
+            mainApp.loadProject(selectedFolder.getAbsolutePath());
         } else {
-            // empty project directory
+            // empty project folder
             mainApp.loadProject("");
         }
     }
 
+    @FXML
+    private void handleSettingsAction(ActionEvent event) {
+        
+        // load applications settings UI
+        mainApp.showApplicationSettings();
+    }
+    
     @FXML
     private void handleExitAction(ActionEvent event) {
         Platform.exit();

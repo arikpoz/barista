@@ -114,7 +114,6 @@ public class ProjectOverviewController {
         configurePropertiesTree(solverTreeTableView);
         configurePropertiesTree(trainTreeTableView);
         configurePropertiesTree(testTreeTableView);
-
     }
 
     /**

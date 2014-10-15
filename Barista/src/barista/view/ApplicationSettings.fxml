@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane id="rootPane" xmlns:fx="http://javafx.com/fxml/1" fx:controller="barista.view.ApplicationSettingsController">
+    <top>
+        <TitledPane animated="false" collapsible="false" text="Application Settings">
+            <content>
+                <StackPane>
+                    <children>
+                        <GridPane hgap="5" vgap="5">
+                            <padding>
+                                <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
+                            </padding>
+                            <children>
+                                <Label text="Caffe folder: " GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <TextField fx:id="caffeFolderTextField" GridPane.columnIndex="1" GridPane.rowIndex="0" /> 
+                                <Label text="Last project folder: " GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <TextField fx:id="lastProjectFolderTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" /> 
+                                
+                                <HBox alignment="CENTER_RIGHT" spacing="5.0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2">
+                                    <padding>
+                                        <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
+                                    </padding>
+                                    <children>
+                                        <Button fx:id="saveApplicationSettingsButton" onAction="#handleSaveApplicationSettingsAction" text="Save changes"  />
+                                        <Button fx:id="revertApplicationSettingsButton" onAction="#handleRevertApplicationSettingsAction" text="Cancel" />
+                                    </children>
+                                </HBox>
+
+                            </children>
+                            <columnConstraints>
+                                <ColumnConstraints />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints prefHeight="30.0" vgrow="SOMETIMES" />
+                            </rowConstraints>
+                        </GridPane>
+                    </children>
+                </StackPane>
+            </content>            
+        </TitledPane>
+    </top>
+</BorderPane>

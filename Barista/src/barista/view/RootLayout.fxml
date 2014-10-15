@@ -12,7 +12,8 @@
             <menus>
                 <Menu mnemonicParsing="true" text="_File">
                    <items>
-                      <MenuItem text="_Open Project..." onAction="#handleOpenProjectAction" mnemonicParsing="true" />
+                      <MenuItem fx:id="openProjectMenuItem" text="_Open Project..." onAction="#handleOpenProjectAction" mnemonicParsing="true" />
+                      <MenuItem fx:id="settingsMenuItem" text="_Settings" onAction="#handleSettingsAction" mnemonicParsing="true" />
                       <SeparatorMenuItem />
                       <MenuItem text="E_xit" onAction="#handleExitAction" mnemonicParsing="true" />
                    </items>

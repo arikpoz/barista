@@ -1,6 +1,7 @@
 package barista;
 
 import barista.model.Configuration;
+import barista.view.ApplicationSettingsController;
 import barista.view.ProjectOverviewController;
 import barista.view.RootLayoutController;
 import caffe.Caffe.NetParameter;
@@ -39,7 +40,7 @@ public class MainApp extends Application {
     private Stage primaryStage;
     private BorderPane rootLayout;
 
-    // <editor-fold desc="projectFolder property" defaultstate="collapsed">
+    // <editor-fold desc="projectFolder javafx property" defaultstate="collapsed">
     private final StringProperty projectFolder = new SimpleStringProperty();
 
     public final String getProjectFolder() {
@@ -55,7 +56,7 @@ public class MainApp extends Application {
     }
     // </editor-fold>
 
-    // <editor-fold desc="projectDescription property" defaultstate="collapsed">
+    // <editor-fold desc="projectDescription javafx property" defaultstate="collapsed">
     private final StringProperty projectDescription = new SimpleStringProperty();
 
     public final String getProjectDescription() {
@@ -71,7 +72,7 @@ public class MainApp extends Application {
     }
     // </editor-fold>
 
-    // <editor-fold desc="projectSettingsAreUnchanged property" defaultstate="collapsed">
+    // <editor-fold desc="projectSettingsAreUnchanged javafx property" defaultstate="collapsed">
     private final BooleanProperty projectSettingsAreUnchanged = new SimpleBooleanProperty();
 
     public final Boolean getProjectSettingsAreUnchanged() {
@@ -84,6 +85,22 @@ public class MainApp extends Application {
 
     public BooleanProperty projectSettingsAreUnchangedProperty() {
         return projectSettingsAreUnchanged;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="isApplicationSettingsOpened javafx property" defaultstate="collapsed">
+    private final BooleanProperty isApplicationSettingsOpened = new SimpleBooleanProperty();
+
+    public final Boolean getIsApplicationSettingsOpened() {
+        return isApplicationSettingsOpened.get();
+    }
+
+    public final void setIsApplicationSettingsOpened(Boolean value) {
+        isApplicationSettingsOpened.set(value);
+    }
+
+    public BooleanProperty isApplicationSettingsOpenedProperty() {
+        return isApplicationSettingsOpened;
     }
     // </editor-fold>
 
@@ -115,6 +132,15 @@ public class MainApp extends Application {
     }
     // </editor-fold>
 
+    // <editor-fold desc="previous gui state" defaultstate="collapsed">
+    // holds the screen which was shown before application settings screen has been opened
+    // used to return to the proper screen, without reloading it
+    private Node previousScreen;
+
+    // holds the state of the isApplicationSettingsOpened flag before application settings screen has been opened
+    private boolean previousIsApplicationSettingsOpened;
+
+    // </editor-fold>
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
@@ -139,7 +165,7 @@ public class MainApp extends Application {
         BaristaMessages.ApplicationSettings applicationSettings = readApplicationSettings();
 
         if (applicationSettings != null) {
-            loadProject(applicationSettings.getLastProjectDirectory());
+            loadProject(applicationSettings.getLastProjectFolder());
         }
     }
 
@@ -180,12 +206,65 @@ public class MainApp extends Application {
             // Set project overview into the center of root layout.
             rootLayout.setCenter(projectOverview);
 
+            // set IsApplicationSettingsOpened flag to false, which enables the relevant menu items
+            setIsApplicationSettingsOpened(false);
+
             // Give the controller access to the main app.
             ProjectOverviewController controller = loader.getController();
             controller.setMainApp(this);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void saveCurrentScreenState() {
+
+        // save current screen so we can easily get back to it
+        previousScreen = rootLayout.getCenter();
+
+        // save state of isApplicationSettingsOpened flag
+        previousIsApplicationSettingsOpened = getIsApplicationSettingsOpened();
+    }
+
+    /**
+     * Shows the application settings inside the root layout.
+     */
+    public void showApplicationSettings() {
+        try {
+            // load application settings screen
+            FXMLLoader loader = new FXMLLoader();
+            loader.setLocation(MainApp.class.getResource("view/ApplicationSettings.fxml"));
+            Node applicationSettings = (Node) loader.load();
+
+            // save current screen state, so we can get back to it when we close the application settings screen
+            saveCurrentScreenState();
+
+            // set application settings into the center of root layout.
+            rootLayout.setCenter(applicationSettings);
+
+            // set IsApplicationSettingsOpened flag to true, which disabled the relevant menu items
+            setIsApplicationSettingsOpened(true);
+
+            // give the controller access to the main app.
+            ApplicationSettingsController controller = loader.getController();
+            controller.setMainApp(this);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Shows the previous screen inside the root layout.
+     */
+    public void showPreviousScreen() {
+
+        // set previous screen into the center of root layout.
+        rootLayout.setCenter(previousScreen);
+
+        // set IsApplicationSettingsOpened flag to true, which disabled the relevant menu items
+        setIsApplicationSettingsOpened(previousIsApplicationSettingsOpened);
     }
 
     /**
@@ -265,6 +344,19 @@ public class MainApp extends Application {
         return null;
     }
 
+    public void writeApplicationSettings(BaristaMessages.ApplicationSettings applicationSettings) {
+        String applicationSettingsFileName = getApplicationSettingsFileName();
+
+        // write application settings objects to file
+        try (FileWriter fileWriter = new FileWriter(applicationSettingsFileName)) {
+            // write ApplicationSettings object in protobuf properties format
+            TextFormat.print(applicationSettings, fileWriter);
+            fileWriter.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", applicationSettingsFileName), ex);
+        }
+    }
+
     public SolverParameter readSolverParameter(String solverFileName) {
         FileReader fileReader = null;
         try {
@@ -316,8 +408,8 @@ public class MainApp extends Application {
     // get application settings file name
     private String getApplicationSettingsFileName() {
         // generate application settings file name
-        String applicationDirectory = System.getProperty("user.dir");
-        Path applicationSettingsFilePath = FileSystems.getDefault().getPath(applicationDirectory, "application.settings");
+        String applicationFolder = System.getProperty("user.dir");
+        Path applicationSettingsFilePath = FileSystems.getDefault().getPath(applicationFolder, "application.settings");
 
         return applicationSettingsFilePath.toString();
     }
@@ -333,27 +425,19 @@ public class MainApp extends Application {
         setProjectSettingsAreUnchanged(true);
     }
 
-    public void loadProject(String projectDirectory) {
+    public void loadProject(String projectFolder) {
         // update project directory label
-        setProjectFolder(projectDirectory);
+        setProjectFolder(projectFolder);
 
         loadProjectSettings();
 
         // generate application settings object
         BaristaMessages.ApplicationSettings.Builder applicationSettingsBuilder = BaristaMessages.ApplicationSettings.newBuilder();
-        applicationSettingsBuilder.setLastProjectDirectory(projectDirectory);
+        applicationSettingsBuilder.setLastProjectFolder(projectFolder);
         BaristaMessages.ApplicationSettings applicationSettings = applicationSettingsBuilder.build();
 
-        String applicationSettingsFileName = getApplicationSettingsFileName();
-
-        // write application settings objects to file
-        try (FileWriter fileWriter = new FileWriter(applicationSettingsFileName)) {
-            // write ApplicationSettings object in protobuf properties format
-            TextFormat.print(applicationSettings, fileWriter);
-            fileWriter.flush();
-        } catch (IOException ex) {
-            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", applicationSettingsFileName), ex);
-        }
+        // save application settings
+        writeApplicationSettings(applicationSettings);
 
         // load configurations list
         loadConfigurations();
@@ -392,19 +476,17 @@ public class MainApp extends Application {
         // for each file in project folder
         for (File file : files) {
             if (file.isDirectory()) {
-    
+
                 String configurationName = file.getName();
-                
+
                 // find solver file name
                 String solverFileName = findSolverFileName(configurationName);
 
                 // only add configurations which have a solver file
-                if (solverFileName != null)
-                {
+                if (solverFileName != null) {
                     configurationList.add(new Configuration(configurationName, solverFileName));
                 }
             }
         }
     }
-
 }

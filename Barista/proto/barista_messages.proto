@@ -1,8 +1,11 @@
 package barista;
 
 message ApplicationSettings {
-  // The last project directory which was loaded
-  optional string last_project_directory = 1; 
+  // The last project folder which was loaded
+  optional string last_project_folder = 1; 
+  
+  // The location of caffe root folder
+  optional string caffe_folder = 2;
 }
 
 message ProjectSettings {

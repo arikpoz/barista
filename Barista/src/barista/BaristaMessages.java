@@ -13,30 +13,56 @@ public final class BaristaMessages {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>optional string last_project_directory = 1;</code>
+     * <code>optional string last_project_folder = 1;</code>
      *
      * <pre>
-     * The last project directory which was loaded
+     * The last project folder which was loaded
      * </pre>
      */
-    boolean hasLastProjectDirectory();
+    boolean hasLastProjectFolder();
     /**
-     * <code>optional string last_project_directory = 1;</code>
+     * <code>optional string last_project_folder = 1;</code>
      *
      * <pre>
-     * The last project directory which was loaded
+     * The last project folder which was loaded
      * </pre>
      */
-    java.lang.String getLastProjectDirectory();
+    java.lang.String getLastProjectFolder();
     /**
-     * <code>optional string last_project_directory = 1;</code>
+     * <code>optional string last_project_folder = 1;</code>
      *
      * <pre>
-     * The last project directory which was loaded
+     * The last project folder which was loaded
      * </pre>
      */
     com.google.protobuf.ByteString
-        getLastProjectDirectoryBytes();
+        getLastProjectFolderBytes();
+
+    /**
+     * <code>optional string caffe_folder = 2;</code>
+     *
+     * <pre>
+     * The location of caffe root folder
+     * </pre>
+     */
+    boolean hasCaffeFolder();
+    /**
+     * <code>optional string caffe_folder = 2;</code>
+     *
+     * <pre>
+     * The location of caffe root folder
+     * </pre>
+     */
+    java.lang.String getCaffeFolder();
+    /**
+     * <code>optional string caffe_folder = 2;</code>
+     *
+     * <pre>
+     * The location of caffe root folder
+     * </pre>
+     */
+    com.google.protobuf.ByteString
+        getCaffeFolderBytes();
   }
   /**
    * Protobuf type {@code barista.ApplicationSettings}
@@ -93,7 +119,13 @@ public final class BaristaMessages {
             case 10: {
               com.google.protobuf.ByteString bs = input.readBytes();
               bitField0_ |= 0x00000001;
-              lastProjectDirectory_ = bs;
+              lastProjectFolder_ = bs;
+              break;
+            }
+            case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000002;
+              caffeFolder_ = bs;
               break;
             }
           }
@@ -136,27 +168,27 @@ public final class BaristaMessages {
     }
 
     private int bitField0_;
-    public static final int LAST_PROJECT_DIRECTORY_FIELD_NUMBER = 1;
-    private java.lang.Object lastProjectDirectory_;
+    public static final int LAST_PROJECT_FOLDER_FIELD_NUMBER = 1;
+    private java.lang.Object lastProjectFolder_;
     /**
-     * <code>optional string last_project_directory = 1;</code>
+     * <code>optional string last_project_folder = 1;</code>
      *
      * <pre>
-     * The last project directory which was loaded
+     * The last project folder which was loaded
      * </pre>
      */
-    public boolean hasLastProjectDirectory() {
+    public boolean hasLastProjectFolder() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>optional string last_project_directory = 1;</code>
+     * <code>optional string last_project_folder = 1;</code>
      *
      * <pre>
-     * The last project directory which was loaded
+     * The last project folder which was loaded
      * </pre>
      */
-    public java.lang.String getLastProjectDirectory() {
-      java.lang.Object ref = lastProjectDirectory_;
+    public java.lang.String getLastProjectFolder() {
+      java.lang.Object ref = lastProjectFolder_;
       if (ref instanceof java.lang.String) {
         return (java.lang.String) ref;
       } else {
@@ -164,26 +196,80 @@ public final class BaristaMessages {
             (com.google.protobuf.ByteString) ref;
         java.lang.String s = bs.toStringUtf8();
         if (bs.isValidUtf8()) {
-          lastProjectDirectory_ = s;
+          lastProjectFolder_ = s;
         }
         return s;
       }
     }
     /**
-     * <code>optional string last_project_directory = 1;</code>
+     * <code>optional string last_project_folder = 1;</code>
      *
      * <pre>
-     * The last project directory which was loaded
+     * The last project folder which was loaded
      * </pre>
      */
     public com.google.protobuf.ByteString
-        getLastProjectDirectoryBytes() {
-      java.lang.Object ref = lastProjectDirectory_;
+        getLastProjectFolderBytes() {
+      java.lang.Object ref = lastProjectFolder_;
       if (ref instanceof java.lang.String) {
         com.google.protobuf.ByteString b = 
             com.google.protobuf.ByteString.copyFromUtf8(
                 (java.lang.String) ref);
-        lastProjectDirectory_ = b;
+        lastProjectFolder_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CAFFE_FOLDER_FIELD_NUMBER = 2;
+    private java.lang.Object caffeFolder_;
+    /**
+     * <code>optional string caffe_folder = 2;</code>
+     *
+     * <pre>
+     * The location of caffe root folder
+     * </pre>
+     */
+    public boolean hasCaffeFolder() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional string caffe_folder = 2;</code>
+     *
+     * <pre>
+     * The location of caffe root folder
+     * </pre>
+     */
+    public java.lang.String getCaffeFolder() {
+      java.lang.Object ref = caffeFolder_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          caffeFolder_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string caffe_folder = 2;</code>
+     *
+     * <pre>
+     * The location of caffe root folder
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getCaffeFolderBytes() {
+      java.lang.Object ref = caffeFolder_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        caffeFolder_ = b;
         return b;
       } else {
         return (com.google.protobuf.ByteString) ref;
@@ -191,7 +277,8 @@ public final class BaristaMessages {
     }
 
     private void initFields() {
-      lastProjectDirectory_ = "";
+      lastProjectFolder_ = "";
+      caffeFolder_ = "";
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -207,7 +294,10 @@ public final class BaristaMessages {
                         throws java.io.IOException {
       getSerializedSize();
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
-        output.writeBytes(1, getLastProjectDirectoryBytes());
+        output.writeBytes(1, getLastProjectFolderBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getCaffeFolderBytes());
       }
       getUnknownFields().writeTo(output);
     }
@@ -220,7 +310,11 @@ public final class BaristaMessages {
       size = 0;
       if (((bitField0_ & 0x00000001) == 0x00000001)) {
         size += com.google.protobuf.CodedOutputStream
-          .computeBytesSize(1, getLastProjectDirectoryBytes());
+          .computeBytesSize(1, getLastProjectFolderBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, getCaffeFolderBytes());
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -339,8 +433,10 @@ public final class BaristaMessages {
 
       public Builder clear() {
         super.clear();
-        lastProjectDirectory_ = "";
+        lastProjectFolder_ = "";
         bitField0_ = (bitField0_ & ~0x00000001);
+        caffeFolder_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
         return this;
       }
 
@@ -372,7 +468,11 @@ public final class BaristaMessages {
         if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
           to_bitField0_ |= 0x00000001;
         }
-        result.lastProjectDirectory_ = lastProjectDirectory_;
+        result.lastProjectFolder_ = lastProjectFolder_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.caffeFolder_ = caffeFolder_;
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -389,9 +489,14 @@ public final class BaristaMessages {
 
       public Builder mergeFrom(barista.BaristaMessages.ApplicationSettings other) {
         if (other == barista.BaristaMessages.ApplicationSettings.getDefaultInstance()) return this;
-        if (other.hasLastProjectDirectory()) {
+        if (other.hasLastProjectFolder()) {
           bitField0_ |= 0x00000001;
-          lastProjectDirectory_ = other.lastProjectDirectory_;
+          lastProjectFolder_ = other.lastProjectFolder_;
+          onChanged();
+        }
+        if (other.hasCaffeFolder()) {
+          bitField0_ |= 0x00000002;
+          caffeFolder_ = other.caffeFolder_;
           onChanged();
         }
         this.mergeUnknownFields(other.getUnknownFields());
@@ -421,32 +526,32 @@ public final class BaristaMessages {
       }
       private int bitField0_;
 
-      private java.lang.Object lastProjectDirectory_ = "";
+      private java.lang.Object lastProjectFolder_ = "";
       /**
-       * <code>optional string last_project_directory = 1;</code>
+       * <code>optional string last_project_folder = 1;</code>
        *
        * <pre>
-       * The last project directory which was loaded
+       * The last project folder which was loaded
        * </pre>
        */
-      public boolean hasLastProjectDirectory() {
+      public boolean hasLastProjectFolder() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>optional string last_project_directory = 1;</code>
+       * <code>optional string last_project_folder = 1;</code>
        *
        * <pre>
-       * The last project directory which was loaded
+       * The last project folder which was loaded
        * </pre>
        */
-      public java.lang.String getLastProjectDirectory() {
-        java.lang.Object ref = lastProjectDirectory_;
+      public java.lang.String getLastProjectFolder() {
+        java.lang.Object ref = lastProjectFolder_;
         if (!(ref instanceof java.lang.String)) {
           com.google.protobuf.ByteString bs =
               (com.google.protobuf.ByteString) ref;
           java.lang.String s = bs.toStringUtf8();
           if (bs.isValidUtf8()) {
-            lastProjectDirectory_ = s;
+            lastProjectFolder_ = s;
           }
           return s;
         } else {
@@ -454,69 +559,169 @@ public final class BaristaMessages {
         }
       }
       /**
-       * <code>optional string last_project_directory = 1;</code>
+       * <code>optional string last_project_folder = 1;</code>
        *
        * <pre>
-       * The last project directory which was loaded
+       * The last project folder which was loaded
        * </pre>
        */
       public com.google.protobuf.ByteString
-          getLastProjectDirectoryBytes() {
-        java.lang.Object ref = lastProjectDirectory_;
+          getLastProjectFolderBytes() {
+        java.lang.Object ref = lastProjectFolder_;
         if (ref instanceof String) {
           com.google.protobuf.ByteString b = 
               com.google.protobuf.ByteString.copyFromUtf8(
                   (java.lang.String) ref);
-          lastProjectDirectory_ = b;
+          lastProjectFolder_ = b;
           return b;
         } else {
           return (com.google.protobuf.ByteString) ref;
         }
       }
       /**
-       * <code>optional string last_project_directory = 1;</code>
+       * <code>optional string last_project_folder = 1;</code>
        *
        * <pre>
-       * The last project directory which was loaded
+       * The last project folder which was loaded
        * </pre>
        */
-      public Builder setLastProjectDirectory(
+      public Builder setLastProjectFolder(
           java.lang.String value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000001;
-        lastProjectDirectory_ = value;
+        lastProjectFolder_ = value;
         onChanged();
         return this;
       }
       /**
-       * <code>optional string last_project_directory = 1;</code>
+       * <code>optional string last_project_folder = 1;</code>
        *
        * <pre>
-       * The last project directory which was loaded
+       * The last project folder which was loaded
        * </pre>
        */
-      public Builder clearLastProjectDirectory() {
+      public Builder clearLastProjectFolder() {
         bitField0_ = (bitField0_ & ~0x00000001);
-        lastProjectDirectory_ = getDefaultInstance().getLastProjectDirectory();
+        lastProjectFolder_ = getDefaultInstance().getLastProjectFolder();
         onChanged();
         return this;
       }
       /**
-       * <code>optional string last_project_directory = 1;</code>
+       * <code>optional string last_project_folder = 1;</code>
        *
        * <pre>
-       * The last project directory which was loaded
+       * The last project folder which was loaded
        * </pre>
        */
-      public Builder setLastProjectDirectoryBytes(
+      public Builder setLastProjectFolderBytes(
           com.google.protobuf.ByteString value) {
         if (value == null) {
     throw new NullPointerException();
   }
   bitField0_ |= 0x00000001;
-        lastProjectDirectory_ = value;
+        lastProjectFolder_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object caffeFolder_ = "";
+      /**
+       * <code>optional string caffe_folder = 2;</code>
+       *
+       * <pre>
+       * The location of caffe root folder
+       * </pre>
+       */
+      public boolean hasCaffeFolder() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional string caffe_folder = 2;</code>
+       *
+       * <pre>
+       * The location of caffe root folder
+       * </pre>
+       */
+      public java.lang.String getCaffeFolder() {
+        java.lang.Object ref = caffeFolder_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            caffeFolder_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string caffe_folder = 2;</code>
+       *
+       * <pre>
+       * The location of caffe root folder
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getCaffeFolderBytes() {
+        java.lang.Object ref = caffeFolder_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          caffeFolder_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string caffe_folder = 2;</code>
+       *
+       * <pre>
+       * The location of caffe root folder
+       * </pre>
+       */
+      public Builder setCaffeFolder(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        caffeFolder_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string caffe_folder = 2;</code>
+       *
+       * <pre>
+       * The location of caffe root folder
+       * </pre>
+       */
+      public Builder clearCaffeFolder() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        caffeFolder_ = getDefaultInstance().getCaffeFolder();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string caffe_folder = 2;</code>
+       *
+       * <pre>
+       * The location of caffe root folder
+       * </pre>
+       */
+      public Builder setCaffeFolderBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        caffeFolder_ = value;
         onChanged();
         return this;
       }
@@ -1075,10 +1280,10 @@ public final class BaristaMessages {
       descriptor;
   static {
     java.lang.String[] descriptorData = {
-      "\n\026barista_messages.proto\022\007barista\"5\n\023App" +
-      "licationSettings\022\036\n\026last_project_directo" +
-      "ry\030\001 \001(\t\".\n\017ProjectSettings\022\033\n\023project_d" +
-      "escription\030\001 \001(\t"
+      "\n\026barista_messages.proto\022\007barista\"H\n\023App" +
+      "licationSettings\022\033\n\023last_project_folder\030" +
+      "\001 \001(\t\022\024\n\014caffe_folder\030\002 \001(\t\".\n\017ProjectSe" +
+      "ttings\022\033\n\023project_description\030\001 \001(\t"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1097,7 +1302,7 @@ public final class BaristaMessages {
     internal_static_barista_ApplicationSettings_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_barista_ApplicationSettings_descriptor,
-        new java.lang.String[] { "LastProjectDirectory", });
+        new java.lang.String[] { "LastProjectFolder", "CaffeFolder", });
     internal_static_barista_ProjectSettings_descriptor =
       getDescriptor().getMessageTypes().get(1);
     internal_static_barista_ProjectSettings_fieldAccessorTable = new
