@@ -61,116 +61,132 @@
     </top>
         
     <center>
-        <SplitPane dividerPositions="0.5" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <SplitPane dividerPositions="0.7" orientation="VERTICAL">
             <items>
-                        
-                <!-- Configuration List section -->
-                <AnchorPane>
-                    <children>
-                        <TitledPane animated="false" collapsible="false" text="Configurations List" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <content>
-                                <StackPane>
-                                    <children>
-                                        <TableView fx:id="configurationTable">
-                                            <columns>
-                                                <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" sortType="ASCENDING"  />
-                                            </columns>
-                                            <columnResizePolicy>
-                                                <!-- the following line generates a warning in NetBeans, you can safely ignore it --> 
-                                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                                            </columnResizePolicy>
-                                        </TableView>
-                                    </children>
-                                </StackPane>
-                            </content>
-                        </TitledPane>
-                    </children>
-                </AnchorPane>
-                        
-                <!-- Selected configuration details section -->
-                <AnchorPane>
-                    <children>
-                        <TitledPane animated="false" collapsible="false" text="Selected configuration details" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                            <content>
-                                <BorderPane>
-                                    <bottom>
-                                        <HBox alignment="CENTER_RIGHT" spacing="5.0">
-                                            <padding>
-                                                <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
-                                            </padding>
+
+                <SplitPane dividerPositions="0.5">
+                    <items>
+
+                        <!-- Configuration List section -->
+                        <AnchorPane>
+                            <children>
+                                <TitledPane animated="false" collapsible="false" text="Configurations List" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <content>
+                                        <StackPane>
                                             <children>
-                                                <Button fx:id="runConfigurationButton" onAction="#handleRunConfigurationAction" text="Run">
-                                                    <tooltip> 
-                                                        <Tooltip text="Run this configuration" />
-                                                    </tooltip>
-                                                </Button>
-                                                <Button fx:id="saveConfigurationSettingsButton" onAction="#handleSaveConfigurationSettingsAction" text="Save changes">
-                                                    <tooltip> 
-                                                        <Tooltip text="Save configuration settings changes" />
-                                                    </tooltip>
-                                                </Button>
-                                                <Button fx:id="revertConfigurationSettingsButton" onAction="#handleRevertConfigurationSettingsAction" text="Revert changes">
-                                                    <tooltip> 
-                                                        <Tooltip text="Revert configuration settings changes" />
-                                                    </tooltip>
-                                                </Button>
+                                                <TableView fx:id="configurationTable">
+                                                    <columns>
+                                                        <TableColumn fx:id="nameColumn" prefWidth="75.0" text="Name" sortType="ASCENDING"  />
+                                                    </columns>
+                                                    <columnResizePolicy>
+                                                        <!-- the following line generates a warning in NetBeans, you can safely ignore it --> 
+                                                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                                                    </columnResizePolicy>
+                                                </TableView>
                                             </children>
-                                        </HBox>
-                                    </bottom>
-                                    <center>
-                                        <TabPane>
-                                            <tabs>
-                                                <Tab closable="false" text="Solver">
-                                                    <content>
-                                                        <StackPane>
-                                                            <TreeTableViewWithItems fx:id="solverTreeTableView">
-                                                                <columns>
-                                                                    <TreeTableColumn text="Name" />
-                                                                    <TreeTableColumn text="Type" />
-                                                                    <TreeTableColumn text="Has Value?" />
-                                                                    <TreeTableColumn text="Value" />
-                                                                </columns>
-                                                            </TreeTableViewWithItems>
-                                                        </StackPane>
-                                                    </content>
-                                                </Tab>
-                                                <Tab closable="false" text="Train">
-                                                    <content>
-                                                        <StackPane>
-                                                            <TreeTableViewWithItems fx:id="trainTreeTableView">
-                                                                <columns>
-                                                                    <TreeTableColumn text="Name" />
-                                                                    <TreeTableColumn text="Type" />
-                                                                    <TreeTableColumn text="Has Value?" />
-                                                                    <TreeTableColumn text="Value" />
-                                                                </columns>
-                                                            </TreeTableViewWithItems>
-                                                        </StackPane>
-                                                    </content>
-                                                </Tab>
-                                                <Tab closable="false" text="Test">
-                                                    <content>
-                                                        <StackPane>
-                                                            <TreeTableViewWithItems fx:id="testTreeTableView">
-                                                                <columns>
-                                                                    <TreeTableColumn text="Name" />
-                                                                    <TreeTableColumn text="Type" />
-                                                                    <TreeTableColumn text="Has Value?" />
-                                                                    <TreeTableColumn text="Value" />
-                                                                </columns>
-                                                            </TreeTableViewWithItems>
-                                                        </StackPane>
-                                                    </content>
-                                                </Tab>
-                                            </tabs>
-                                        </TabPane>
-                                    </center>
-                                </BorderPane>
-                            </content>
-                        </TitledPane>
-                    </children>
-                </AnchorPane>
+                                        </StackPane>
+                                    </content>
+                                </TitledPane>
+                            </children>
+                        </AnchorPane>
+                        
+                        <!-- Selected configuration details section -->
+                        <AnchorPane>
+                            <children>
+                                <TitledPane animated="false" collapsible="false" text="Selected configuration details" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                    <content>
+                                        <BorderPane>
+                                            <bottom>
+                                                <HBox alignment="CENTER_RIGHT" spacing="5.0">
+                                                    <padding>
+                                                        <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
+                                                    </padding>
+                                                    <children>
+                                                        <Button fx:id="runConfigurationButton" onAction="#handleRunConfigurationAction" text="Run">
+                                                            <tooltip> 
+                                                                <Tooltip text="Run this configuration" />
+                                                            </tooltip>
+                                                        </Button>
+                                                        <Button fx:id="saveConfigurationSettingsButton" onAction="#handleSaveConfigurationSettingsAction" text="Save changes">
+                                                            <tooltip> 
+                                                                <Tooltip text="Save configuration settings changes" />
+                                                            </tooltip>
+                                                        </Button>
+                                                        <Button fx:id="revertConfigurationSettingsButton" onAction="#handleRevertConfigurationSettingsAction" text="Revert changes">
+                                                            <tooltip> 
+                                                                <Tooltip text="Revert configuration settings changes" />
+                                                            </tooltip>
+                                                        </Button>
+                                                    </children>
+                                                </HBox>
+                                            </bottom>
+                                            <center>
+                                                <TabPane>
+                                                    <tabs>
+                                                        <Tab closable="false" text="Solver">
+                                                            <content>
+                                                                <StackPane>
+                                                                    <TreeTableViewWithItems fx:id="solverTreeTableView">
+                                                                        <columns>
+                                                                            <TreeTableColumn text="Name" />
+                                                                            <TreeTableColumn text="Type" />
+                                                                            <TreeTableColumn text="Has Value?" />
+                                                                            <TreeTableColumn text="Value" />
+                                                                        </columns>
+                                                                    </TreeTableViewWithItems>
+                                                                </StackPane>
+                                                            </content>
+                                                        </Tab>
+                                                        <Tab closable="false" text="Train">
+                                                            <content>
+                                                                <StackPane>
+                                                                    <TreeTableViewWithItems fx:id="trainTreeTableView">
+                                                                        <columns>
+                                                                            <TreeTableColumn text="Name" />
+                                                                            <TreeTableColumn text="Type" />
+                                                                            <TreeTableColumn text="Has Value?" />
+                                                                            <TreeTableColumn text="Value" />
+                                                                        </columns>
+                                                                    </TreeTableViewWithItems>
+                                                                </StackPane>
+                                                            </content>
+                                                        </Tab>
+                                                        <Tab closable="false" text="Test">
+                                                            <content>
+                                                                <StackPane>
+                                                                    <TreeTableViewWithItems fx:id="testTreeTableView">
+                                                                        <columns>
+                                                                            <TreeTableColumn text="Name" />
+                                                                            <TreeTableColumn text="Type" />
+                                                                            <TreeTableColumn text="Has Value?" />
+                                                                            <TreeTableColumn text="Value" />
+                                                                        </columns>
+                                                                    </TreeTableViewWithItems>
+                                                                </StackPane>
+                                                            </content>
+                                                        </Tab>
+                                                    </tabs>
+                                                </TabPane>
+                                            </center>
+                                        </BorderPane>
+                                    </content>
+                                </TitledPane>
+                            </children>
+                        </AnchorPane>
+                    </items>
+                </SplitPane>
+                
+                <!-- Output section -->
+                <TitledPane animated="false" collapsible="false" text="Output">
+                    <content>
+                        <TextArea fx:id="outputTextArea" />
+                    </content>
+                </TitledPane>        
+
             </items>
+        
         </SplitPane>
+                    
     </center>
+    
 </BorderPane>
