@@ -7,7 +7,7 @@ package barista.utils;
 
 /**
  *
- * @author arikp
+ * @author Arik Poznanski
  */
 public class StringUtils {
 

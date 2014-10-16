@@ -4,6 +4,7 @@ import barista.BaristaMessages;
 import barista.MainApp;
 import barista.model.Configuration;
 import barista.model.ProtobufProperty;
+import barista.utils.StreamGobbler;
 import barista.utils.StringUtils;
 import caffe.Caffe.NetParameter;
 import caffe.Caffe.SolverParameter;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
@@ -36,6 +38,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
@@ -86,6 +89,9 @@ public class ProjectViewController {
 
     @FXML
     private TreeTableViewWithItems<ProtobufProperty> testTreeTableView;
+
+    @FXML
+    private TextArea outputTextArea;
 
     // Reference to the main application.
     private MainApp mainApp;
@@ -182,8 +188,7 @@ public class ProjectViewController {
 
         // get caffe folder
         String caffeFolder = mainApp.getCaffeFolder();
-        // TODO uncomment this before commit
-        if (StringUtils.isBlank(caffeFolder)){
+        if (StringUtils.isBlank(caffeFolder)) {
             Dialogs.create()
                     .title("Caffe Folder Not Chosen")
                     .masthead("Caffe folder setting is empty")
@@ -195,69 +200,98 @@ public class ProjectViewController {
 
         // get solver file name
         String solverFileName = configuration.getSolverFileName();
-        if (StringUtils.isBlank(solverFileName)){
+        if (StringUtils.isBlank(solverFileName)) {
             Dialogs.create()
                     .title("No Solver File")
                     .masthead("Solver file name is empty")
                     .message("Please make sure the selected configuration folder has a solver file in it.")
                     .showWarning();
-            
+
             return;
         }
 
         // check solver file exists
-        if (!new File(solverFileName).exists())
-        {
+        if (!new File(solverFileName).exists()) {
             Dialogs.create()
                     .title("No Solver File")
                     .masthead("Solver file does not exist")
                     .message("Please make sure the selected configuration folder has a solver file in it.")
                     .showWarning();
-            
+
             return;
         }
 
-        // path to train tool inside caffe folder
-        String trainToolRelativePath = "/build/tools/train_net.bin";
-        String trainToolFileName = FileSystems.getDefault().getPath(caffeFolder, trainToolRelativePath).toString();
-
-        // check train tool exists
-        if (!new File(trainToolFileName).exists())
-        {
+        // path to train script inside application folder
+        String runTrainScript = "run_train.sh";
+        String runTrainScriptFullPath = FileSystems.getDefault().getPath(mainApp.getApplicationFolder(), runTrainScript).toString();
+                
+        // check train script exists
+        if (!new File(runTrainScriptFullPath).exists()) {
             Dialogs.create()
-                    .title("No Train Tool")
-                    .masthead("Could not find train tool")
-                    .message("Please make sure the selected caffe folder contains the train tool in the following relative path: " + trainToolRelativePath)
+                    .title("No Train Script")
+                    .masthead("Could not find train script")
+                    .message("Please make sure the file " + runTrainScript + " exists inside the application folder.")
                     .showWarning();
-            
+
             return;
         }
 
         // build command line
-        String commandLine = trainToolFileName + " " + solverFileName;
+        List<String> commandArgs = new ArrayList<>();
+        commandArgs.add(runTrainScriptFullPath);
+        commandArgs.add(caffeFolder);
+        commandArgs.add(solverFileName);
 
+        String commandLine = String.join(" ", commandArgs);
+            
         try {
+
             
-            // TODO: handle input, output and errors streams
+            // print command line to output
+            writeToOutputSection("Running command line: ");
+            writeToOutputSection(commandLine);
+
+            // prepare process for run
+            ProcessBuilder processBuilder = new ProcessBuilder(commandArgs.toArray(new String[0]));
             
-            // TODO temp command for testing
-            commandLine = "javac";
+            // set current directory
+            String configurationFolder = mainApp.getConfigurationFolder(configuration.getName());
+            processBuilder.directory(new File(configurationFolder));
             
             // run command line
-            Process process = Runtime.getRuntime().exec(commandLine);
-            
+            Process process = processBuilder.start();
+
+            // process stdout
+            StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream(), "stdout",
+                    (type, line) -> {
+                        Platform.runLater(() -> outputTextArea.appendText(type + ": " + line + System.lineSeparator()));
+                    }
+            );
+            outputGobbler.start();
+
+            // process stderr
+            StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream(), "stderr",
+                    (type, line) -> {
+                        Platform.runLater(() -> outputTextArea.appendText(type + ": " + line + System.lineSeparator()));
+                    }
+            );
+            errorGobbler.start();
+
+            // wait for process to end
             int exitVal = process.waitFor();
-            System.out.println("Process exitValue: " + exitVal);
-            
-            // process.getInputStream() stdout
-            // process.getErrorStream() stderr
-            
-            
+
+            // print exit value
+            writeToOutputSection("Run exit value: " + exitVal);
+
         } catch (IOException ex) {
             Logger.getLogger(ProjectViewController.class.getName()).log(Level.SEVERE, "Failed while running command: " + commandLine, ex);
         } catch (InterruptedException ex) {
             Logger.getLogger(ProjectViewController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    private void writeToOutputSection(String line) {
+        outputTextArea.appendText(line + System.lineSeparator());
     }
 
     @FXML

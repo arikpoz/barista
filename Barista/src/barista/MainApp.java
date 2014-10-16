@@ -13,6 +13,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.logging.Level;
@@ -416,10 +417,22 @@ public class MainApp extends Application {
         return null;
     }
 
+    public String getApplicationFolder() {
+//        try {
+//            // return folder of application executable
+//            return new File(MainApp.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
+//        } catch (URISyntaxException ex) {
+//            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+
+        // return current working directory 
+        return System.getProperty("user.dir");
+    }
+
     // get application settings file name
     private String getApplicationSettingsFileName() {
         // generate application settings file name
-        String applicationFolder = System.getProperty("user.dir");
+        String applicationFolder = getApplicationFolder();
         Path applicationSettingsFilePath = FileSystems.getDefault().getPath(applicationFolder, "application.settings");
 
         return applicationSettingsFilePath.toString();
@@ -462,10 +475,14 @@ public class MainApp extends Application {
         loadConfigurations();
     }
 
+    public String getConfigurationFolder(String configurationName)
+    {
+        return FileSystems.getDefault().getPath(getProjectFolder(), configurationName).toString();
+    }
+    
     private String findSolverFileName(String configurationName) {
 
-        Path configurationFilePath = FileSystems.getDefault().getPath(getProjectFolder(), configurationName);
-        File folder = new File(configurationFilePath.toString());
+        File folder = new File(getConfigurationFolder(configurationName));
 
         FilenameFilter solveFilter = new FilenameFilter() {
             public boolean accept(File dir, String name) {

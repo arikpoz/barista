@@ -179,7 +179,7 @@
                 <!-- Output section -->
                 <TitledPane animated="false" collapsible="false" text="Output">
                     <content>
-                        <TextArea fx:id="outputTextArea" />
+                        <TextArea fx:id="outputTextArea" editable="false" />
                     </content>
                 </TitledPane>        
 
