@@ -240,10 +240,23 @@ public class ProjectViewController {
             
             // TODO: handle input, output and errors streams
             
+            // TODO temp command for testing
+            commandLine = "javac";
+            
             // run command line
-            Runtime.getRuntime().exec(commandLine);
+            Process process = Runtime.getRuntime().exec(commandLine);
+            
+            int exitVal = process.waitFor();
+            System.out.println("Process exitValue: " + exitVal);
+            
+            // process.getInputStream() stdout
+            // process.getErrorStream() stderr
+            
+            
         } catch (IOException ex) {
             Logger.getLogger(ProjectViewController.class.getName()).log(Level.SEVERE, "Failed while running command: " + commandLine, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(ProjectViewController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
