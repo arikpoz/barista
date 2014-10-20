@@ -21,7 +21,9 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -122,15 +124,35 @@ public class MainApp extends Application {
     }
     // </editor-fold>
 
-    // <editor-fold desc="currentConfiguration property" defaultstate="collapsed">
-    private Configuration currentConfiguration;
+    // <editor-fold desc="currentConfiguration javafx property" defaultstate="collapsed">
+    private final ObjectProperty<Configuration> currentConfiguration = new SimpleObjectProperty<>();
 
     public final Configuration getCurrentConfiguration() {
-        return currentConfiguration;
+        return currentConfiguration.get();
     }
 
     public final void setCurrentConfiguration(Configuration value) {
-        currentConfiguration = value;
+        currentConfiguration.set(value);
+    }
+
+    public ObjectProperty<Configuration> currentConfigurationProperty() {
+        return currentConfiguration;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="lastRunningConfiguration property" defaultstate="collapsed">
+    private ObjectProperty<Configuration> lastRunningConfiguration = new SimpleObjectProperty<>();
+
+    public final Configuration getLastRunningConfiguration() {
+        return lastRunningConfiguration.get();
+    }
+
+    public final void setLastRunningConfiguration(Configuration value) {
+        lastRunningConfiguration.set(value);
+    }
+
+    public ObjectProperty<Configuration> lastRunningConfigurationProperty() {
+        return lastRunningConfiguration;
     }
     // </editor-fold>
 
@@ -141,8 +163,8 @@ public class MainApp extends Application {
 
     // holds the state of the isApplicationSettingsOpened flag before application settings screen has been opened
     private boolean previousIsApplicationSettingsOpened;
-
     // </editor-fold>
+    
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
@@ -418,8 +440,6 @@ public class MainApp extends Application {
         return null;
     }
 
-
-
     // get application settings file name
     private String getApplicationSettingsFileName() {
         // generate application settings file name
@@ -466,11 +486,10 @@ public class MainApp extends Application {
         loadConfigurations();
     }
 
-    public String getConfigurationFolder(String configurationName)
-    {
+    public String getConfigurationFolder(String configurationName) {
         return FileSystems.getDefault().getPath(getProjectFolder(), configurationName).toString();
     }
-    
+
     private String findSolverFileName(String configurationName) {
 
         File folder = new File(getConfigurationFolder(configurationName));

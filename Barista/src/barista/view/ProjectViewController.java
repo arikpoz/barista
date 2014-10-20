@@ -27,7 +27,9 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
+import javafx.beans.binding.Binding;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
@@ -69,6 +71,12 @@ public class ProjectViewController {
 
     @FXML
     private Button revertProjectSettingsButton;
+
+    @FXML
+    private Button runConfigurationButton;
+
+    @FXML
+    private Button cancelRunConfigurationButton;
 
     @FXML
     private Button saveConfigurationSettingsButton;
@@ -142,6 +150,47 @@ public class ProjectViewController {
 
         // add default sort by name
         configurationTable.getSortOrder().add(nameColumn);
+
+        // listen to changes in lastRunningConfiguration
+        mainApp.lastRunningConfigurationProperty().addListener(
+                (observable, oldValue, newValue) -> {
+
+                    // remove old binding, if we got any
+                    if (oldValue != null) {
+                        runConfigurationButton.disableProperty().unbind();
+                        cancelRunConfigurationButton.disableProperty().unbind();
+                    }
+
+                    // bind to isRunning of new configuration, if available
+                    if (newValue != null) {
+                        runConfigurationButton.disableProperty().bind(newValue.isRunningProperty());
+
+                        cancelRunConfigurationButton.disableProperty().bind(
+                                Bindings.or(
+                                        Bindings.not(newValue.isRunningProperty()),
+                                        Bindings.notEqual(mainApp.lastRunningConfigurationProperty(), mainApp.getCurrentConfiguration()))
+                        );
+                    }
+                });
+
+        // listen to changes in currentConfiguration
+        mainApp.currentConfigurationProperty().addListener(
+                (observable, oldValue, newValue) -> {
+
+                    // remove old binding, if we got any
+                    if (oldValue != null) {
+                        cancelRunConfigurationButton.disableProperty().unbind();
+                    }
+
+                    // bind to isRunning of new configuration, if available
+                    if ((newValue != null) && (mainApp.getLastRunningConfiguration() != null)) {
+                        cancelRunConfigurationButton.disableProperty().bind(
+                                Bindings.or(
+                                        Bindings.not(mainApp.getLastRunningConfiguration().isRunningProperty()),
+                                        Bindings.notEqual(mainApp.lastRunningConfigurationProperty(), newValue))
+                        );
+                    }
+                });
 
         // set bindings
         Bindings.bindBidirectional(projectFolderLabel.textProperty(), mainApp.projectFolderProperty());
@@ -237,6 +286,9 @@ public class ProjectViewController {
             return;
         }
 
+        // set last running configuration
+        mainApp.setLastRunningConfiguration(configuration);
+
         // build command line
         List<String> commandArgs = new ArrayList<>();
         commandArgs.add(runTrainScriptFullPath);
@@ -268,15 +320,15 @@ public class ProjectViewController {
                         writeToOutputSection("Running command line: ");
                         writeToOutputSection(commandLine);
 
+                        // mark configuration as running
+                        configuration.setIsRunning(true);
+
                     });
 
                     // run command line
                     Process process = processBuilder.start();
 
                     configuration.setRunningProcess(process);
-
-                    // mark configuration as running
-                    configuration.setIsRunning(true);
 
                     // process stdout
                     StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream(), "stdout",
@@ -297,10 +349,11 @@ public class ProjectViewController {
                     // wait for process to end
                     int exitVal = process.waitFor();
 
-                    // mark configuration finished running
-                    configuration.setIsRunning(false);
-
                     Platform.runLater(() -> {
+
+                        // mark configuration finished running
+                        configuration.setIsRunning(false);
+
                         // print exit value
                         writeToOutputSection("Run exit value: " + exitVal);
                     });
@@ -426,6 +479,11 @@ public class ProjectViewController {
 
             mainApp.setCurrentConfiguration(newConfiguration);
 
+            // put something in lastRunningConfiguration in case its empty
+            if (mainApp.getLastRunningConfiguration() == null) {
+                mainApp.setLastRunningConfiguration(newConfiguration);
+            }
+
             // check if we already loaded this configuration
             if ((!newConfiguration.getIsLoaded()) || (forceLoad)) {
                 // handle case when configuration is not loaded
@@ -467,6 +525,9 @@ public class ProjectViewController {
 
             // populate test tree
             populateTreeTableView(testTreeTableView, newConfiguration.getTestProtobufProperty());
+
+            // get last running configuration
+            Configuration lastRunningConfiguration = mainApp.getLastRunningConfiguration();
 
             // remove old bindings
             if (oldConfiguration != null) {
