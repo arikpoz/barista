@@ -107,6 +107,11 @@
                                                                 <Tooltip text="Run this configuration" />
                                                             </tooltip>
                                                         </Button>
+                                                        <Button fx:id="cancelRunConfigurationButton" onAction="#handleCancelRunConfigurationAction" text="Cancel Run">
+                                                            <tooltip> 
+                                                                <Tooltip text="Cancel the run of this configuration" />
+                                                            </tooltip>
+                                                        </Button>
                                                         <Button fx:id="saveConfigurationSettingsButton" onAction="#handleSaveConfigurationSettingsAction" text="Save changes">
                                                             <tooltip> 
                                                                 <Tooltip text="Save configuration settings changes" />

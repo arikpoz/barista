@@ -6,5 +6,5 @@ export LD_LIBRARY_PATH=/opt/intel/composerxe/lib/intel64:/opt/intel/composerxe/m
 
 # $1 is caffe folder
 # $2 is the full path to the solver file
-$1/build/tools/train_net.bin $2
+GLOG_logtostderr=1 $1/build/tools/train_net.bin $2
 

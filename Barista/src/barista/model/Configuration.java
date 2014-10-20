@@ -28,6 +28,7 @@ public class Configuration {
         this.solverFileName = new SimpleStringProperty(solverFileName);
         this.setConfigurationSettingsAreUnchanged(true);
         this.setIsLoaded(false);
+        this.setIsRunning(false);
     }
 
     // <editor-fold desc="name javafx property" defaultstate="collapsed">
@@ -91,6 +92,34 @@ public class Configuration {
 
     public BooleanProperty isLoadedProperty() {
         return isLoaded;
+    }
+    // </editor-fold>
+    
+    // <editor-fold desc="isRunning javafx property" defaultstate="collapsed">
+    private final BooleanProperty isRunning = new SimpleBooleanProperty();
+
+    public final Boolean getIsRunning() {
+        return isRunning.get();
+    }
+
+    public final void setIsRunning(Boolean value) {
+        isRunning.set(value);
+    }
+
+    public BooleanProperty isRunningProperty() {
+        return isRunning;
+    }
+    // </editor-fold>
+    
+    // <editor-fold desc="runningProcess property" defaultstate="collapsed">
+    private Process runningProcess;
+    
+    public final Process getRunningProcess(){
+        return runningProcess;
+    }
+    
+    public final void setRunningProcess(Process value){
+        runningProcess = value;
     }
     // </editor-fold>
     

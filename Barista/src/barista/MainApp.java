@@ -1,6 +1,7 @@
 package barista;
 
 import barista.model.Configuration;
+import barista.utils.ProcessUtils;
 import barista.view.ApplicationSettingsViewController;
 import barista.view.ProjectViewController;
 import barista.view.MainViewController;
@@ -417,22 +418,12 @@ public class MainApp extends Application {
         return null;
     }
 
-    public String getApplicationFolder() {
-//        try {
-//            // return folder of application executable
-//            return new File(MainApp.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
-//        } catch (URISyntaxException ex) {
-//            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
-//        }
 
-        // return current working directory 
-        return System.getProperty("user.dir");
-    }
 
     // get application settings file name
     private String getApplicationSettingsFileName() {
         // generate application settings file name
-        String applicationFolder = getApplicationFolder();
+        String applicationFolder = ProcessUtils.getApplicationFolder();
         Path applicationSettingsFilePath = FileSystems.getDefault().getPath(applicationFolder, "application.settings");
 
         return applicationSettingsFilePath.toString();

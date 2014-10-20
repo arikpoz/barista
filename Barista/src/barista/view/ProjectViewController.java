@@ -4,6 +4,7 @@ import barista.BaristaMessages;
 import barista.MainApp;
 import barista.model.Configuration;
 import barista.model.ProtobufProperty;
+import barista.utils.ProcessUtils;
 import barista.utils.StreamGobbler;
 import barista.utils.StringUtils;
 import caffe.Caffe.NetParameter;
@@ -223,8 +224,8 @@ public class ProjectViewController {
 
         // path to train script inside application folder
         String runTrainScript = "run_train.sh";
-        String runTrainScriptFullPath = FileSystems.getDefault().getPath(mainApp.getApplicationFolder(), runTrainScript).toString();
-                
+        String runTrainScriptFullPath = FileSystems.getDefault().getPath(ProcessUtils.getApplicationFolder(), "scripts", runTrainScript).toString();
+
         // check train script exists
         if (!new File(runTrainScriptFullPath).exists()) {
             Dialogs.create()
@@ -243,55 +244,106 @@ public class ProjectViewController {
         commandArgs.add(solverFileName);
 
         String commandLine = String.join(" ", commandArgs);
-            
-        try {
 
-            
-            // print command line to output
-            writeToOutputSection("Running command line: ");
-            writeToOutputSection(commandLine);
+        // start process from different thread
+        // this is done so the UI stays responsive while the thread is being run
+        new Thread(new Runnable() {
+            public void run() {
+                try {
 
-            // prepare process for run
-            ProcessBuilder processBuilder = new ProcessBuilder(commandArgs.toArray(new String[0]));
-            
-            // set current directory
-            String configurationFolder = mainApp.getConfigurationFolder(configuration.getName());
-            processBuilder.directory(new File(configurationFolder));
-            
-            // run command line
-            Process process = processBuilder.start();
+                    // prepare process for run
+                    ProcessBuilder processBuilder = new ProcessBuilder(commandArgs.toArray(new String[0]));
 
-            // process stdout
-            StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream(), "stdout",
-                    (type, line) -> {
-                        Platform.runLater(() -> outputTextArea.appendText(type + ": " + line + System.lineSeparator()));
-                    }
-            );
-            outputGobbler.start();
+                    // set current directory
+                    String configurationFolder = mainApp.getConfigurationFolder(configuration.getName());
+                    processBuilder.directory(new File(configurationFolder));
 
-            // process stderr
-            StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream(), "stderr",
-                    (type, line) -> {
-                        Platform.runLater(() -> outputTextArea.appendText(type + ": " + line + System.lineSeparator()));
-                    }
-            );
-            errorGobbler.start();
+                    Platform.runLater(() -> {
+                        // clear output section
+                        clearOutputSection();
 
-            // wait for process to end
-            int exitVal = process.waitFor();
+                        // print command line to output
+                        writeToOutputSection("Working directory: ");
+                        writeToOutputSection(processBuilder.directory().getAbsolutePath());
+                        writeToOutputSection("Running command line: ");
+                        writeToOutputSection(commandLine);
 
-            // print exit value
-            writeToOutputSection("Run exit value: " + exitVal);
+                    });
 
-        } catch (IOException ex) {
-            Logger.getLogger(ProjectViewController.class.getName()).log(Level.SEVERE, "Failed while running command: " + commandLine, ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(ProjectViewController.class.getName()).log(Level.SEVERE, null, ex);
+                    // run command line
+                    Process process = processBuilder.start();
+
+                    configuration.setRunningProcess(process);
+
+                    // mark configuration as running
+                    configuration.setIsRunning(true);
+
+                    // process stdout
+                    StreamGobbler outputGobbler = new StreamGobbler(process.getInputStream(), "stdout",
+                            (type, line) -> {
+                                Platform.runLater(() -> writeToOutputSection(type + ": " + line));
+                            }
+                    );
+                    outputGobbler.start();
+
+                    // process stderr
+                    StreamGobbler errorGobbler = new StreamGobbler(process.getErrorStream(), "stderr",
+                            (type, line) -> {
+                                Platform.runLater(() -> writeToOutputSection(type + ": " + line));
+                            }
+                    );
+                    errorGobbler.start();
+
+                    // wait for process to end
+                    int exitVal = process.waitFor();
+
+                    // mark configuration finished running
+                    configuration.setIsRunning(false);
+
+                    Platform.runLater(() -> {
+                        // print exit value
+                        writeToOutputSection("Run exit value: " + exitVal);
+                    });
+
+                } catch (IOException ex) {
+                    Logger.getLogger(ProjectViewController.class.getName()).log(Level.SEVERE, "Failed while running command: " + commandLine, ex);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(ProjectViewController.class.getName()).log(Level.SEVERE, "Failed while running command: " + commandLine, ex);
+                }
+            }
+        }).start();
+
+    }
+
+    @FXML
+    private void handleCancelRunConfigurationAction(ActionEvent event) {
+
+        // get current configuration
+        Configuration configuration = mainApp.getCurrentConfiguration();
+
+        if ((configuration != null) && (configuration.getIsRunning())) {
+            Process currentRunningProcess = configuration.getRunningProcess();
+            if ((currentRunningProcess != null) && (currentRunningProcess.isAlive())) {
+                try {
+                    int pid = ProcessUtils.getUnixPID(currentRunningProcess);
+                    writeToOutputSection("Killing process tree starting with pid " + pid);
+                    ProcessUtils.killProcessTree(currentRunningProcess);
+                    writeToOutputSection("Done killing");
+                } catch (Exception ex) {
+                    Logger.getLogger(ProjectViewController.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
         }
     }
 
+    // helper function to add a line to the output section
     private void writeToOutputSection(String line) {
         outputTextArea.appendText(line + System.lineSeparator());
+    }
+
+    // helper function to clear output section
+    private void clearOutputSection() {
+        outputTextArea.clear();
     }
 
     @FXML
