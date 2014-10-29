@@ -64,7 +64,7 @@
         <SplitPane dividerPositions="0.7" orientation="VERTICAL">
             <items>
 
-                <SplitPane dividerPositions="0.5">
+                <SplitPane dividerPositions="0.2">
                     <items>
 
                         <!-- Configuration List section -->
@@ -120,6 +120,11 @@
                                                         <Button fx:id="revertConfigurationSettingsButton" onAction="#handleRevertConfigurationSettingsAction" text="Revert changes">
                                                             <tooltip> 
                                                                 <Tooltip text="Revert configuration settings changes" />
+                                                            </tooltip>
+                                                        </Button>
+                                                        <Button fx:id="cloneConfigurationButton" onAction="#handleCloneConfigurationAction" text="Clone configuration">
+                                                            <tooltip> 
+                                                                <Tooltip text="Create a copy of the current configuration" />
                                                             </tooltip>
                                                         </Button>
                                                     </children>

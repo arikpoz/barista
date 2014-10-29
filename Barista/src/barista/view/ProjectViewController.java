@@ -85,6 +85,9 @@ public class ProjectViewController {
 
     @FXML
     private Button revertConfigurationSettingsButton;
+    
+    @FXML
+    private Button cloneConfigurationButton;
 
     @FXML
     private TableView<Configuration> configurationTable;
@@ -473,6 +476,12 @@ public class ProjectViewController {
         mainApp.getCurrentConfiguration().setConfigurationSettingsAreUnchanged(true);
     }
 
+    @FXML
+    private void handleCloneConfigurationAction(ActionEvent event) {
+    
+        // TODO: implement clone configuration
+    }
+    
     /**
      * Fills all text fields to show details about the configuration. If the
      * specified configuration is null, all text fields are cleared.
@@ -539,12 +548,13 @@ public class ProjectViewController {
             if (oldConfiguration != null) {
                 Bindings.unbindBidirectional(saveConfigurationSettingsButton.disableProperty(), oldConfiguration.configurationSettingsAreUnchangedProperty());
                 Bindings.unbindBidirectional(revertConfigurationSettingsButton.disableProperty(), oldConfiguration.configurationSettingsAreUnchangedProperty());
+                cloneConfigurationButton.disableProperty().unbind();
             }
 
             // add new bindings
             Bindings.bindBidirectional(saveConfigurationSettingsButton.disableProperty(), newConfiguration.configurationSettingsAreUnchangedProperty());
             Bindings.bindBidirectional(revertConfigurationSettingsButton.disableProperty(), newConfiguration.configurationSettingsAreUnchangedProperty());
-
+            cloneConfigurationButton.disableProperty().bind(Bindings.not(newConfiguration.configurationSettingsAreUnchangedProperty()));
         } else {
             // configuration is null
         }
