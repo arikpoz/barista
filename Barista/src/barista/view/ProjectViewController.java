@@ -21,7 +21,9 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -289,11 +291,15 @@ public class ProjectViewController {
         // set last running configuration
         mainApp.setLastRunningConfiguration(configuration);
 
+        // generate log file name
+        String logFileName = String.format("log_%s.txt", new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date()));
+        
         // build command line
         List<String> commandArgs = new ArrayList<>();
         commandArgs.add(runTrainScriptFullPath);
         commandArgs.add(caffeFolder);
         commandArgs.add(solverFileName);
+        commandArgs.add(logFileName);
 
         String commandLine = String.join(" ", commandArgs);
 
