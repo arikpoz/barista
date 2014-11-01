@@ -137,7 +137,7 @@ public class ApplicationSettingsViewController implements Initializable {
         Bindings.bindBidirectional(caffeFolderTextField.textProperty(), caffeFolderProperty());
         Bindings.bindBidirectional(lastProjectFolderTextField.textProperty(), lastProjectFolderProperty());
 
-        Bindings.bindBidirectional(saveApplicationSettingsButton.disableProperty(), applicationSettingsAreUnchangedProperty());
+        saveApplicationSettingsButton.disableProperty().bind(applicationSettingsAreUnchangedProperty());
     }
 
     @FXML

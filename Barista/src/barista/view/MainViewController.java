@@ -35,8 +35,8 @@ public class MainViewController {
         this.mainApp = mainApp;
         
         // set bindings
-        Bindings.bindBidirectional(openProjectMenuItem.disableProperty(), mainApp.isApplicationSettingsOpenedProperty());
-        Bindings.bindBidirectional(settingsMenuItem.disableProperty(), mainApp.isApplicationSettingsOpenedProperty());
+        openProjectMenuItem.disableProperty().bind(mainApp.isApplicationSettingsOpenedProperty());
+        settingsMenuItem.disableProperty().bind(mainApp.isApplicationSettingsOpenedProperty());
     }
 
     @FXML

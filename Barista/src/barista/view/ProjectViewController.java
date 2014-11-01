@@ -206,8 +206,8 @@ public class ProjectViewController {
         // set bindings
         Bindings.bindBidirectional(projectFolderLabel.textProperty(), mainApp.projectFolderProperty());
         Bindings.bindBidirectional(projectDescriptionTextField.textProperty(), mainApp.projectDescriptionProperty());
-        Bindings.bindBidirectional(saveProjectSettingsButton.disableProperty(), mainApp.projectSettingsAreUnchangedProperty());
-        Bindings.bindBidirectional(revertProjectSettingsButton.disableProperty(), mainApp.projectSettingsAreUnchangedProperty());
+        saveProjectSettingsButton.disableProperty().bind(mainApp.projectSettingsAreUnchangedProperty());
+        revertProjectSettingsButton.disableProperty().bind(mainApp.projectSettingsAreUnchangedProperty());
     }
 
     @FXML
@@ -553,15 +553,16 @@ public class ProjectViewController {
 
             // remove old bindings
             if (oldConfiguration != null) {
-                Bindings.unbindBidirectional(saveConfigurationSettingsButton.disableProperty(), oldConfiguration.configurationSettingsAreUnchangedProperty());
-                Bindings.unbindBidirectional(revertConfigurationSettingsButton.disableProperty(), oldConfiguration.configurationSettingsAreUnchangedProperty());
-                cloneConfigurationButton.disableProperty().unbind();
+                saveConfigurationSettingsButton.disableProperty().unbind();
+                revertConfigurationSettingsButton.disableProperty().unbind();
             }
 
-            // add new bindings
-            Bindings.bindBidirectional(saveConfigurationSettingsButton.disableProperty(), newConfiguration.configurationSettingsAreUnchangedProperty());
-            Bindings.bindBidirectional(revertConfigurationSettingsButton.disableProperty(), newConfiguration.configurationSettingsAreUnchangedProperty());
+            cloneConfigurationButton.disableProperty().unbind();
             cloneConfigurationButton.disableProperty().bind(Bindings.not(newConfiguration.configurationSettingsAreUnchangedProperty()));
+
+            // add new bindings
+            saveConfigurationSettingsButton.disableProperty().bind(newConfiguration.configurationSettingsAreUnchangedProperty());
+            revertConfigurationSettingsButton.disableProperty().bind(newConfiguration.configurationSettingsAreUnchangedProperty());
         } else {
             
             // configuration is null so we should empty the configuration details
@@ -575,17 +576,18 @@ public class ProjectViewController {
             // clear test tree
             populateTreeTableView(testTreeTableView, null);
 
+            cloneConfigurationButton.disableProperty().unbind();
+            cloneConfigurationButton.disableProperty().set(true);
+            
 //            // remove old bindings
 //            if (oldConfiguration != null) {
 //                saveConfigurationSettingsButton.disableProperty().unbind();
 //                revertConfigurationSettingsButton.disableProperty().unbind();
-//                cloneConfigurationButton.disableProperty().unbind();
 //            }
 //
 //            // add new bindings
 //            saveConfigurationSettingsButton.disableProperty().bind(Bindings.isNull(mainApp.currentConfigurationProperty()));
 //            revertConfigurationSettingsButton.disableProperty().bind(Bindings.isNull(mainApp.currentConfigurationProperty()));
-//            cloneConfigurationButton.disableProperty().bind(Bindings.isNull(mainApp.currentConfigurationProperty()));
 
 
         }
