@@ -75,6 +75,12 @@ public class ProjectViewController {
     private Button revertProjectSettingsButton;
 
     @FXML
+    private TextField configurationFolderTextField;
+
+    @FXML
+    private TextField configurationDescriptionTextField;
+
+    @FXML
     private Button runConfigurationButton;
 
     @FXML
@@ -127,9 +133,6 @@ public class ProjectViewController {
         // initialize the configuration table columns
         nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
 
-        // clear configuration details
-        showConfigurationDetails(null, null, false);
-
         // listen for selection changes and show the configuration details when changed
         configurationTable.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> showConfigurationDetails(newValue, oldValue, false));
@@ -147,6 +150,9 @@ public class ProjectViewController {
      */
     public void setMainApp(MainApp mainApp) {
         this.mainApp = mainApp;
+
+        // clear configuration details
+        showConfigurationDetails(null, null, false);
 
         // Add observable list data to the table, with sorting support 
         SortedList<Configuration> sortedData = new SortedList<>(mainApp.getConfigurationList());
@@ -489,10 +495,11 @@ public class ProjectViewController {
      * @param configuration the configuration or null
      */
     private void showConfigurationDetails(Configuration newConfiguration, Configuration oldConfiguration, boolean forceLoad) {
+
+        mainApp.setCurrentConfiguration(newConfiguration);
+
         if (newConfiguration != null) {
             // Fill the labels with info from the configuration object.
-
-            mainApp.setCurrentConfiguration(newConfiguration);
 
             // put something in lastRunningConfiguration in case its empty
             if (mainApp.getLastRunningConfiguration() == null) {
@@ -556,7 +563,31 @@ public class ProjectViewController {
             Bindings.bindBidirectional(revertConfigurationSettingsButton.disableProperty(), newConfiguration.configurationSettingsAreUnchangedProperty());
             cloneConfigurationButton.disableProperty().bind(Bindings.not(newConfiguration.configurationSettingsAreUnchangedProperty()));
         } else {
-            // configuration is null
+            
+            // configuration is null so we should empty the configuration details
+
+            // clear solver tree
+            populateTreeTableView(solverTreeTableView, null);
+
+            // clear train tree
+            populateTreeTableView(trainTreeTableView, null);
+
+            // clear test tree
+            populateTreeTableView(testTreeTableView, null);
+
+//            // remove old bindings
+//            if (oldConfiguration != null) {
+//                saveConfigurationSettingsButton.disableProperty().unbind();
+//                revertConfigurationSettingsButton.disableProperty().unbind();
+//                cloneConfigurationButton.disableProperty().unbind();
+//            }
+//
+//            // add new bindings
+//            saveConfigurationSettingsButton.disableProperty().bind(Bindings.isNull(mainApp.currentConfigurationProperty()));
+//            revertConfigurationSettingsButton.disableProperty().bind(Bindings.isNull(mainApp.currentConfigurationProperty()));
+//            cloneConfigurationButton.disableProperty().bind(Bindings.isNull(mainApp.currentConfigurationProperty()));
+
+
         }
     }
 
