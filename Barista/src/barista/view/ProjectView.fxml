@@ -133,6 +133,30 @@
                                             <center>
                                                 <TabPane>
                                                     <tabs>
+                                                        <Tab closable="false" text="General"> 
+                                                            <content>
+                                                                <GridPane hgap="5" vgap="5">
+                                                                    <padding>
+                                                                        <javafx.geometry.Insets bottom="5" left="5" right="5" top="5" />
+                                                                    </padding>
+                                                                    <children>
+                                                                        <Label text="Configuration folder: " GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                                                        <TextField fx:id="configurationFolderTextField" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                                                        <Label text="Configuration description: " GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                                                        <TextField fx:id="configurationDescriptionTextField" GridPane.columnIndex="1" GridPane.rowIndex="1" /> 
+                                                                    </children>
+                                                                    <columnConstraints>
+                                                                        <ColumnConstraints />
+                                                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                                                    </columnConstraints>
+                                                                    <rowConstraints>
+                                                                        <RowConstraints prefHeight="30.0" vgrow="NEVER" />
+                                                                        <RowConstraints prefHeight="30.0" vgrow="NEVER" />
+                                                                    </rowConstraints>
+                                                                </GridPane>
+  
+                                                            </content>
+                                                        </Tab>
                                                         <Tab closable="false" text="Solver">
                                                             <content>
                                                                 <StackPane>
