@@ -551,18 +551,15 @@ public class ProjectViewController {
             // get last running configuration
             Configuration lastRunningConfiguration = mainApp.getLastRunningConfiguration();
 
-            // remove old bindings
-            if (oldConfiguration != null) {
-                saveConfigurationSettingsButton.disableProperty().unbind();
-                revertConfigurationSettingsButton.disableProperty().unbind();
-            }
-
+            // reset bindings
+            
+            saveConfigurationSettingsButton.disableProperty().unbind();
+            revertConfigurationSettingsButton.disableProperty().unbind();
             cloneConfigurationButton.disableProperty().unbind();
-            cloneConfigurationButton.disableProperty().bind(Bindings.not(newConfiguration.configurationSettingsAreUnchangedProperty()));
-
-            // add new bindings
             saveConfigurationSettingsButton.disableProperty().bind(newConfiguration.configurationSettingsAreUnchangedProperty());
             revertConfigurationSettingsButton.disableProperty().bind(newConfiguration.configurationSettingsAreUnchangedProperty());
+            cloneConfigurationButton.disableProperty().bind(Bindings.not(newConfiguration.configurationSettingsAreUnchangedProperty()));
+
         } else {
             
             // configuration is null so we should empty the configuration details
@@ -576,19 +573,13 @@ public class ProjectViewController {
             // clear test tree
             populateTreeTableView(testTreeTableView, null);
 
+            // reset bindings
+            saveConfigurationSettingsButton.disableProperty().unbind();
+            revertConfigurationSettingsButton.disableProperty().unbind();
             cloneConfigurationButton.disableProperty().unbind();
+            saveConfigurationSettingsButton.disableProperty().set(true);
+            revertConfigurationSettingsButton.disableProperty().set(true);
             cloneConfigurationButton.disableProperty().set(true);
-            
-//            // remove old bindings
-//            if (oldConfiguration != null) {
-//                saveConfigurationSettingsButton.disableProperty().unbind();
-//                revertConfigurationSettingsButton.disableProperty().unbind();
-//            }
-//
-//            // add new bindings
-//            saveConfigurationSettingsButton.disableProperty().bind(Bindings.isNull(mainApp.currentConfigurationProperty()));
-//            revertConfigurationSettingsButton.disableProperty().bind(Bindings.isNull(mainApp.currentConfigurationProperty()));
-
 
         }
     }
