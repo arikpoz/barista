@@ -21,32 +21,65 @@ public class Configuration {
     /**
      * Constructor with some initial data.
      *
-     * @param name
+     * @param folderName - configuration folder name
+     * @param solverFileName - name of solver file
      */
-    public Configuration(String name, String solverFileName) {
-        this.name = new SimpleStringProperty(name);
+    public Configuration(String folderName, String solverFileName) {
+        this.folderName = new SimpleStringProperty(folderName);
         this.solverFileName = new SimpleStringProperty(solverFileName);
         this.setConfigurationSettingsAreUnchanged(true);
         this.setIsLoaded(false);
         this.setIsRunning(false);
     }
 
-    // <editor-fold desc="name javafx property" defaultstate="collapsed">
-    private final StringProperty name;
+    // <editor-fold desc="folderName javafx property" defaultstate="collapsed">
+    private final StringProperty folderName;
 
-    public final String getName() {
-        return name.get();
+    public final String getFolderName() {
+        return folderName.get();
     }
 
-    public final void setName(String value) {
-        this.name.set(value);
+    public final void setFolderName(String value) {
+        this.folderName.set(value);
     }
 
-    public StringProperty nameProperty() {
-        return name;
+    public StringProperty folderNameProperty() {
+        return folderName;
     }
     // </editor-fold>
 
+    // <editor-fold desc="newFolder javafx property" defaultstate="collapsed">
+    private final StringProperty newFolder = new SimpleStringProperty();
+
+    public final String getNewFolder() {
+        return newFolder.get();
+    }
+
+    public final void setNewFolder(String value) {
+        newFolder.set(value);
+    }
+
+    public StringProperty newFolderProperty() {
+        return newFolder;
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="description javafx property" defaultstate="collapsed">
+    private final StringProperty description = new SimpleStringProperty();
+
+    public final String getDescription() {
+        return description.get();
+    }
+
+    public final void setDescription(String value) {
+        description.set(value);
+    }
+
+    public StringProperty descriptionProperty() {
+        return description;
+    }
+    // </editor-fold>
+    
     // <editor-fold desc="solverFileName javafx property" defaultstate="collapsed">
     private final StringProperty solverFileName;
 

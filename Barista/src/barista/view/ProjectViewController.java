@@ -128,7 +128,7 @@ public class ProjectViewController {
     private void initialize() {
 
         // initialize the configuration table columns
-        nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
+        nameColumn.setCellValueFactory(cellData -> cellData.getValue().folderNameProperty());
 
         // listen for selection changes and show the configuration details when changed
         configurationTable.getSelectionModel().selectedItemProperty().addListener(
@@ -333,7 +333,7 @@ public class ProjectViewController {
                     ProcessBuilder processBuilder = new ProcessBuilder(commandArgs.toArray(new String[0]));
 
                     // set current directory
-                    String configurationFolder = mainApp.getConfigurationFolder(configuration.getName());
+                    String configurationFolder = mainApp.getConfigurationFolder(configuration.getFolderName());
                     processBuilder.directory(new File(configurationFolder));
 
                     Platform.runLater(() -> {
@@ -454,7 +454,7 @@ public class ProjectViewController {
 
             // write train object to file
             FieldDescriptor trainNetFieldDescriptor = solverParameterDescriptor.findFieldByName("train_net");
-            String trainFileName = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getName(), solverParameter.getField(trainNetFieldDescriptor).toString()).toString();
+            String trainFileName = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getFolderName(), solverParameter.getField(trainNetFieldDescriptor).toString()).toString();
             try (FileWriter fileWriter = new FileWriter(trainFileName)) {
                 TextFormat.print(trainParameter, fileWriter);
                 fileWriter.flush();
@@ -467,7 +467,7 @@ public class ProjectViewController {
 
             // write test object to file
             FieldDescriptor testNetFieldDescriptor = solverParameterDescriptor.findFieldByName("test_net");
-            String testFileName = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getName(), solverParameter.getField(testNetFieldDescriptor).toString()).toString();
+            String testFileName = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getFolderName(), solverParameter.getField(testNetFieldDescriptor).toString()).toString();
             try (FileWriter fileWriter = new FileWriter(testFileName)) {
                 TextFormat.print(testParameter, fileWriter);
                 fileWriter.flush();
@@ -529,11 +529,11 @@ public class ProjectViewController {
                     SolverParameter solverParameter = mainApp.readSolverParameter(solverFileName);
 
                     // build train object
-                    Path trainFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getName(), solverParameter.getTrainNet());
+                    Path trainFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getFolderName(), solverParameter.getTrainNet());
                     NetParameter trainNetParameter = mainApp.readNetParameter(trainFilePath.toString());
 
                     // build test object
-                    Path testFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getName(), solverParameter.getTestNet());
+                    Path testFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getFolderName(), solverParameter.getTestNet());
                     NetParameter testNetParameter = mainApp.readNetParameter(testFilePath.toString());
 
                     // load solver data
