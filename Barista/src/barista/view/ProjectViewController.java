@@ -132,7 +132,7 @@ public class ProjectViewController {
     private void initialize() {
 
         // initialize the configuration table columns
-        nameColumn.setCellValueFactory(cellData -> cellData.getValue().folderNameProperty());
+        nameColumn.setCellValueFactory(cellData -> cellData.getValue().nameProperty());
 
         // listen for selection changes and show the configuration details when changed
         configurationTable.getSelectionModel().selectedItemProperty().addListener(
