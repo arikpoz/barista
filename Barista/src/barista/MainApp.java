@@ -312,7 +312,7 @@ public class MainApp extends Application {
     public String getProjectSettingsFileName() {
         String currentProjectFolder = getProjectFolder();
         if ((currentProjectFolder != null) && (!currentProjectFolder.equalsIgnoreCase(""))) {
-            Path projectSettingsFilePath = FileSystems.getDefault().getPath(getProjectFolder(), "project.settings");
+            Path projectSettingsFilePath = FileSystems.getDefault().getPath(currentProjectFolder, "project.settings");
             return projectSettingsFilePath.toString();
         }
 
@@ -323,7 +323,7 @@ public class MainApp extends Application {
     public String getConfigurationSettingsFileName(String configurationFolder) {
         String currentProjectFolder = getProjectFolder();
         if ((currentProjectFolder != null) && (!currentProjectFolder.equalsIgnoreCase(""))) {
-            Path configurationSettingsFilePath = FileSystems.getDefault().getPath(getProjectFolder(), configurationFolder, "configuration.settings");
+            Path configurationSettingsFilePath = FileSystems.getDefault().getPath(currentProjectFolder, configurationFolder, "configuration.settings");
             return configurationSettingsFilePath.toString();
         }
 
@@ -355,7 +355,7 @@ public class MainApp extends Application {
         return null;
     }
 
-    private BaristaMessages.ConfigurationSettings readConfigurationSettings(String configurationSettingsFileName) {
+    public BaristaMessages.ConfigurationSettings readConfigurationSettings(String configurationSettingsFileName) {
         FileReader fileReader;
         try {
 

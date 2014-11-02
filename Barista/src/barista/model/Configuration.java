@@ -36,6 +36,24 @@ public class Configuration {
         this.setConfigurationSettingsAreUnchanged(true);
         this.setIsLoaded(false);
         this.setIsRunning(false);
+
+        // track changes to new folder name property
+        newFolderNameProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    setConfigurationSettingsAreUnchanged(false);
+                });
+
+        // track changes to name property
+        nameProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    setConfigurationSettingsAreUnchanged(false);
+                });
+        
+        // track changes to description property
+        descriptionProperty().addListener(
+                (observable, oldValue, newValue) -> {
+                    setConfigurationSettingsAreUnchanged(false);
+                });
     }
 
     // <editor-fold desc="folderName javafx property" defaultstate="collapsed">
@@ -61,7 +79,7 @@ public class Configuration {
         return newFolderName.get();
     }
 
-    public final void setNewFolder(String value) {
+    public final void setNewFolderName(String value) {
         newFolderName.set(value);
     }
 

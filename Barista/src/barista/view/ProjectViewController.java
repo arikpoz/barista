@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -427,13 +428,71 @@ public class ProjectViewController {
         outputTextArea.clear();
     }
 
+    public void writeConfigurationSettings(BaristaMessages.ConfigurationSettings configurationSettings, String configurationFolder) {
+        String configurationSettingsFileName = mainApp.getConfigurationSettingsFileName(configurationFolder);
+
+        // write configuration settings objects to file
+        try (FileWriter fileWriter = new FileWriter(configurationSettingsFileName)) {
+            // write ConfigurationSettings object in protobuf properties format
+            TextFormat.print(configurationSettings, fileWriter);
+            fileWriter.flush();
+        } catch (IOException ex) {
+            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", configurationSettingsFileName), ex);
+        }
+    }
+
+    
     @FXML
     private void handleSaveConfigurationSettingsAction(ActionEvent event) {
 
         // get current configuration
         Configuration configuration = mainApp.getCurrentConfiguration();
 
-        // save solver file
+        // check if folder name has changed
+        if (!configuration.getNewFolderName().equals(configuration.getFolderName())) {
+
+            // rename configuration folder 
+            String currentProjectFolder = mainApp.getProjectFolder();
+            Path currentConfigurationFolderPath = FileSystems.getDefault().getPath(currentProjectFolder, configuration.getFolderName());
+            Path newConfigurationFolderPath = FileSystems.getDefault().getPath(currentProjectFolder, configuration.getNewFolderName());
+
+            try {
+                Files.move(currentConfigurationFolderPath, newConfigurationFolderPath);
+            } catch (IOException ex) {
+
+                Dialogs.create()
+                        .title("Folder renamed failed")
+                        .masthead("Failed renaming configuraiton folder")
+                        .message("Got exception while renaming configuration folder. Aborting. Save operation was aborted.")
+                        .showException(ex);
+
+                Logger.getLogger(ProjectViewController.class.getName()).log(Level.SEVERE, String.format("Failed to rename folder [%s] to [%s]", currentConfigurationFolderPath.toString(), newConfigurationFolderPath.toString()), ex);
+                return;
+            }
+
+            // update folder name field
+            configuration.setFolderName(configuration.getNewFolderName());
+        }
+
+        // get current configuration settings
+        String configurationSettingsFileName = mainApp.getConfigurationSettingsFileName(configuration.getFolderName());
+        BaristaMessages.ConfigurationSettings configurationSettings = mainApp.readConfigurationSettings(configurationSettingsFileName);
+
+        // generate configuration settings object
+        BaristaMessages.ConfigurationSettings.Builder configurationSettingsBuilder;
+        if (configurationSettings != null) {
+            configurationSettingsBuilder = BaristaMessages.ConfigurationSettings.newBuilder(configurationSettings);
+        } else {
+            configurationSettingsBuilder = BaristaMessages.ConfigurationSettings.newBuilder();
+        }
+        configurationSettingsBuilder.setConfigurationName(configuration.getName());
+        configurationSettingsBuilder.setConfigurationDescription(configuration.getDescription());
+        configurationSettings = configurationSettingsBuilder.build();
+
+        // save configuration settings
+        writeConfigurationSettings(configurationSettings, configuration.getFolderName());
+        
+        // handle saving solver, train and test files
         String solverFileName = configuration.getSolverFileName();
         if (solverFileName != null) {
 
@@ -488,6 +547,15 @@ public class ProjectViewController {
         // get current configuration
         Configuration configuration = mainApp.getCurrentConfiguration();
 
+        // reset new folder name to current folder name
+        configuration.setNewFolderName(configuration.getFolderName());
+
+        // reload configuration settings
+        String configurationSettingsFileName = mainApp.getConfigurationSettingsFileName(configuration.getFolderName());
+        BaristaMessages.ConfigurationSettings configurationSettings = mainApp.readConfigurationSettings(configurationSettingsFileName);
+        configuration.setName(configurationSettings.getConfigurationName());
+        configuration.setDescription(configurationSettings.getConfigurationDescription());
+        
         // force reload configuration from file
         showConfigurationDetails(configuration, configuration, true);
 
@@ -563,12 +631,12 @@ public class ProjectViewController {
 
             // set binding on configuration details 
             if (oldConfiguration != null) {
-                Bindings.unbindBidirectional(configurationFolderTextField.textProperty(), oldConfiguration.folderNameProperty());
+                Bindings.unbindBidirectional(configurationFolderTextField.textProperty(), oldConfiguration.newFolderNameProperty());
                 Bindings.unbindBidirectional(configurationNameTextField.textProperty(), oldConfiguration.nameProperty());
                 Bindings.unbindBidirectional(configurationDescriptionTextField.textProperty(), oldConfiguration.descriptionProperty());
             }
 
-            Bindings.bindBidirectional(configurationFolderTextField.textProperty(), newConfiguration.folderNameProperty());
+            Bindings.bindBidirectional(configurationFolderTextField.textProperty(), newConfiguration.newFolderNameProperty());
             Bindings.bindBidirectional(configurationNameTextField.textProperty(), newConfiguration.nameProperty());
             Bindings.bindBidirectional(configurationDescriptionTextField.textProperty(), newConfiguration.descriptionProperty());
 
@@ -594,7 +662,7 @@ public class ProjectViewController {
 
             // remove binding on configuration details 
             if (oldConfiguration != null) {
-                Bindings.unbindBidirectional(configurationFolderTextField.textProperty(), oldConfiguration.folderNameProperty());
+                Bindings.unbindBidirectional(configurationFolderTextField.textProperty(), oldConfiguration.newFolderNameProperty());
                 Bindings.unbindBidirectional(configurationNameTextField.textProperty(), oldConfiguration.nameProperty());
                 Bindings.unbindBidirectional(configurationDescriptionTextField.textProperty(), oldConfiguration.descriptionProperty());
             }
