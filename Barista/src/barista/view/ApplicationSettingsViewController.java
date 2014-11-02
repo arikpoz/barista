@@ -7,6 +7,7 @@ package barista.view;
 
 import barista.BaristaMessages;
 import barista.MainApp;
+import barista.model.SettingsFiles;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -110,7 +111,7 @@ public class ApplicationSettingsViewController implements Initializable {
         this.mainApp = mainApp;
 
         // load application settings
-        BaristaMessages.ApplicationSettings applicationSettings = mainApp.readApplicationSettings();
+        BaristaMessages.ApplicationSettings applicationSettings = SettingsFiles.readApplicationSettings();
         if (applicationSettings != null) {
             setCaffeFolder(applicationSettings.getCaffeFolder());
             setLastProjectFolder(applicationSettings.getLastProjectFolder());
@@ -143,14 +144,12 @@ public class ApplicationSettingsViewController implements Initializable {
     @FXML
     private void handleSaveApplicationSettingsAction(ActionEvent event) {
 
-        // generate application settings object
-        BaristaMessages.ApplicationSettings.Builder applicationSettingsBuilder = BaristaMessages.ApplicationSettings.newBuilder();
-        applicationSettingsBuilder.setCaffeFolder(getCaffeFolder());
-        applicationSettingsBuilder.setLastProjectFolder(getLastProjectFolder());
-        BaristaMessages.ApplicationSettings applicationSettings = applicationSettingsBuilder.build();
-
-        // save application settings
-        mainApp.writeApplicationSettings(applicationSettings);
+        // update application settings file
+        SettingsFiles.updateApplicationSettings(
+                (applicationSettingsBuilder) -> {
+                    applicationSettingsBuilder.setCaffeFolder(getCaffeFolder());
+                    applicationSettingsBuilder.setLastProjectFolder(getLastProjectFolder());
+                });
 
         // load previous screen
         mainApp.showPreviousScreen();

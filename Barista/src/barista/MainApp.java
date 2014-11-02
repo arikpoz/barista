@@ -1,6 +1,7 @@
 package barista;
 
 import barista.model.Configuration;
+import barista.model.SettingsFiles;
 import barista.utils.ProcessUtils;
 import barista.view.ApplicationSettingsViewController;
 import barista.view.ProjectViewController;
@@ -14,7 +15,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.logging.Level;
@@ -186,7 +186,7 @@ public class MainApp extends Application {
 
         setProjectSettingsAreUnchanged(true);
 
-        BaristaMessages.ApplicationSettings applicationSettings = readApplicationSettings();
+        BaristaMessages.ApplicationSettings applicationSettings = SettingsFiles.readApplicationSettings();
 
         if (applicationSettings != null) {
             loadProject(applicationSettings.getLastProjectFolder());
@@ -381,49 +381,11 @@ public class MainApp extends Application {
 
     // get caffe folder from application settings, or null if no settings exists
     public String getCaffeFolder() {
-        BaristaMessages.ApplicationSettings applicationSettings = readApplicationSettings();
+        BaristaMessages.ApplicationSettings applicationSettings = SettingsFiles.readApplicationSettings();
         if (applicationSettings == null) {
             return null;
         } else {
             return applicationSettings.getCaffeFolder();
-        }
-    }
-
-    public BaristaMessages.ApplicationSettings readApplicationSettings() {
-        FileReader fileReader = null;
-        try {
-            String applicationSettingsFileName = getApplicationSettingsFileName();
-
-            if (new File(applicationSettingsFileName).isFile()) {
-                BaristaMessages.ApplicationSettings.Builder applicationSettingsBuilder = BaristaMessages.ApplicationSettings.newBuilder();
-
-                // read from file using protobuf properties format
-                fileReader = new FileReader(applicationSettingsFileName);
-                TextFormat.merge(fileReader, applicationSettingsBuilder);
-                fileReader.close();
-
-                return applicationSettingsBuilder.build();
-            }
-
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, "", ex);
-        } catch (IOException ex) {
-            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
-        }
-
-        return null;
-    }
-
-    public void writeApplicationSettings(BaristaMessages.ApplicationSettings applicationSettings) {
-        String applicationSettingsFileName = getApplicationSettingsFileName();
-
-        // write application settings objects to file
-        try (FileWriter fileWriter = new FileWriter(applicationSettingsFileName)) {
-            // write ApplicationSettings object in protobuf properties format
-            TextFormat.print(applicationSettings, fileWriter);
-            fileWriter.flush();
-        } catch (IOException ex) {
-            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", applicationSettingsFileName), ex);
         }
     }
 
@@ -475,15 +437,6 @@ public class MainApp extends Application {
         return null;
     }
 
-    // get application settings file name
-    private String getApplicationSettingsFileName() {
-        // generate application settings file name
-        String applicationFolder = ProcessUtils.getApplicationFolder();
-        Path applicationSettingsFilePath = FileSystems.getDefault().getPath(applicationFolder, "application.settings");
-
-        return applicationSettingsFilePath.toString();
-    }
-
     public void loadProjectSettings() {
         // load project settings from file
         BaristaMessages.ProjectSettings projectSettings = readProjectSettings();
@@ -501,21 +454,11 @@ public class MainApp extends Application {
 
         loadProjectSettings();
 
-        // get current application settings
-        BaristaMessages.ApplicationSettings applicationSettings = readApplicationSettings();
-
-        // generate application settings object
-        BaristaMessages.ApplicationSettings.Builder applicationSettingsBuilder;
-        if (applicationSettings != null) {
-            applicationSettingsBuilder = BaristaMessages.ApplicationSettings.newBuilder(applicationSettings);
-        } else {
-            applicationSettingsBuilder = BaristaMessages.ApplicationSettings.newBuilder();
-        }
-        applicationSettingsBuilder.setLastProjectFolder(projectFolder);
-        applicationSettings = applicationSettingsBuilder.build();
-
-        // save application settings
-        writeApplicationSettings(applicationSettings);
+        // update application settings file
+        SettingsFiles.updateApplicationSettings(
+                (applicationSettingsBuilder) -> {
+                    applicationSettingsBuilder.setLastProjectFolder(projectFolder);
+                });
 
         // load configurations list
         loadConfigurations();
