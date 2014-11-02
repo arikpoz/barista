@@ -75,6 +75,9 @@ public class ProjectViewController {
     private TextField configurationFolderTextField;
 
     @FXML
+    private TextField configurationNameTextField;
+
+    @FXML
     private TextField configurationDescriptionTextField;
 
     @FXML
@@ -204,7 +207,6 @@ public class ProjectViewController {
 //                (observable, oldValue, newValue) -> {
 //
 //                });
-
         // set bindings
         Bindings.bindBidirectional(projectFolderLabel.textProperty(), mainApp.projectFolderProperty());
         Bindings.bindBidirectional(projectDescriptionTextField.textProperty(), mainApp.projectDescriptionProperty());
@@ -559,6 +561,17 @@ public class ProjectViewController {
             // populate test tree
             populateTreeTableView(testTreeTableView, newConfiguration.getTestProtobufProperty());
 
+            // set binding on configuration details 
+            if (oldConfiguration != null) {
+                Bindings.unbindBidirectional(configurationFolderTextField.textProperty(), oldConfiguration.folderNameProperty());
+                Bindings.unbindBidirectional(configurationNameTextField.textProperty(), oldConfiguration.nameProperty());
+                Bindings.unbindBidirectional(configurationDescriptionTextField.textProperty(), oldConfiguration.descriptionProperty());
+            }
+
+            Bindings.bindBidirectional(configurationFolderTextField.textProperty(), newConfiguration.folderNameProperty());
+            Bindings.bindBidirectional(configurationNameTextField.textProperty(), newConfiguration.nameProperty());
+            Bindings.bindBidirectional(configurationDescriptionTextField.textProperty(), newConfiguration.descriptionProperty());
+
             // reset bindings
             saveConfigurationSettingsButton.disableProperty().unbind();
             revertConfigurationSettingsButton.disableProperty().unbind();
@@ -578,6 +591,13 @@ public class ProjectViewController {
 
             // clear test tree
             populateTreeTableView(testTreeTableView, null);
+
+            // remove binding on configuration details 
+            if (oldConfiguration != null) {
+                Bindings.unbindBidirectional(configurationFolderTextField.textProperty(), oldConfiguration.folderNameProperty());
+                Bindings.unbindBidirectional(configurationNameTextField.textProperty(), oldConfiguration.nameProperty());
+                Bindings.unbindBidirectional(configurationDescriptionTextField.textProperty(), oldConfiguration.descriptionProperty());
+            }
 
             // reset bindings
             saveConfigurationSettingsButton.disableProperty().unbind();

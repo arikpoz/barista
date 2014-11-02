@@ -319,8 +319,19 @@ public class MainApp extends Application {
         return null;
     }
 
+    // get configuration settings file name
+    public String getConfigurationSettingsFileName(String configurationFolder) {
+        String currentProjectFolder = getProjectFolder();
+        if ((currentProjectFolder != null) && (!currentProjectFolder.equalsIgnoreCase(""))) {
+            Path configurationSettingsFilePath = FileSystems.getDefault().getPath(getProjectFolder(), configurationFolder, "configuration.settings");
+            return configurationSettingsFilePath.toString();
+        }
+
+        return null;
+    }
+
     private BaristaMessages.ProjectSettings readProjectSettings() {
-        FileReader fileReader = null;
+        FileReader fileReader;
         try {
             String projectSettingsFileName = getProjectSettingsFileName();
 
@@ -339,6 +350,30 @@ public class MainApp extends Application {
             Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, "File not found while reading project.settings", ex);
         } catch (IOException ex) {
             Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, "Got IO exception while reading project.settings", ex);
+        }
+
+        return null;
+    }
+
+    private BaristaMessages.ConfigurationSettings readConfigurationSettings(String configurationSettingsFileName) {
+        FileReader fileReader;
+        try {
+
+            if (new File(configurationSettingsFileName).isFile()) {
+                BaristaMessages.ConfigurationSettings.Builder configurationSettingsBuilder = BaristaMessages.ConfigurationSettings.newBuilder();
+
+                // read from file using protobuf properties format
+                fileReader = new FileReader(configurationSettingsFileName);
+                TextFormat.merge(fileReader, configurationSettingsBuilder);
+                fileReader.close();
+
+                return configurationSettingsBuilder.build();
+            }
+
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, "File not found while reading configuration.settings", ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, "Got IO exception while reading configuration.settings", ex);
         }
 
         return null;
@@ -528,14 +563,47 @@ public class MainApp extends Application {
             for (File file : files) {
                 if (file.isDirectory()) {
 
-                    String configurationName = file.getName();
+                    String configurationFolderName = file.getName();
 
                     // find solver file name
-                    String solverFileName = findSolverFileName(configurationName);
+                    String solverFileName = findSolverFileName(configurationFolderName);
 
                     // only add configurations which have a solver file
                     if (solverFileName != null) {
-                        configurationList.add(new Configuration(configurationName, solverFileName));
+
+                        String configurationSettingsFileName = getConfigurationSettingsFileName(configurationFolderName);
+                        BaristaMessages.ConfigurationSettings configurationSettings = readConfigurationSettings(configurationSettingsFileName);
+
+                        // if configuration has no settings file
+                        if (configurationSettings == null) {
+                            // create configuration settings object
+                            BaristaMessages.ConfigurationSettings.Builder configurationSettingsBuilder = BaristaMessages.ConfigurationSettings.newBuilder();
+                            // set configuration settings default values 
+                            configurationSettingsBuilder.setConfigurationName(configurationFolderName);
+                            configurationSettingsBuilder.setConfigurationDescription("");
+                            configurationSettings = configurationSettingsBuilder.build();
+
+                            // write configuration.settings file 
+                            if (configurationSettingsFileName != null) {
+                                // write configuration settings object to file
+                                try (FileWriter fileWriter = new FileWriter(configurationSettingsFileName)) {
+                                    // write ConfigurationSettings object in protobuf properties format
+                                    TextFormat.print(configurationSettings, fileWriter);
+                                    fileWriter.flush();
+                                } catch (IOException ex) {
+                                    Logger.getLogger(ProjectViewController.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", configurationSettingsFileName), ex);
+                                }
+                            }
+                        }
+
+                        String configurationName = configurationSettings.getConfigurationName();
+                        String configurationDescription = configurationSettings.getConfigurationDescription();
+
+                        configurationList.add(new Configuration(
+                                configurationFolderName,
+                                configurationName,
+                                configurationDescription,
+                                solverFileName));
                     }
                 }
             }

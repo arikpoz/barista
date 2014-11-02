@@ -12,3 +12,11 @@ message ProjectSettings {
   // The project description
   optional string project_description = 1; 
 }
+
+message ConfigurationSettings {
+  // The configuration name
+  optional string configuration_name = 1; 
+
+  // The configuration description
+  optional string configuration_description = 2; 
+}

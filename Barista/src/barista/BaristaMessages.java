@@ -1261,6 +1261,735 @@ public final class BaristaMessages {
     // @@protoc_insertion_point(class_scope:barista.ProjectSettings)
   }
 
+  public interface ConfigurationSettingsOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:barista.ConfigurationSettings)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional string configuration_name = 1;</code>
+     *
+     * <pre>
+     * The configuration name
+     * </pre>
+     */
+    boolean hasConfigurationName();
+    /**
+     * <code>optional string configuration_name = 1;</code>
+     *
+     * <pre>
+     * The configuration name
+     * </pre>
+     */
+    java.lang.String getConfigurationName();
+    /**
+     * <code>optional string configuration_name = 1;</code>
+     *
+     * <pre>
+     * The configuration name
+     * </pre>
+     */
+    com.google.protobuf.ByteString
+        getConfigurationNameBytes();
+
+    /**
+     * <code>optional string configuration_description = 2;</code>
+     *
+     * <pre>
+     * The configuration description
+     * </pre>
+     */
+    boolean hasConfigurationDescription();
+    /**
+     * <code>optional string configuration_description = 2;</code>
+     *
+     * <pre>
+     * The configuration description
+     * </pre>
+     */
+    java.lang.String getConfigurationDescription();
+    /**
+     * <code>optional string configuration_description = 2;</code>
+     *
+     * <pre>
+     * The configuration description
+     * </pre>
+     */
+    com.google.protobuf.ByteString
+        getConfigurationDescriptionBytes();
+  }
+  /**
+   * Protobuf type {@code barista.ConfigurationSettings}
+   */
+  public static final class ConfigurationSettings extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:barista.ConfigurationSettings)
+      ConfigurationSettingsOrBuilder {
+    // Use ConfigurationSettings.newBuilder() to construct.
+    private ConfigurationSettings(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private ConfigurationSettings(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final ConfigurationSettings defaultInstance;
+    public static ConfigurationSettings getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public ConfigurationSettings getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private ConfigurationSettings(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 10: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000001;
+              configurationName_ = bs;
+              break;
+            }
+            case 18: {
+              com.google.protobuf.ByteString bs = input.readBytes();
+              bitField0_ |= 0x00000002;
+              configurationDescription_ = bs;
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return barista.BaristaMessages.internal_static_barista_ConfigurationSettings_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return barista.BaristaMessages.internal_static_barista_ConfigurationSettings_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              barista.BaristaMessages.ConfigurationSettings.class, barista.BaristaMessages.ConfigurationSettings.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<ConfigurationSettings> PARSER =
+        new com.google.protobuf.AbstractParser<ConfigurationSettings>() {
+      public ConfigurationSettings parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new ConfigurationSettings(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<ConfigurationSettings> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int CONFIGURATION_NAME_FIELD_NUMBER = 1;
+    private java.lang.Object configurationName_;
+    /**
+     * <code>optional string configuration_name = 1;</code>
+     *
+     * <pre>
+     * The configuration name
+     * </pre>
+     */
+    public boolean hasConfigurationName() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional string configuration_name = 1;</code>
+     *
+     * <pre>
+     * The configuration name
+     * </pre>
+     */
+    public java.lang.String getConfigurationName() {
+      java.lang.Object ref = configurationName_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          configurationName_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string configuration_name = 1;</code>
+     *
+     * <pre>
+     * The configuration name
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getConfigurationNameBytes() {
+      java.lang.Object ref = configurationName_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        configurationName_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    public static final int CONFIGURATION_DESCRIPTION_FIELD_NUMBER = 2;
+    private java.lang.Object configurationDescription_;
+    /**
+     * <code>optional string configuration_description = 2;</code>
+     *
+     * <pre>
+     * The configuration description
+     * </pre>
+     */
+    public boolean hasConfigurationDescription() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional string configuration_description = 2;</code>
+     *
+     * <pre>
+     * The configuration description
+     * </pre>
+     */
+    public java.lang.String getConfigurationDescription() {
+      java.lang.Object ref = configurationDescription_;
+      if (ref instanceof java.lang.String) {
+        return (java.lang.String) ref;
+      } else {
+        com.google.protobuf.ByteString bs = 
+            (com.google.protobuf.ByteString) ref;
+        java.lang.String s = bs.toStringUtf8();
+        if (bs.isValidUtf8()) {
+          configurationDescription_ = s;
+        }
+        return s;
+      }
+    }
+    /**
+     * <code>optional string configuration_description = 2;</code>
+     *
+     * <pre>
+     * The configuration description
+     * </pre>
+     */
+    public com.google.protobuf.ByteString
+        getConfigurationDescriptionBytes() {
+      java.lang.Object ref = configurationDescription_;
+      if (ref instanceof java.lang.String) {
+        com.google.protobuf.ByteString b = 
+            com.google.protobuf.ByteString.copyFromUtf8(
+                (java.lang.String) ref);
+        configurationDescription_ = b;
+        return b;
+      } else {
+        return (com.google.protobuf.ByteString) ref;
+      }
+    }
+
+    private void initFields() {
+      configurationName_ = "";
+      configurationDescription_ = "";
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeBytes(1, getConfigurationNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeBytes(2, getConfigurationDescriptionBytes());
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(1, getConfigurationNameBytes());
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeBytesSize(2, getConfigurationDescriptionBytes());
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static barista.BaristaMessages.ConfigurationSettings parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static barista.BaristaMessages.ConfigurationSettings parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static barista.BaristaMessages.ConfigurationSettings parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static barista.BaristaMessages.ConfigurationSettings parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static barista.BaristaMessages.ConfigurationSettings parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static barista.BaristaMessages.ConfigurationSettings parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static barista.BaristaMessages.ConfigurationSettings parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static barista.BaristaMessages.ConfigurationSettings parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static barista.BaristaMessages.ConfigurationSettings parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static barista.BaristaMessages.ConfigurationSettings parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(barista.BaristaMessages.ConfigurationSettings prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code barista.ConfigurationSettings}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:barista.ConfigurationSettings)
+        barista.BaristaMessages.ConfigurationSettingsOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return barista.BaristaMessages.internal_static_barista_ConfigurationSettings_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return barista.BaristaMessages.internal_static_barista_ConfigurationSettings_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                barista.BaristaMessages.ConfigurationSettings.class, barista.BaristaMessages.ConfigurationSettings.Builder.class);
+      }
+
+      // Construct using barista.BaristaMessages.ConfigurationSettings.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        configurationName_ = "";
+        bitField0_ = (bitField0_ & ~0x00000001);
+        configurationDescription_ = "";
+        bitField0_ = (bitField0_ & ~0x00000002);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return barista.BaristaMessages.internal_static_barista_ConfigurationSettings_descriptor;
+      }
+
+      public barista.BaristaMessages.ConfigurationSettings getDefaultInstanceForType() {
+        return barista.BaristaMessages.ConfigurationSettings.getDefaultInstance();
+      }
+
+      public barista.BaristaMessages.ConfigurationSettings build() {
+        barista.BaristaMessages.ConfigurationSettings result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public barista.BaristaMessages.ConfigurationSettings buildPartial() {
+        barista.BaristaMessages.ConfigurationSettings result = new barista.BaristaMessages.ConfigurationSettings(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.configurationName_ = configurationName_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.configurationDescription_ = configurationDescription_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof barista.BaristaMessages.ConfigurationSettings) {
+          return mergeFrom((barista.BaristaMessages.ConfigurationSettings)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(barista.BaristaMessages.ConfigurationSettings other) {
+        if (other == barista.BaristaMessages.ConfigurationSettings.getDefaultInstance()) return this;
+        if (other.hasConfigurationName()) {
+          bitField0_ |= 0x00000001;
+          configurationName_ = other.configurationName_;
+          onChanged();
+        }
+        if (other.hasConfigurationDescription()) {
+          bitField0_ |= 0x00000002;
+          configurationDescription_ = other.configurationDescription_;
+          onChanged();
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        barista.BaristaMessages.ConfigurationSettings parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (barista.BaristaMessages.ConfigurationSettings) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private java.lang.Object configurationName_ = "";
+      /**
+       * <code>optional string configuration_name = 1;</code>
+       *
+       * <pre>
+       * The configuration name
+       * </pre>
+       */
+      public boolean hasConfigurationName() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional string configuration_name = 1;</code>
+       *
+       * <pre>
+       * The configuration name
+       * </pre>
+       */
+      public java.lang.String getConfigurationName() {
+        java.lang.Object ref = configurationName_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            configurationName_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string configuration_name = 1;</code>
+       *
+       * <pre>
+       * The configuration name
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getConfigurationNameBytes() {
+        java.lang.Object ref = configurationName_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          configurationName_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string configuration_name = 1;</code>
+       *
+       * <pre>
+       * The configuration name
+       * </pre>
+       */
+      public Builder setConfigurationName(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        configurationName_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string configuration_name = 1;</code>
+       *
+       * <pre>
+       * The configuration name
+       * </pre>
+       */
+      public Builder clearConfigurationName() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        configurationName_ = getDefaultInstance().getConfigurationName();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string configuration_name = 1;</code>
+       *
+       * <pre>
+       * The configuration name
+       * </pre>
+       */
+      public Builder setConfigurationNameBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000001;
+        configurationName_ = value;
+        onChanged();
+        return this;
+      }
+
+      private java.lang.Object configurationDescription_ = "";
+      /**
+       * <code>optional string configuration_description = 2;</code>
+       *
+       * <pre>
+       * The configuration description
+       * </pre>
+       */
+      public boolean hasConfigurationDescription() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional string configuration_description = 2;</code>
+       *
+       * <pre>
+       * The configuration description
+       * </pre>
+       */
+      public java.lang.String getConfigurationDescription() {
+        java.lang.Object ref = configurationDescription_;
+        if (!(ref instanceof java.lang.String)) {
+          com.google.protobuf.ByteString bs =
+              (com.google.protobuf.ByteString) ref;
+          java.lang.String s = bs.toStringUtf8();
+          if (bs.isValidUtf8()) {
+            configurationDescription_ = s;
+          }
+          return s;
+        } else {
+          return (java.lang.String) ref;
+        }
+      }
+      /**
+       * <code>optional string configuration_description = 2;</code>
+       *
+       * <pre>
+       * The configuration description
+       * </pre>
+       */
+      public com.google.protobuf.ByteString
+          getConfigurationDescriptionBytes() {
+        java.lang.Object ref = configurationDescription_;
+        if (ref instanceof String) {
+          com.google.protobuf.ByteString b = 
+              com.google.protobuf.ByteString.copyFromUtf8(
+                  (java.lang.String) ref);
+          configurationDescription_ = b;
+          return b;
+        } else {
+          return (com.google.protobuf.ByteString) ref;
+        }
+      }
+      /**
+       * <code>optional string configuration_description = 2;</code>
+       *
+       * <pre>
+       * The configuration description
+       * </pre>
+       */
+      public Builder setConfigurationDescription(
+          java.lang.String value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        configurationDescription_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string configuration_description = 2;</code>
+       *
+       * <pre>
+       * The configuration description
+       * </pre>
+       */
+      public Builder clearConfigurationDescription() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        configurationDescription_ = getDefaultInstance().getConfigurationDescription();
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional string configuration_description = 2;</code>
+       *
+       * <pre>
+       * The configuration description
+       * </pre>
+       */
+      public Builder setConfigurationDescriptionBytes(
+          com.google.protobuf.ByteString value) {
+        if (value == null) {
+    throw new NullPointerException();
+  }
+  bitField0_ |= 0x00000002;
+        configurationDescription_ = value;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:barista.ConfigurationSettings)
+    }
+
+    static {
+      defaultInstance = new ConfigurationSettings(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:barista.ConfigurationSettings)
+  }
+
   private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_barista_ApplicationSettings_descriptor;
   private static
@@ -1271,6 +2000,11 @@ public final class BaristaMessages {
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_barista_ProjectSettings_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_barista_ConfigurationSettings_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_barista_ConfigurationSettings_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -1283,7 +2017,10 @@ public final class BaristaMessages {
       "\n\026barista_messages.proto\022\007barista\"H\n\023App" +
       "licationSettings\022\033\n\023last_project_folder\030" +
       "\001 \001(\t\022\024\n\014caffe_folder\030\002 \001(\t\".\n\017ProjectSe" +
-      "ttings\022\033\n\023project_description\030\001 \001(\t"
+      "ttings\022\033\n\023project_description\030\001 \001(\t\"V\n\025C" +
+      "onfigurationSettings\022\032\n\022configuration_na" +
+      "me\030\001 \001(\t\022!\n\031configuration_description\030\002 " +
+      "\001(\t"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -1309,6 +2046,12 @@ public final class BaristaMessages {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_barista_ProjectSettings_descriptor,
         new java.lang.String[] { "ProjectDescription", });
+    internal_static_barista_ConfigurationSettings_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_barista_ConfigurationSettings_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_barista_ConfigurationSettings_descriptor,
+        new java.lang.String[] { "ConfigurationName", "ConfigurationDescription", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)
