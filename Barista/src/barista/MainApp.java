@@ -164,7 +164,7 @@ public class MainApp extends Application {
     // holds the state of the isApplicationSettingsOpened flag before application settings screen has been opened
     private boolean previousIsApplicationSettingsOpened;
     // </editor-fold>
-    
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         this.primaryStage = primaryStage;
@@ -524,17 +524,19 @@ public class MainApp extends Application {
         File[] files = folder.listFiles();
 
         // for each file in project folder
-        for (File file : files) {
-            if (file.isDirectory()) {
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
 
-                String configurationName = file.getName();
+                    String configurationName = file.getName();
 
-                // find solver file name
-                String solverFileName = findSolverFileName(configurationName);
+                    // find solver file name
+                    String solverFileName = findSolverFileName(configurationName);
 
-                // only add configurations which have a solver file
-                if (solverFileName != null) {
-                    configurationList.add(new Configuration(configurationName, solverFileName));
+                    // only add configurations which have a solver file
+                    if (solverFileName != null) {
+                        configurationList.add(new Configuration(configurationName, solverFileName));
+                    }
                 }
             }
         }
