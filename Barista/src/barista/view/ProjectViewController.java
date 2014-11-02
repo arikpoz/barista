@@ -4,6 +4,7 @@ import barista.BaristaMessages;
 import barista.MainApp;
 import barista.model.Configuration;
 import barista.model.ProtobufProperty;
+import barista.utils.BindingsUtils;
 import barista.utils.ProcessUtils;
 import barista.utils.StreamGobbler;
 import barista.utils.StringUtils;
@@ -17,7 +18,6 @@ import com.google.protobuf.GeneratedMessage;
 import com.google.protobuf.TextFormat;
 import java.io.File;
 import java.io.FileWriter;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
@@ -29,9 +29,7 @@ import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.beans.binding.Binding;
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
@@ -53,7 +51,6 @@ import javafx.scene.control.cell.CheckBoxTreeTableCell;
 import javafx.scene.control.cell.TextFieldTreeTableCell;
 import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.util.Callback;
-import org.controlsfx.control.action.Action;
 import org.controlsfx.dialog.Dialogs;
 
 /**
@@ -91,7 +88,7 @@ public class ProjectViewController {
 
     @FXML
     private Button revertConfigurationSettingsButton;
-    
+
     @FXML
     private Button cloneConfigurationButton;
 
@@ -166,48 +163,62 @@ public class ProjectViewController {
         mainApp.lastRunningConfigurationProperty().addListener(
                 (observable, oldValue, newValue) -> {
 
-                    // remove old binding, if we got any
-                    if (oldValue != null) {
-                        runConfigurationButton.disableProperty().unbind();
-                        cancelRunConfigurationButton.disableProperty().unbind();
-                    }
+                    // remove old binding
+                    runConfigurationButton.disableProperty().unbind();
+                    cancelRunConfigurationButton.disableProperty().unbind();
 
                     // bind to isRunning of new configuration, if available
                     if (newValue != null) {
-                        runConfigurationButton.disableProperty().bind(newValue.isRunningProperty());
-
-                        cancelRunConfigurationButton.disableProperty().bind(
+                        // when is run button disabled:
+                        // - no configuration is selected OR
+                        // - lastRunningConfiguration is running
+                        runConfigurationButton.disableProperty().bind(
                                 Bindings.or(
-                                        Bindings.not(newValue.isRunningProperty()),
-                                        Bindings.notEqual(mainApp.lastRunningConfigurationProperty(), mainApp.getCurrentConfiguration()))
-                        );
+                                        Bindings.isNull(mainApp.currentConfigurationProperty()),
+                                        newValue.isRunningProperty()));
+
+                        // when is cancel button enabled:
+                        // - if a configuration is selected AND
+                        // - lastRunning = selected config AND
+                        // - lastRunning isRunning
+                        cancelRunConfigurationButton.disableProperty().bind(Bindings.not(
+                                        BindingsUtils.and(
+                                                Bindings.isNotNull(mainApp.currentConfigurationProperty()),
+                                                Bindings.equal(mainApp.lastRunningConfigurationProperty(), mainApp.currentConfigurationProperty()),
+                                                newValue.isRunningProperty())));
+                    } else {
+
+                        // when is run button disabled (when no lastRunningConfiguration):
+                        // - no configuration is selected OR
+                        runConfigurationButton.disableProperty().bind(Bindings.isNull(mainApp.currentConfigurationProperty()));
+
+                        // when is cancel button disabled (when no lastRunningConfiguration):
+                        // - always (i.e. until there is a lastRunningConfiguration)
+                        cancelRunConfigurationButton.disableProperty().bind(Bindings.isNull(mainApp.lastRunningConfigurationProperty()));
+
                     }
                 });
 
-        // listen to changes in currentConfiguration
-        mainApp.currentConfigurationProperty().addListener(
-                (observable, oldValue, newValue) -> {
-
-                    // remove old binding, if we got any
-                    if (oldValue != null) {
-                        cancelRunConfigurationButton.disableProperty().unbind();
-                    }
-
-                    // bind to isRunning of new configuration, if available
-                    if ((newValue != null) && (mainApp.getLastRunningConfiguration() != null)) {
-                        cancelRunConfigurationButton.disableProperty().bind(
-                                Bindings.or(
-                                        Bindings.not(mainApp.getLastRunningConfiguration().isRunningProperty()),
-                                        Bindings.notEqual(mainApp.lastRunningConfigurationProperty(), newValue))
-                        );
-                    }
-                });
+//        // listen to changes in currentConfiguration
+//        mainApp.currentConfigurationProperty().addListener(
+//                (observable, oldValue, newValue) -> {
+//
+//                });
 
         // set bindings
         Bindings.bindBidirectional(projectFolderLabel.textProperty(), mainApp.projectFolderProperty());
         Bindings.bindBidirectional(projectDescriptionTextField.textProperty(), mainApp.projectDescriptionProperty());
         saveProjectSettingsButton.disableProperty().bind(mainApp.projectSettingsAreUnchangedProperty());
         revertProjectSettingsButton.disableProperty().bind(mainApp.projectSettingsAreUnchangedProperty());
+
+        // when is run button disabled (when no lastRunningConfiguration):
+        // - no configuration is selected OR
+        runConfigurationButton.disableProperty().bind(Bindings.isNull(mainApp.currentConfigurationProperty()));
+
+        // when is cancel button disabled (when no lastRunningConfiguration):
+        // - always (i.e. until there is a lastRunningConfiguration)
+        cancelRunConfigurationButton.disableProperty().bind(Bindings.isNull(mainApp.lastRunningConfigurationProperty()));
+
     }
 
     @FXML
@@ -302,7 +313,7 @@ public class ProjectViewController {
 
         // generate log file name
         String logFileName = String.format("log_%s.txt", new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(new Date()));
-        
+
         // build command line
         List<String> commandArgs = new ArrayList<>();
         commandArgs.add(runTrainScriptFullPath);
@@ -484,10 +495,10 @@ public class ProjectViewController {
 
     @FXML
     private void handleCloneConfigurationAction(ActionEvent event) {
-    
+
         // TODO: implement clone configuration
     }
-    
+
     /**
      * Fills all text fields to show details about the configuration. If the
      * specified configuration is null, all text fields are cleared.
@@ -548,11 +559,7 @@ public class ProjectViewController {
             // populate test tree
             populateTreeTableView(testTreeTableView, newConfiguration.getTestProtobufProperty());
 
-            // get last running configuration
-            Configuration lastRunningConfiguration = mainApp.getLastRunningConfiguration();
-
             // reset bindings
-            
             saveConfigurationSettingsButton.disableProperty().unbind();
             revertConfigurationSettingsButton.disableProperty().unbind();
             cloneConfigurationButton.disableProperty().unbind();
@@ -561,9 +568,8 @@ public class ProjectViewController {
             cloneConfigurationButton.disableProperty().bind(Bindings.not(newConfiguration.configurationSettingsAreUnchangedProperty()));
 
         } else {
-            
-            // configuration is null so we should empty the configuration details
 
+            // configuration is null so we should empty the configuration details
             // clear solver tree
             populateTreeTableView(solverTreeTableView, null);
 
@@ -580,7 +586,6 @@ public class ProjectViewController {
             saveConfigurationSettingsButton.disableProperty().set(true);
             revertConfigurationSettingsButton.disableProperty().set(true);
             cloneConfigurationButton.disableProperty().set(true);
-
         }
     }
 
