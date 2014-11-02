@@ -12,14 +12,6 @@ import javafx.beans.property.StringProperty;
 public class Configuration {
 
     /**
-     * Default constructor.
-     */
-    // TODO - check if we must have a default construtor
-    public Configuration() {
-        this(null, null, null, null);
-    }
-
-    /**
      * Constructor for configuration object
      *
      * @param folderName - configuration folder name
