@@ -5,7 +5,6 @@
  */
 package barista.utils;
 
-import barista.model.SettingsFiles;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.nio.file.FileSystems;
@@ -15,11 +14,23 @@ import org.controlsfx.dialog.Dialogs;
 
 /**
  *
- * @author arikp
+ * @author Arik Poznanski
  */
 public class ProcessUtils {
 
+    // get application folder
+    // currently we assume that it is the current working directory
+    public static String getApplicationFolder() {
+//        try {
+//            // return folder of application executable
+//            return new File(MainApp.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParent();
+//        } catch (URISyntaxException ex) {
+//            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, null, ex);
+//        }
 
+        // return current working directory 
+        return System.getProperty("user.dir");
+    }
 
     // get unix process id
     // note: this function is not portable to Windows
@@ -56,7 +67,7 @@ public class ProcessUtils {
 
         // path to kill script inside application folder
         String killProcessTreeScript = "kill_process_tree.sh";
-        String killProcessTreeScriptFullPath = FileSystems.getDefault().getPath(SettingsFiles.getApplicationFolder(), "scripts" ,killProcessTreeScript).toString();
+        String killProcessTreeScriptFullPath = FileSystems.getDefault().getPath(getApplicationFolder(), "scripts", killProcessTreeScript).toString();
 
         // check kill script exists
         if (!new File(killProcessTreeScriptFullPath).exists()) {

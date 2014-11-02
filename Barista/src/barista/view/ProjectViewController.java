@@ -4,6 +4,7 @@ import barista.BaristaMessages;
 import barista.MainApp;
 import barista.model.Configuration;
 import barista.model.ProtobufProperty;
+import barista.model.SettingsFiles;
 import barista.utils.BindingsUtils;
 import barista.utils.ProcessUtils;
 import barista.utils.StreamGobbler;
@@ -227,24 +228,12 @@ public class ProjectViewController {
     @FXML
     private void handleSaveProjectSettingsAction(ActionEvent event) {
 
-        // generate project settings object
-        BaristaMessages.ProjectSettings.Builder projectSettingsBuilder = BaristaMessages.ProjectSettings.newBuilder();
-        projectSettingsBuilder.setProjectDescription(mainApp.getProjectDescription());
-        BaristaMessages.ProjectSettings projectSettings = projectSettingsBuilder.build();
-
-        // save project settings to file
-        String projectSettingsFileName = mainApp.getProjectSettingsFileName();
-
-        if (projectSettingsFileName != null) {
-            // write project settings object to file
-            try (FileWriter fileWriter = new FileWriter(projectSettingsFileName)) {
-                // write ProjectSettings object in protobuf properties format
-                TextFormat.print(projectSettings, fileWriter);
-                fileWriter.flush();
-            } catch (IOException ex) {
-                Logger.getLogger(ProjectViewController.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", projectSettingsFileName), ex);
-            }
-
+        // update project settings file
+        if (SettingsFiles.updateProjectSettings(mainApp.getProjectFolder(),
+                (projectSettingsBuilder) -> {
+                    projectSettingsBuilder.setProjectDescription(mainApp.getProjectDescription());
+                }));
+        {
             mainApp.setProjectSettingsAreUnchanged(true);
         }
     }
@@ -428,31 +417,18 @@ public class ProjectViewController {
         outputTextArea.clear();
     }
 
-    public void writeConfigurationSettings(BaristaMessages.ConfigurationSettings configurationSettings, String configurationFolder) {
-        String configurationSettingsFileName = mainApp.getConfigurationSettingsFileName(configurationFolder);
-
-        // write configuration settings objects to file
-        try (FileWriter fileWriter = new FileWriter(configurationSettingsFileName)) {
-            // write ConfigurationSettings object in protobuf properties format
-            TextFormat.print(configurationSettings, fileWriter);
-            fileWriter.flush();
-        } catch (IOException ex) {
-            Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", configurationSettingsFileName), ex);
-        }
-    }
-
-    
     @FXML
     private void handleSaveConfigurationSettingsAction(ActionEvent event) {
 
         // get current configuration
         Configuration configuration = mainApp.getCurrentConfiguration();
 
+        String currentProjectFolder = mainApp.getProjectFolder();
+
         // check if folder name has changed
         if (!configuration.getNewFolderName().equals(configuration.getFolderName())) {
 
             // rename configuration folder 
-            String currentProjectFolder = mainApp.getProjectFolder();
             Path currentConfigurationFolderPath = FileSystems.getDefault().getPath(currentProjectFolder, configuration.getFolderName());
             Path newConfigurationFolderPath = FileSystems.getDefault().getPath(currentProjectFolder, configuration.getNewFolderName());
 
@@ -474,24 +450,14 @@ public class ProjectViewController {
             configuration.setFolderName(configuration.getNewFolderName());
         }
 
-        // get current configuration settings
-        String configurationSettingsFileName = mainApp.getConfigurationSettingsFileName(configuration.getFolderName());
-        BaristaMessages.ConfigurationSettings configurationSettings = mainApp.readConfigurationSettings(configurationSettingsFileName);
+        // update configuration settings file
+        String configurationFolderName = configuration.getFolderName();
+        SettingsFiles.updateConfigurationSettings(currentProjectFolder, configurationFolderName,
+                (configurationSettingsBuilder) -> {
+                    configurationSettingsBuilder.setConfigurationName(configuration.getName());
+                    configurationSettingsBuilder.setConfigurationDescription(configuration.getDescription());
+                });
 
-        // generate configuration settings object
-        BaristaMessages.ConfigurationSettings.Builder configurationSettingsBuilder;
-        if (configurationSettings != null) {
-            configurationSettingsBuilder = BaristaMessages.ConfigurationSettings.newBuilder(configurationSettings);
-        } else {
-            configurationSettingsBuilder = BaristaMessages.ConfigurationSettings.newBuilder();
-        }
-        configurationSettingsBuilder.setConfigurationName(configuration.getName());
-        configurationSettingsBuilder.setConfigurationDescription(configuration.getDescription());
-        configurationSettings = configurationSettingsBuilder.build();
-
-        // save configuration settings
-        writeConfigurationSettings(configurationSettings, configuration.getFolderName());
-        
         // handle saving solver, train and test files
         String solverFileName = configuration.getSolverFileName();
         if (solverFileName != null) {
@@ -551,11 +517,13 @@ public class ProjectViewController {
         configuration.setNewFolderName(configuration.getFolderName());
 
         // reload configuration settings
-        String configurationSettingsFileName = mainApp.getConfigurationSettingsFileName(configuration.getFolderName());
-        BaristaMessages.ConfigurationSettings configurationSettings = mainApp.readConfigurationSettings(configurationSettingsFileName);
+        String currentProjectFoldere = mainApp.getProjectFolder();
+        String currentConfigurationFolder = configuration.getFolderName();
+        BaristaMessages.ConfigurationSettings configurationSettings = SettingsFiles.readConfigurationSettings(currentProjectFoldere, currentConfigurationFolder);
+        
         configuration.setName(configurationSettings.getConfigurationName());
         configuration.setDescription(configurationSettings.getConfigurationDescription());
-        
+
         // force reload configuration from file
         showConfigurationDetails(configuration, configuration, true);
 
