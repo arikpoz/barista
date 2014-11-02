@@ -397,11 +397,11 @@ public class MainApp extends Application {
         return FileSystems.getDefault().getPath(getProjectFolder(), configurationName).toString();
     }
 
-    private String findSolverFileName(String configurationName) {
+    public String findSolverFileName(String configurationFolder) {
 
-        File folder = new File(getConfigurationFolder(configurationName));
+        File folder = new File(getConfigurationFolder(configurationFolder));
 
-        FilenameFilter solveFilter = new FilenameFilter() {
+        FilenameFilter solverFilter = new FilenameFilter() {
             public boolean accept(File dir, String name) {
                 String lowercaseName = name.toLowerCase();
                 if ((lowercaseName.endsWith(".prototxt")) && (lowercaseName.contains("solver"))) {
@@ -412,7 +412,7 @@ public class MainApp extends Application {
             }
         };
 
-        File[] files = folder.listFiles(solveFilter);
+        File[] files = folder.listFiles(solverFilter);
 
         if ((files == null) || (files.length == 0)) {
             return null;

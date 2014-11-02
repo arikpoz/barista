@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -520,7 +521,7 @@ public class ProjectViewController {
         String currentProjectFoldere = mainApp.getProjectFolder();
         String currentConfigurationFolder = configuration.getFolderName();
         BaristaMessages.ConfigurationSettings configurationSettings = SettingsFiles.readConfigurationSettings(currentProjectFoldere, currentConfigurationFolder);
-        
+
         configuration.setName(configurationSettings.getConfigurationName());
         configuration.setDescription(configurationSettings.getConfigurationDescription());
 
@@ -535,6 +536,71 @@ public class ProjectViewController {
     private void handleCloneConfigurationAction(ActionEvent event) {
 
         // TODO: implement clone configuration
+        // get current configuration
+        Configuration currentConfiguration = mainApp.getCurrentConfiguration();
+        
+        String currentProjectFolder = mainApp.getProjectFolder();
+        
+        String newConfigurationFolder = generateCloneName(currentConfiguration.getFolderName());
+
+        // create new folder
+        Path newConfigurationFullPath = FileSystems.getDefault().getPath(currentProjectFolder, newConfigurationFolder);
+        try {
+            Files.createDirectory(newConfigurationFullPath);
+        } catch (IOException ex) {
+            Dialogs.create()
+                    .title("Configuration cloning failed")
+                    .masthead("Failed creating cloned configuration folder")
+                    .message("An exception was thrown while create the cloned configuration folder.")
+                    .showException(ex);
+            return;
+        }
+
+        // get solver file path
+        String solverFileName = currentConfiguration.getSolverFileName();
+        Path solverFilePath = Paths.get(currentConfiguration.getSolverFileName());
+        Path newSolverFilePath = FileSystems.getDefault().getPath(currentProjectFolder, newConfigurationFolder, solverFilePath.getFileName().toString());
+        
+        SolverParameter solverParameter = mainApp.readSolverParameter(solverFileName);
+
+        // get train file path
+        Path trainFilePath = FileSystems.getDefault().getPath(currentProjectFolder, currentConfiguration.getFolderName(), solverParameter.getTrainNet());
+        Path newTrainFilePath = FileSystems.getDefault().getPath(currentProjectFolder, newConfigurationFolder, solverParameter.getTrainNet());
+         
+        // get test file path
+        Path testFilePath = FileSystems.getDefault().getPath(currentProjectFolder, currentConfiguration.getFolderName(), solverParameter.getTestNet());
+        Path newTestFilePath = FileSystems.getDefault().getPath(currentProjectFolder, newConfigurationFolder, solverParameter.getTestNet());
+        
+         // copy files to new configuration folder
+        try {
+            Files.copy(solverFilePath, newSolverFilePath);
+            Files.copy(trainFilePath, newTrainFilePath);
+            Files.copy(testFilePath, newTestFilePath);
+        } catch (IOException ex) {
+            Dialogs.create()
+                    .title("Configuration cloning failed")
+                    .masthead("Failed copying configuration files to cloned configuration folder")
+                    .message("An exception was thrown while copying configuration files to the cloned configuration folder.")
+                    .showException(ex);
+            return;
+        }
+        
+        String newConfigurationName = generateCloneName(currentConfiguration.getName());
+        String newDescription = currentConfiguration.getDescription();
+        String newSolverFileName = mainApp.findSolverFileName(newConfigurationFolder);
+
+        // create configuration settings file
+        BaristaMessages.ConfigurationSettings.Builder configurationSettingsBuilder = BaristaMessages.ConfigurationSettings.newBuilder();
+        configurationSettingsBuilder.setConfigurationName(newConfigurationName);
+        configurationSettingsBuilder.setConfigurationDescription(newDescription);
+        BaristaMessages.ConfigurationSettings configurationSettings = configurationSettingsBuilder.build();
+        SettingsFiles.writeConfigurationSettings(currentProjectFolder, newConfigurationFolder, configurationSettings);
+        
+        // create new configuration
+        Configuration newConfiguration = new Configuration(newConfigurationFolder, newConfigurationName, newDescription, newSolverFileName);
+
+        // add new configuration to list
+        mainApp.getConfigurationList().add(newConfiguration);
     }
 
     /**
@@ -1103,5 +1169,12 @@ public class ProjectViewController {
         }
 
         registerForDataChanges(childProtobufProperty);
+    }
+
+    private String generateCloneName(String name) {
+
+        // currently, just add prefix
+        // we can possibly make it 
+        return name + " - copy";
     }
 }
