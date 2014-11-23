@@ -568,8 +568,8 @@ public class ProjectViewController {
         Path newTrainFilePath = FileSystems.getDefault().getPath(currentProjectFolder, newConfigurationFolder, solverParameter.getTrainNet());
          
         // get test file path
-        Path testFilePath = FileSystems.getDefault().getPath(currentProjectFolder, currentConfiguration.getFolderName(), solverParameter.getTestNet());
-        Path newTestFilePath = FileSystems.getDefault().getPath(currentProjectFolder, newConfigurationFolder, solverParameter.getTestNet());
+        Path testFilePath = FileSystems.getDefault().getPath(currentProjectFolder, currentConfiguration.getFolderName(), solverParameter.getTestNet(0));
+        Path newTestFilePath = FileSystems.getDefault().getPath(currentProjectFolder, newConfigurationFolder, solverParameter.getTestNet(0));
         
          // copy files to new configuration folder
         try {
@@ -637,7 +637,7 @@ public class ProjectViewController {
                     NetParameter trainNetParameter = mainApp.readNetParameter(trainFilePath.toString());
 
                     // build test object
-                    Path testFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getFolderName(), solverParameter.getTestNet());
+                    Path testFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getFolderName(), solverParameter.getTestNet(0));
                     NetParameter testNetParameter = mainApp.readNetParameter(testFilePath.toString());
 
                     // load solver data
