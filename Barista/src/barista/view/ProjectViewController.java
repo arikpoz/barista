@@ -449,6 +449,10 @@ public class ProjectViewController {
 
             // update folder name field
             configuration.setFolderName(configuration.getNewFolderName());
+
+            // update solver file name
+            String newSolverFileName = mainApp.findSolverFileName(configuration.getNewFolderName());
+            configuration.setSolverFileName(newSolverFileName);
         }
 
         // update configuration settings file
@@ -480,28 +484,47 @@ public class ProjectViewController {
             // get updated train parameter object
             DynamicMessage trainParameter = loadProtobufPropertyToProtoObject(configuration.getTrainProtobufProperty(), netParameterDescriptor);
 
+            // write net object to file
+            FieldDescriptor netFieldDescriptor = solverParameterDescriptor.findFieldByName("net");
+            String netFieldValue = solverParameter.getField(netFieldDescriptor).toString();
+            if (!StringUtils.isBlank(netFieldValue)) {
+                String netFileName = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getFolderName(), netFieldValue).toString();
+                try (FileWriter fileWriter = new FileWriter(netFileName)) {
+                    TextFormat.print(trainParameter, fileWriter);
+                    fileWriter.flush();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", netFileName), ex);
+                }
+            }
+
             // write train object to file
             FieldDescriptor trainNetFieldDescriptor = solverParameterDescriptor.findFieldByName("train_net");
-            String trainFileName = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getFolderName(), solverParameter.getField(trainNetFieldDescriptor).toString()).toString();
-            try (FileWriter fileWriter = new FileWriter(trainFileName)) {
-                TextFormat.print(trainParameter, fileWriter);
-                fileWriter.flush();
-            } catch (IOException ex) {
-                Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", trainFileName), ex);
+            String trainNetFieldValue = solverParameter.getField(trainNetFieldDescriptor).toString();
+            if (!StringUtils.isBlank(trainNetFieldValue)) {
+                String trainFileName = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getFolderName(), trainNetFieldValue).toString();
+                try (FileWriter fileWriter = new FileWriter(trainFileName)) {
+                    TextFormat.print(trainParameter, fileWriter);
+                    fileWriter.flush();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", trainFileName), ex);
+                }
             }
 
             // get updated test parameter object
-            DynamicMessage testParameter = loadProtobufPropertyToProtoObject(configuration.getTestProtobufProperty(), netParameterDescriptor);
+            if (configuration.getTestProtobufProperty() != null) {
+                DynamicMessage testParameter = loadProtobufPropertyToProtoObject(configuration.getTestProtobufProperty(), netParameterDescriptor);
 
-            // write test object to file
-            FieldDescriptor testNetFieldDescriptor = solverParameterDescriptor.findFieldByName("test_net");
-            String testFileName = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getFolderName(), solverParameter.getField(testNetFieldDescriptor).toString()).toString();
-            try (FileWriter fileWriter = new FileWriter(testFileName)) {
-                TextFormat.print(testParameter, fileWriter);
-                fileWriter.flush();
-            } catch (IOException ex) {
-                Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", testFileName), ex);
+                // write test object to file
+                FieldDescriptor testNetFieldDescriptor = solverParameterDescriptor.findFieldByName("test_net");
+                String testFileName = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), configuration.getFolderName(), solverParameter.getField(testNetFieldDescriptor).toString()).toString();
+                try (FileWriter fileWriter = new FileWriter(testFileName)) {
+                    TextFormat.print(testParameter, fileWriter);
+                    fileWriter.flush();
+                } catch (IOException ex) {
+                    Logger.getLogger(MainApp.class.getName()).log(Level.SEVERE, String.format("Error while writing to file %s", testFileName), ex);
+                }
             }
+
         }
 
         // mark current configuration as unchanged
@@ -538,9 +561,9 @@ public class ProjectViewController {
         // TODO: implement clone configuration
         // get current configuration
         Configuration currentConfiguration = mainApp.getCurrentConfiguration();
-        
+
         String currentProjectFolder = mainApp.getProjectFolder();
-        
+
         String newConfigurationFolder = generateCloneName(currentConfiguration.getFolderName());
 
         // create new folder
@@ -551,7 +574,7 @@ public class ProjectViewController {
             Dialogs.create()
                     .title("Configuration cloning failed")
                     .masthead("Failed creating cloned configuration folder")
-                    .message("An exception was thrown while create the cloned configuration folder.")
+                    .message(String.format("An exception was thrown while creating the cloned configuration folder: %s.", newConfigurationFullPath.toString()))
                     .showException(ex);
             return;
         }
@@ -560,22 +583,48 @@ public class ProjectViewController {
         String solverFileName = currentConfiguration.getSolverFileName();
         Path solverFilePath = Paths.get(currentConfiguration.getSolverFileName());
         Path newSolverFilePath = FileSystems.getDefault().getPath(currentProjectFolder, newConfigurationFolder, solverFilePath.getFileName().toString());
-        
+
         SolverParameter solverParameter = mainApp.readSolverParameter(solverFileName);
 
+        // get net file path
+        Path netFilePath = null;
+        Path newNetFilePath = null;
+        if (solverParameter.hasNet()) {
+            netFilePath = FileSystems.getDefault().getPath(currentProjectFolder, currentConfiguration.getFolderName(), solverParameter.getNet());
+            newNetFilePath = FileSystems.getDefault().getPath(currentProjectFolder, newConfigurationFolder, solverParameter.getNet());
+        }
+
         // get train file path
-        Path trainFilePath = FileSystems.getDefault().getPath(currentProjectFolder, currentConfiguration.getFolderName(), solverParameter.getTrainNet());
-        Path newTrainFilePath = FileSystems.getDefault().getPath(currentProjectFolder, newConfigurationFolder, solverParameter.getTrainNet());
-         
+        Path trainFilePath = null;
+        Path newTrainFilePath = null;
+        if (solverParameter.hasTrainNet()) {
+            trainFilePath = FileSystems.getDefault().getPath(currentProjectFolder, currentConfiguration.getFolderName(), solverParameter.getTrainNet());
+            newTrainFilePath = FileSystems.getDefault().getPath(currentProjectFolder, newConfigurationFolder, solverParameter.getTrainNet());
+        }
+
         // get test file path
-        Path testFilePath = FileSystems.getDefault().getPath(currentProjectFolder, currentConfiguration.getFolderName(), solverParameter.getTestNet(0));
-        Path newTestFilePath = FileSystems.getDefault().getPath(currentProjectFolder, newConfigurationFolder, solverParameter.getTestNet(0));
-        
-         // copy files to new configuration folder
+        Path testFilePath = null;
+        Path newTestFilePath = null;
+        if (solverParameter.getTestNetCount() > 0) {
+            testFilePath = FileSystems.getDefault().getPath(currentProjectFolder, currentConfiguration.getFolderName(), solverParameter.getTestNet(0));
+            newTestFilePath = FileSystems.getDefault().getPath(currentProjectFolder, newConfigurationFolder, solverParameter.getTestNet(0));
+        }
+
+        // copy files to new configuration folder
         try {
             Files.copy(solverFilePath, newSolverFilePath);
-            Files.copy(trainFilePath, newTrainFilePath);
-            Files.copy(testFilePath, newTestFilePath);
+
+            if (netFilePath != null) {
+                Files.copy(netFilePath, newNetFilePath);
+            }
+
+            if (trainFilePath != null) {
+                Files.copy(trainFilePath, newTrainFilePath);
+            }
+
+            if (testFilePath != null) {
+                Files.copy(testFilePath, newTestFilePath);
+            }
         } catch (IOException ex) {
             Dialogs.create()
                     .title("Configuration cloning failed")
@@ -584,7 +633,7 @@ public class ProjectViewController {
                     .showException(ex);
             return;
         }
-        
+
         String newConfigurationName = generateCloneName(currentConfiguration.getName());
         String newDescription = currentConfiguration.getDescription();
         String newSolverFileName = mainApp.findSolverFileName(newConfigurationFolder);
@@ -595,7 +644,7 @@ public class ProjectViewController {
         configurationSettingsBuilder.setConfigurationDescription(newDescription);
         BaristaMessages.ConfigurationSettings configurationSettings = configurationSettingsBuilder.build();
         SettingsFiles.writeConfigurationSettings(currentProjectFolder, newConfigurationFolder, configurationSettings);
-        
+
         // create new configuration
         Configuration newConfiguration = new Configuration(newConfigurationFolder, newConfigurationName, newDescription, newSolverFileName);
 
@@ -634,24 +683,24 @@ public class ProjectViewController {
 
                     // build train object
                     NetParameter trainNetParameter = null;
-                    if (solverParameter.hasTrainNet()){
+                    if (solverParameter.hasTrainNet()) {
                         Path trainFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getFolderName(), solverParameter.getTrainNet());
                         trainNetParameter = mainApp.readNetParameter(trainFilePath.toString());
                     }
-                    
+
                     // build test object
                     NetParameter testNetParameter = null;
-                    if (solverParameter.getTestNetCount() > 0){
+                    if (solverParameter.getTestNetCount() > 0) {
                         Path testFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getFolderName(), solverParameter.getTestNet(0));
                         testNetParameter = mainApp.readNetParameter(testFilePath.toString());
                     }
-                    
+
                     // if available, get train from net property
                     if (solverParameter.hasNet()) {
                         Path netFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getFolderName(), solverParameter.getNet());
                         trainNetParameter = mainApp.readNetParameter(netFilePath.toString());
                     }
-                    
+
                     // load solver data
                     newConfiguration.setSolverProtobufProperty(initLoadProtoObjectToProtobufProperty("solver", solverParameter));
 
@@ -659,12 +708,12 @@ public class ProjectViewController {
                     if (trainNetParameter != null) {
                         newConfiguration.setTrainProtobufProperty(initLoadProtoObjectToProtobufProperty("train", trainNetParameter));
                     }
-                    
+
                     // load test data
-                    if (testNetParameter != null){
+                    if (testNetParameter != null) {
                         newConfiguration.setTestProtobufProperty(initLoadProtoObjectToProtobufProperty("test", testNetParameter));
                     }
-                    
+
                     // mark configuration as loaded
                     newConfiguration.setIsLoaded(true);
                 }
