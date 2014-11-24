@@ -633,22 +633,38 @@ public class ProjectViewController {
                     SolverParameter solverParameter = mainApp.readSolverParameter(solverFileName);
 
                     // build train object
-                    Path trainFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getFolderName(), solverParameter.getTrainNet());
-                    NetParameter trainNetParameter = mainApp.readNetParameter(trainFilePath.toString());
-
+                    NetParameter trainNetParameter = null;
+                    if (solverParameter.hasTrainNet()){
+                        Path trainFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getFolderName(), solverParameter.getTrainNet());
+                        trainNetParameter = mainApp.readNetParameter(trainFilePath.toString());
+                    }
+                    
                     // build test object
-                    Path testFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getFolderName(), solverParameter.getTestNet(0));
-                    NetParameter testNetParameter = mainApp.readNetParameter(testFilePath.toString());
-
+                    NetParameter testNetParameter = null;
+                    if (solverParameter.getTestNetCount() > 0){
+                        Path testFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getFolderName(), solverParameter.getTestNet(0));
+                        testNetParameter = mainApp.readNetParameter(testFilePath.toString());
+                    }
+                    
+                    // if available, get train from net property
+                    if (solverParameter.hasNet()) {
+                        Path netFilePath = FileSystems.getDefault().getPath(mainApp.getProjectFolder(), newConfiguration.getFolderName(), solverParameter.getNet());
+                        trainNetParameter = mainApp.readNetParameter(netFilePath.toString());
+                    }
+                    
                     // load solver data
                     newConfiguration.setSolverProtobufProperty(initLoadProtoObjectToProtobufProperty("solver", solverParameter));
 
                     // load train data
-                    newConfiguration.setTrainProtobufProperty(initLoadProtoObjectToProtobufProperty("train", trainNetParameter));
-
+                    if (trainNetParameter != null) {
+                        newConfiguration.setTrainProtobufProperty(initLoadProtoObjectToProtobufProperty("train", trainNetParameter));
+                    }
+                    
                     // load test data
-                    newConfiguration.setTestProtobufProperty(initLoadProtoObjectToProtobufProperty("test", testNetParameter));
-
+                    if (testNetParameter != null){
+                        newConfiguration.setTestProtobufProperty(initLoadProtoObjectToProtobufProperty("test", testNetParameter));
+                    }
+                    
                     // mark configuration as loaded
                     newConfiguration.setIsLoaded(true);
                 }
